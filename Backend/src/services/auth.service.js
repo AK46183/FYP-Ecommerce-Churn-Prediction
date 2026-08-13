@@ -21,10 +21,10 @@ const loginUser = async ({ email, password }) => {
   if (!isMatch) throw new ApiError(401, 'Invalid email or password');
 
   const token = jwt.sign(
-    { id: user.id, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: '7d' }
-  );
+  { id: user.id, role: user.role },
+  process.env.JWT_SECRET,
+  { expiresIn: '7d' }
+);
 
   return { token, user: { id: user.id, name: user.name, email: user.email, role: user.role } };
 };
