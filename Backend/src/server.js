@@ -1,5 +1,9 @@
-console.log('server.js file is running');
 
+require('./models/postgres/user.model');
+require('./models/postgres/category.model');
+require('./models/postgres/product.model');
+
+console.log('server.js file is running');
 require('dotenv').config();
 const app = require('./app');
 const { connectPostgres, sequelize } = require('./config/db.postgres');

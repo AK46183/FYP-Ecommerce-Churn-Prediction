@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/auth.routes');
 const errorMiddleware = require('./middlewares/error.middleware');
+const productRoutes = require('./routes/product.routes');
 
 const app = express();
 
@@ -16,4 +17,6 @@ app.use('/api/auth', authRoutes);
 
 app.use(errorMiddleware);
 
+
+app.use('/api/products', productRoutes);
 module.exports = app;
