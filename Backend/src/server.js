@@ -1,4 +1,7 @@
-
+require('./models/postgres/cart.model');
+require('./models/postgres/cartItem.model');
+require('./models/postgres/order.model');
+require('./models/postgres/orderItem.model');
 require('./models/postgres/user.model');
 require('./models/postgres/category.model');
 require('./models/postgres/product.model');
