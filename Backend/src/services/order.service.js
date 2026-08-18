@@ -67,4 +67,24 @@ const getUserOrders = async (userId) => {
   return await Order.findAll({ where: { userId }, include: OrderItem });
 };
 
-module.exports = { addToCart, getCart, removeFromCart, placeOrder, getUserOrders };
+const getAllOrders = async () => {
+  return await Order.findAll({ include: OrderItem, order: [['createdAt', 'DESC']] });
+};
+
+const updateOrderStatus = async (orderId, status) => {
+  const order = await Order.findByPk(orderId);
+  if (!order) throw new ApiError(404, 'Order not found');
+  order.status = status;
+  await order.save();
+  return order;
+};
+
+module.exports = {
+  addToCart,
+  getCart,
+  removeFromCart,
+  placeOrder,
+  getUserOrders,
+  getAllOrders,
+  updateOrderStatus,
+};
