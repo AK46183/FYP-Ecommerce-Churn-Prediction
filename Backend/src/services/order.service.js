@@ -13,6 +13,8 @@ const getOrCreateCart = async (userId) => {
 
 const addToCart = async (userId, productId, quantity) => {
   const cart = await getOrCreateCart(userId);
+    const { logActivity } = require('./activityLogger.service');
+  logActivity(userId, 'cart_add', productId, { quantity });
   const product = await Product.findByPk(productId);
   if (!product) throw new ApiError(404, 'Product not found');
 
