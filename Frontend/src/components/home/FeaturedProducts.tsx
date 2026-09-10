@@ -1,11 +1,16 @@
-import { CameraArt, HeadphoneArt, PhoneArt } from "@/components/ui/DeviceArt";
+import { ProductPhoto } from "@/components/ui/ProductPhoto";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { formatPrice } from "@/lib/utils";
 import { getFeaturedProducts, products } from "@/data/products";
+import type { Category } from "@/data/products";
 
-const ART = { smartphones: PhoneArt, headphones: HeadphoneArt, cameras: CameraArt };
+const ACCENT_TEXT: Record<Category, string> = {
+  smartphones: "text-signal",
+  headphones: "text-violet",
+  cameras: "text-amber",
+};
 
 export function FeaturedProducts() {
   const featured = getFeaturedProducts();
@@ -24,41 +29,40 @@ export function FeaturedProducts() {
         </Reveal>
 
         <div className="mt-16 flex flex-col gap-6">
-          {featured.map((product, i) => {
-            const Art = ART[product.category];
-            return (
-              <Reveal key={product.id} delay={i * 0.08}>
-                <div
-                  className={`flex flex-col items-center gap-10 rounded-2xl bg-paper p-8 md:gap-16 md:p-14 lg:flex-row ${
-                    i % 2 === 1 ? "lg:flex-row-reverse" : ""
-                  }`}
-                >
-                  <div className="h-[240px] w-[170px] shrink-0 sm:h-[300px] sm:w-[210px]">
-                    <Art className="h-full w-full" glow />
-                  </div>
-                  <div className="text-center lg:text-left">
-                    <span className="text-[12px] font-semibold uppercase tracking-[0.18em] text-signal">
-                      {product.badge ?? "Featured"}
+          {featured.map((product, i) => (
+            <Reveal key={product.id} delay={i * 0.08}>
+              <div
+                className={`flex flex-col items-center gap-10 rounded-2xl bg-paper p-8 md:gap-16 md:p-14 lg:flex-row ${
+                  i % 2 === 1 ? "lg:flex-row-reverse" : ""
+                }`}
+              >
+                <div className="aspect-[4/5] w-[220px] shrink-0 sm:w-[260px]">
+                  <ProductPhoto category={product.category} glow rounded="rounded-[20px]" />
+                </div>
+                <div className="text-center lg:text-left">
+                  <span
+                    className={`text-[12px] font-semibold uppercase tracking-[0.18em] ${ACCENT_TEXT[product.category]}`}
+                  >
+                    {product.badge ?? "Featured"}
+                  </span>
+                  <h3 className="mt-3 text-[30px] font-bold tracking-tight text-graphite md:text-[38px]">
+                    {product.name}
+                  </h3>
+                  <p className="mx-auto mt-3 max-w-sm text-[16px] leading-relaxed text-slate lg:mx-0">
+                    {product.description}
+                  </p>
+                  <div className="mt-6 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
+                    <span className="text-[20px] font-semibold text-graphite">
+                      {formatPrice(product.discountPrice ?? product.price)}
                     </span>
-                    <h3 className="mt-3 text-[30px] font-bold tracking-tight text-graphite md:text-[38px]">
-                      {product.name}
-                    </h3>
-                    <p className="mx-auto mt-3 max-w-sm text-[16px] leading-relaxed text-slate lg:mx-0">
-                      {product.description}
-                    </p>
-                    <div className="mt-6 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
-                      <span className="text-[20px] font-semibold text-graphite">
-                        {formatPrice(product.discountPrice ?? product.price)}
-                      </span>
-                      <Button to={`/product/${product.slug}`} variant="primary" withArrow>
-                        View Product
-                      </Button>
-                    </div>
+                    <Button to={`/product/${product.slug}`} variant="primary" withArrow>
+                      View Product
+                    </Button>
                   </div>
                 </div>
-              </Reveal>
-            );
-          })}
+              </div>
+            </Reveal>
+          ))}
         </div>
 
         <Reveal className="mt-20 grid grid-cols-2 gap-5 md:grid-cols-4">

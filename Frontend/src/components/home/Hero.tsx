@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
-import { motion, useMotionValue, useScroll, useSpring, useTransform } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/Button";
-import { PhoneArt } from "@/components/ui/DeviceArt";
+import { ProductPhoto } from "@/components/ui/ProductPhoto";
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -15,28 +15,6 @@ export function Hero() {
   const productScale = useTransform(scrollYProgress, [0, 1], [1, 0.82]);
   const productY = useTransform(scrollYProgress, [0, 1], [0, 60]);
   const bgOpacity = useTransform(scrollYProgress, [0, 1], [0.5, 0.1]);
-
-  const rotateX = useMotionValue(0);
-  const rotateY = useMotionValue(0);
-  const springRotateX = useSpring(rotateX, { stiffness: 120, damping: 18 });
-  const springRotateY = useSpring(rotateY, { stiffness: 120, damping: 18 });
-  const [isTouch] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches,
-  );
-
-  function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
-    if (isTouch) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width - 0.5;
-    const py = (e.clientY - rect.top) / rect.height - 0.5;
-    rotateY.set(px * 10);
-    rotateX.set(py * -10);
-  }
-
-  function handlePointerLeave() {
-    rotateX.set(0);
-    rotateY.set(0);
-  }
 
   return (
     <section
@@ -85,21 +63,19 @@ export function Hero() {
           className="order-1 flex justify-center lg:order-2 lg:justify-end"
           style={{ scale: productScale, y: productY }}
         >
-          <div
-            className="relative h-[360px] w-[220px] sm:h-[440px] sm:w-[270px] lg:h-[560px] lg:w-[340px]"
-            style={{ perspective: 1000 }}
-            onPointerMove={handlePointerMove}
-            onPointerLeave={handlePointerLeave}
+          <motion.div
+            className="aspect-[4/5] w-[260px] sm:w-[320px] lg:w-[400px]"
+            animate={{ y: [0, -14, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           >
-            <motion.div
-              className="h-full w-full"
-              style={{ rotateX: springRotateX, rotateY: springRotateY }}
-              animate={{ y: [0, -14, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <PhoneArt className="h-full w-full" />
-            </motion.div>
-          </div>
+            <ProductPhoto
+              category="smartphones"
+              glow
+              priority
+              rounded="rounded-[28px]"
+              className="border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.5)]"
+            />
+          </motion.div>
         </motion.div>
       </div>
 

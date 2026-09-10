@@ -1,14 +1,15 @@
 import { Aperture, Crosshair, ScanEye, Video } from "lucide-react";
 import { StoryIntro } from "@/components/home/StoryIntro";
 import { FeatureRow } from "@/components/home/FeatureRow";
-import { CameraArt } from "@/components/ui/DeviceArt";
+import { ProductPhoto } from "@/components/ui/ProductPhoto";
 
 export function CameraStory() {
   return (
-    <section className="bg-ink text-paper">
+    <section className="bg-umber text-paper">
       <div className="container-nexora">
         <StoryIntro
           eyebrow="Nexora Vision C1"
+          accent="amber"
           heading={
             <>
               Capture the moment
@@ -17,7 +18,7 @@ export function CameraStory() {
             </>
           }
           description="A full-frame sensor and a redesigned autofocus system, built for photographers who shoot on instinct."
-          art={<CameraArt className="h-full w-full" />}
+          art={<ProductPhoto category="cameras" rounded="rounded-[24px]" className="border border-white/10" />}
         />
 
         <FeatureRow
@@ -32,6 +33,7 @@ export function CameraStory() {
             </>
           }
           description="A larger full-frame sensor pulls in more light per pixel, holding detail in shadow and highlight alike."
+          accent="amber"
         />
         <FeatureRow
           index="02"
@@ -40,6 +42,7 @@ export function CameraStory() {
           title="See the scene differently."
           description="A modular mount system built around glass designed specifically for this sensor, edge to edge."
           reversed
+          accent="amber"
         />
         <FeatureRow
           index="03"
@@ -47,6 +50,7 @@ export function CameraStory() {
           eyebrow="Autofocus"
           title="Focus where it matters."
           description="Subject-tracking autofocus locks on and stays locked, even through fast, unpredictable motion."
+          accent="amber"
         />
         <FeatureRow
           index="04"
@@ -55,6 +59,7 @@ export function CameraStory() {
           title="Motion, with clarity."
           description="High-resolution video with in-body stabilization, so handheld footage looks considered, not shaky."
           reversed
+          accent="amber"
         />
       </div>
     </section>

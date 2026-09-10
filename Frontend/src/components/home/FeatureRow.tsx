@@ -10,8 +10,23 @@ interface FeatureRowProps {
   title: ReactNode;
   description: string;
   reversed?: boolean;
-  accent?: "signal" | "violet";
+  accent?: "signal" | "violet" | "amber";
 }
+
+const ACCENT_COLOR: Record<NonNullable<FeatureRowProps["accent"]>, string> = {
+  signal: "var(--color-signal)",
+  violet: "var(--color-violet)",
+  amber: "var(--color-amber)",
+};
+
+const PANEL_BG: Record<NonNullable<FeatureRowProps["accent"]>, string> = {
+  signal:
+    "radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 60%), var(--color-ink-soft)",
+  violet:
+    "radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 60%), var(--color-plum-soft)",
+  amber:
+    "radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 60%), var(--color-umber-soft)",
+};
 
 export function FeatureRow({
   index,
@@ -22,17 +37,14 @@ export function FeatureRow({
   reversed = false,
   accent = "signal",
 }: FeatureRowProps) {
-  const accentColor = accent === "signal" ? "var(--color-signal)" : "var(--color-violet)";
+  const accentColor = ACCENT_COLOR[accent];
 
   return (
     <div className="grid grid-cols-1 items-center gap-10 py-16 md:grid-cols-2 md:gap-16 md:py-24">
       <Reveal className={cn(reversed && "md:order-2")}>
         <div
           className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-2xl border border-white/10"
-          style={{
-            background:
-              "radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 60%), #111318",
-          }}
+          style={{ background: PANEL_BG[accent] }}
         >
           <div
             className="absolute h-40 w-40 rounded-full blur-[70px]"

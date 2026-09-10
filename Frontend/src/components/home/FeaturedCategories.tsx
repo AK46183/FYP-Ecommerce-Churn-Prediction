@@ -1,15 +1,23 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
-import { CameraArt, HeadphoneArt, PhoneArt } from "@/components/ui/DeviceArt";
+import { ProductPhoto } from "@/components/ui/ProductPhoto";
 import type { Category } from "@/data/products";
 import { categoryCopy } from "@/data/products";
 
-const CARDS: { category: Category; art: React.ReactNode }[] = [
-  { category: "smartphones", art: <PhoneArt glow={false} className="h-full w-full" /> },
-  { category: "headphones", art: <HeadphoneArt glow={false} className="h-full w-full" /> },
-  { category: "cameras", art: <CameraArt glow={false} className="h-full w-full" /> },
-];
+const CARD_BG: Record<Category, string> = {
+  smartphones: "bg-ink",
+  headphones: "bg-plum",
+  cameras: "bg-umber",
+};
+
+const CARD_ACCENT: Record<Category, string> = {
+  smartphones: "text-signal",
+  headphones: "text-violet",
+  cameras: "text-amber",
+};
+
+const CATEGORIES: Category[] = ["smartphones", "headphones", "cameras"];
 
 export function FeaturedCategories() {
   return (
@@ -25,23 +33,25 @@ export function FeaturedCategories() {
         </Reveal>
 
         <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3">
-          {CARDS.map(({ category, art }, i) => {
+          {CATEGORIES.map((category, i) => {
             const copy = categoryCopy[category];
             return (
               <Reveal key={category} delay={i * 0.1}>
                 <Link
                   to={`/${category}`}
-                  className="group relative flex h-[440px] flex-col justify-end overflow-hidden rounded-2xl bg-ink p-8 text-paper transition-shadow duration-500 hover:shadow-2xl md:h-[520px]"
+                  className={`group relative flex h-[440px] flex-col justify-end overflow-hidden rounded-2xl p-8 text-paper transition-shadow duration-500 hover:shadow-2xl md:h-[520px] ${CARD_BG[category]}`}
                 >
-                  <div className="absolute inset-x-8 top-10 flex h-[55%] items-center justify-center transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]">
-                    {art}
+                  <div className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]">
+                    <ProductPhoto category={category} tilt={false} className="h-full w-full" />
                   </div>
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
                   <div className="relative z-10 transition-transform duration-500 ease-out group-hover:-translate-y-1">
                     <h3 className="text-[24px] font-bold">{copy.label}</h3>
-                    <p className="mt-2 max-w-[85%] text-[14px] text-white/60">{copy.headline}</p>
-                    <span className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-signal">
+                    <p className="mt-2 max-w-[85%] text-[14px] text-white/70">{copy.headline}</p>
+                    <span
+                      className={`mt-5 inline-flex items-center gap-1.5 text-[13px] font-semibold ${CARD_ACCENT[category]}`}
+                    >
                       Explore
                       <ArrowUpRight
                         className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"

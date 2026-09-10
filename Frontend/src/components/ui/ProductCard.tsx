@@ -1,19 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Heart, Star } from "lucide-react";
-import { CameraArt, HeadphoneArt, PhoneArt } from "@/components/ui/DeviceArt";
+import { ProductPhoto } from "@/components/ui/ProductPhoto";
 import type { Product } from "@/data/products";
 import { cn, formatPrice } from "@/lib/utils";
 
-const ART_BY_CATEGORY = {
-  smartphones: PhoneArt,
-  headphones: HeadphoneArt,
-  cameras: CameraArt,
-};
-
 export function ProductCard({ product }: { product: Product }) {
   const [wishlisted, setWishlisted] = useState(false);
-  const Art = ART_BY_CATEGORY[product.category];
   const price = product.discountPrice ?? product.price;
 
   return (
@@ -22,14 +15,14 @@ export function ProductCard({ product }: { product: Product }) {
         to={`/product/${product.slug}`}
         className="block overflow-hidden rounded-2xl bg-white transition-shadow duration-400 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]"
       >
-        <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-mist p-8">
+        <div className="relative aspect-square overflow-hidden bg-mist">
           {product.badge && (
             <span className="absolute left-4 top-4 z-10 rounded-full bg-graphite px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-paper">
               {product.badge}
             </span>
           )}
-          <div className="h-[70%] w-[55%] transition-transform duration-500 ease-out group-hover:scale-[1.08]">
-            <Art glow={false} className="h-full w-full" />
+          <div className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.08]">
+            <ProductPhoto category={product.category} tilt={false} rounded="" className="h-full w-full" />
           </div>
 
           <span

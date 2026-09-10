@@ -1,7 +1,7 @@
 import { BatteryCharging, Camera, Cpu, MonitorSmartphone } from "lucide-react";
 import { StoryIntro } from "@/components/home/StoryIntro";
 import { FeatureRow } from "@/components/home/FeatureRow";
-import { PhoneArt } from "@/components/ui/DeviceArt";
+import { ProductPhoto } from "@/components/ui/ProductPhoto";
 
 export function SmartphoneStory() {
   return (
@@ -11,7 +11,7 @@ export function SmartphoneStory() {
           eyebrow="Nexora X1 Pro"
           heading={<>Made to keep up.</>}
           description="A phone tuned for the pace of a real day — quick to respond, calm under load, and built to last from morning to midnight."
-          art={<PhoneArt className="h-full w-full" />}
+          art={<ProductPhoto category="smartphones" rounded="rounded-[24px]" className="border border-white/10" />}
         />
 
         <FeatureRow

@@ -1,14 +1,15 @@
 import { BatteryCharging, EarOff, Feather, Waves } from "lucide-react";
 import { StoryIntro } from "@/components/home/StoryIntro";
 import { FeatureRow } from "@/components/home/FeatureRow";
-import { HeadphoneArt } from "@/components/ui/DeviceArt";
+import { ProductPhoto } from "@/components/ui/ProductPhoto";
 
 export function HeadphoneStory() {
   return (
-    <section className="bg-ink-soft text-paper">
+    <section className="bg-plum text-paper">
       <div className="container-nexora">
         <StoryIntro
           eyebrow="Nexora Air Pro"
+          accent="violet"
           heading={
             <>
               Sound,
@@ -17,7 +18,7 @@ export function HeadphoneStory() {
             </>
           }
           description="Adaptive noise cancellation and a tuned soundstage, built for listening that lasts longer than a commute."
-          art={<HeadphoneArt className="h-full w-full" />}
+          art={<ProductPhoto category="headphones" rounded="rounded-[24px]" className="border border-white/10" />}
         />
 
         <FeatureRow

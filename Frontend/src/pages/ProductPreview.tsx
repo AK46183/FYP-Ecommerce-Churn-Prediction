@@ -1,10 +1,15 @@
 import { useParams } from "react-router-dom";
-import { CameraArt, HeadphoneArt, PhoneArt } from "@/components/ui/DeviceArt";
+import { ProductPhoto } from "@/components/ui/ProductPhoto";
 import { Button } from "@/components/ui/Button";
 import { formatPrice } from "@/lib/utils";
 import { products } from "@/data/products";
+import type { Category } from "@/data/products";
 
-const ART = { smartphones: PhoneArt, headphones: HeadphoneArt, cameras: CameraArt };
+const ACCENT_TEXT: Record<Category, string> = {
+  smartphones: "text-signal",
+  headphones: "text-violet",
+  cameras: "text-amber",
+};
 
 export default function ProductPreview() {
   const { slug } = useParams();
@@ -24,15 +29,13 @@ export default function ProductPreview() {
     );
   }
 
-  const Art = ART[product.category];
-
   return (
     <section className="flex min-h-[70svh] flex-col items-center justify-center gap-10 bg-mist px-6 py-32 text-center md:flex-row md:text-left">
-      <div className="h-[260px] w-[190px] shrink-0 sm:h-[320px] sm:w-[230px]">
-        <Art className="h-full w-full" />
+      <div className="aspect-[4/5] w-[220px] shrink-0 sm:w-[260px]">
+        <ProductPhoto category={product.category} glow rounded="rounded-[20px]" />
       </div>
       <div>
-        <span className="text-[13px] font-semibold uppercase tracking-[0.18em] text-signal">
+        <span className={`text-[13px] font-semibold uppercase tracking-[0.18em] ${ACCENT_TEXT[product.category]}`}>
           {product.badge ?? "Product"}
         </span>
         <h1 className="mt-3 text-balance text-[36px] font-extrabold tracking-tight text-graphite md:text-[44px]">

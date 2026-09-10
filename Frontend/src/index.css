@@ -3,15 +3,22 @@
 @theme {
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
 
-  /* Brand color system */
-  --color-ink: #08090b;        /* primary dark background */
-  --color-ink-soft: #111318;    /* secondary dark background */
-  --color-mist: #f5f6f7;        /* light background */
+  /* Brand color system — calm, muted tones instead of literal black.
+     Global chrome (nav/footer) uses --color-ink. Each product story gets
+     its own calm dark + accent pairing so the site isn't just navy+blue. */
+  --color-ink: #16212e;         /* primary dark background (deep slate-navy) — global chrome, smartphones */
+  --color-ink-soft: #202e3d;    /* secondary slate-navy background */
+  --color-plum: #241f2e;        /* deep muted plum — headphones section */
+  --color-plum-soft: #2e2739;
+  --color-umber: #241d16;       /* deep warm umber — cameras section */
+  --color-umber-soft: #302720;
+  --color-mist: #f4f6f8;        /* light background */
   --color-paper: #ffffff;       /* pure white */
-  --color-graphite: #111111;    /* primary text on light */
-  --color-slate: #6b7078;       /* secondary text */
-  --color-signal: #5bc8ff;      /* electric blue accent */
-  --color-violet: #8b7cff;      /* secondary accent, used sparingly */
+  --color-graphite: #1c2733;    /* primary text on light (soft charcoal-navy, not pure black) */
+  --color-slate: #67747f;       /* secondary text */
+  --color-signal: #5bc8ff;      /* electric blue accent — smartphones */
+  --color-violet: #a78bfa;      /* soft violet accent — headphones */
+  --color-amber: #e3a15d;       /* warm amber accent — cameras */
 
   --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
 }
