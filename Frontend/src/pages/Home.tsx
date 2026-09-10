@@ -1,25 +1,19 @@
 import { Hero } from "@/components/home/Hero";
-import { FeaturedCategories } from "@/components/home/FeaturedCategories";
-import { SmartphoneStory } from "@/components/home/SmartphoneStory";
-import { HeadphoneStory } from "@/components/home/HeadphoneStory";
-import { CameraStory } from "@/components/home/CameraStory";
-import { ComparisonTeaser } from "@/components/home/ComparisonTeaser";
+import { CategoryIconRow } from "@/components/home/CategoryIconRow";
+import { DealsBanner } from "@/components/home/DealsBanner";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { TrustSection } from "@/components/home/TrustSection";
-import { ReviewsSection } from "@/components/home/ReviewsSection";
+import { NewsletterBanner } from "@/components/home/NewsletterBanner";
 
 export default function Home() {
   return (
     <>
       <Hero />
-      <FeaturedCategories />
-      <SmartphoneStory />
-      <HeadphoneStory />
-      <CameraStory />
-      <ComparisonTeaser />
+      <CategoryIconRow />
+      <DealsBanner />
       <FeaturedProducts />
       <TrustSection />
-      <ReviewsSection />
+      <NewsletterBanner />
     </>
   );
 }

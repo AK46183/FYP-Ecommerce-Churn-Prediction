@@ -24,17 +24,17 @@ interface ButtonAsLink extends SharedProps {
 type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 const variants: Record<Variant, string> = {
-  // Dark background on light sections
-  primary: "bg-graphite text-paper hover:bg-ink",
-  // White background on dark sections
-  "primary-inverse": "bg-paper text-graphite hover:bg-mist",
-  secondary: "border border-graphite/20 text-graphite hover:border-graphite/60 bg-transparent",
-  "secondary-inverse": "border border-white/25 text-paper hover:border-white/60 bg-transparent",
+  // Forest-green pill button on light/cream sections
+  primary: "bg-ink text-paper hover:bg-ink-soft",
+  // White pill on dark sections
+  "primary-inverse": "bg-paper text-ink hover:bg-mist",
+  secondary: "border border-ink/25 text-ink hover:border-ink/60 bg-transparent",
+  "secondary-inverse": "border border-white/30 text-paper hover:border-white/60 bg-transparent",
   ghost: "text-current hover:opacity-70 bg-transparent",
 };
 
 const baseClasses =
-  "group inline-flex min-h-11 items-center justify-center gap-2 rounded-[10px] px-5 py-3.5 text-[15px] font-medium tracking-tight transition-all duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0";
+  "group inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-medium tracking-tight transition-all duration-300 ease-out hover:-translate-y-0.5 active:translate-y-0";
 
 function Content({ withArrow, icon, children }: Pick<SharedProps, "withArrow" | "icon" | "children">) {
   return (

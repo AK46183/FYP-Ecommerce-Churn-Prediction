@@ -1,75 +1,34 @@
-import { ProductPhoto } from "@/components/ui/ProductPhoto";
 import { ProductCard } from "@/components/ui/ProductCard";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
-import { formatPrice } from "@/lib/utils";
-import { getFeaturedProducts, products } from "@/data/products";
-import type { Category } from "@/data/products";
-
-const ACCENT_TEXT: Record<Category, string> = {
-  smartphones: "text-signal",
-  headphones: "text-violet",
-  cameras: "text-amber",
-};
+import { products } from "@/data/products";
 
 export function FeaturedProducts() {
-  const featured = getFeaturedProducts();
-  const gridProducts = products.filter((p) => !p.featured).slice(0, 8);
+  const popular = products.slice(0, 8);
 
   return (
-    <section className="bg-mist py-24 md:py-32">
+    <section className="bg-paper py-16 md:py-20">
       <div className="container-nexora">
-        <Reveal>
-          <span className="text-[13px] font-semibold uppercase tracking-[0.18em] text-slate">
-            Featured
-          </span>
-          <h2 className="mt-4 max-w-xl text-balance text-[36px] font-extrabold leading-[1.08] tracking-tight text-graphite md:text-[48px]">
-            Right now, most loved.
+        <Reveal className="flex items-end justify-between gap-4">
+          <h2 className="text-[26px] font-extrabold tracking-tight text-ink md:text-[30px]">
+            Popular Products
           </h2>
+          <Button to="/smartphones" variant="ghost" withArrow className="hidden text-signal sm:inline-flex">
+            View All Products
+          </Button>
         </Reveal>
 
-        <div className="mt-16 flex flex-col gap-6">
-          {featured.map((product, i) => (
-            <Reveal key={product.id} delay={i * 0.08}>
-              <div
-                className={`flex flex-col items-center gap-10 rounded-2xl bg-paper p-8 md:gap-16 md:p-14 lg:flex-row ${
-                  i % 2 === 1 ? "lg:flex-row-reverse" : ""
-                }`}
-              >
-                <div className="aspect-[4/5] w-[220px] shrink-0 sm:w-[260px]">
-                  <ProductPhoto category={product.category} glow rounded="rounded-[20px]" />
-                </div>
-                <div className="text-center lg:text-left">
-                  <span
-                    className={`text-[12px] font-semibold uppercase tracking-[0.18em] ${ACCENT_TEXT[product.category]}`}
-                  >
-                    {product.badge ?? "Featured"}
-                  </span>
-                  <h3 className="mt-3 text-[30px] font-bold tracking-tight text-graphite md:text-[38px]">
-                    {product.name}
-                  </h3>
-                  <p className="mx-auto mt-3 max-w-sm text-[16px] leading-relaxed text-slate lg:mx-0">
-                    {product.description}
-                  </p>
-                  <div className="mt-6 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
-                    <span className="text-[20px] font-semibold text-graphite">
-                      {formatPrice(product.discountPrice ?? product.price)}
-                    </span>
-                    <Button to={`/product/${product.slug}`} variant="primary" withArrow>
-                      View Product
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-
-        <Reveal className="mt-20 grid grid-cols-2 gap-5 md:grid-cols-4">
-          {gridProducts.map((product) => (
+        <Reveal className="mt-8 grid grid-cols-2 gap-5 md:grid-cols-4">
+          {popular.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </Reveal>
+
+        <div className="mt-8 text-center sm:hidden">
+          <Button to="/smartphones" variant="secondary" withArrow>
+            View All Products
+          </Button>
+        </div>
       </div>
     </section>
   );

@@ -3,22 +3,25 @@
 @theme {
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
 
-  /* Brand color system — calm, muted tones instead of literal black.
-     Global chrome (nav/footer) uses --color-ink. Each product story gets
-     its own calm dark + accent pairing so the site isn't just navy+blue. */
-  --color-ink: #16212e;         /* primary dark background (deep slate-navy) — global chrome, smartphones */
-  --color-ink-soft: #202e3d;    /* secondary slate-navy background */
-  --color-plum: #241f2e;        /* deep muted plum — headphones section */
+  /* Brand color system — warm sage + cream + blush, calm throughout.
+     Dark chrome (utility bar, footer accents, promo banners) uses
+     --color-ink, now a deep forest green rather than black or navy. */
+  --color-ink: #33453a;         /* deep forest — dark chrome (utility bar, promo banners) */
+  --color-ink-soft: #3f5548;    /* secondary forest */
+  --color-plum: #241f2e;        /* kept for unused story-section components */
   --color-plum-soft: #2e2739;
-  --color-umber: #241d16;       /* deep warm umber — cameras section */
+  --color-umber: #241d16;       /* kept for unused story-section components */
   --color-umber-soft: #302720;
-  --color-mist: #f4f6f8;        /* light background */
-  --color-paper: #ffffff;       /* pure white */
-  --color-graphite: #1c2733;    /* primary text on light (soft charcoal-navy, not pure black) */
-  --color-slate: #67747f;       /* secondary text */
-  --color-signal: #5bc8ff;      /* electric blue accent — smartphones */
-  --color-violet: #a78bfa;      /* soft violet accent — headphones */
-  --color-amber: #e3a15d;       /* warm amber accent — cameras */
+  --color-mist: #faf5ec;        /* cream page background */
+  --color-paper: #ffffff;       /* pure white (cards) */
+  --color-graphite: #2a2620;    /* primary text on light (warm ink, not pure black) */
+  --color-slate: #8b8175;       /* secondary text (warm gray) */
+  --color-signal: #4f6b57;      /* primary sage-green accent — buttons, links, active states */
+  --color-blush: #e8afa6;       /* soft rose accent — badges, newsletter band */
+  --color-blush-soft: #f7e3de;  /* light rose tint for fills */
+  --color-gold: #d9a441;        /* rating stars only */
+  --color-violet: #a78bfa;      /* kept for unused story-section components */
+  --color-amber: #e3a15d;       /* kept for unused story-section components */
 
   --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
 }
