@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand color system */
+  --color-ink: #08090b;        /* primary dark background */
+  --color-ink-soft: #111318;    /* secondary dark background */
+  --color-mist: #f5f6f7;        /* light background */
+  --color-paper: #ffffff;       /* pure white */
+  --color-graphite: #111111;    /* primary text on light */
+  --color-slate: #6b7078;       /* secondary text */
+  --color-signal: #5bc8ff;      /* electric blue accent */
+  --color-violet: #8b7cff;      /* secondary accent, used sparingly */
+
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  * {
+    @apply border-white/10;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-mist text-graphite antialiased;
+    margin: 0;
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01" 1;
+  }
+
+  ::selection {
+    background: var(--color-signal);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 3px;
+  }
+}
+
+@layer utilities {
+  .container-nexora {
+    @apply mx-auto w-full max-w-[1440px] px-6 md:px-10 xl:px-16;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
