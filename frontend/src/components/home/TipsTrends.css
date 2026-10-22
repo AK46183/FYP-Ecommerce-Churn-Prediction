@@ -1,0 +1,185 @@
+.tips-trends {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(248, 244, 242, 0.4), rgba(248, 244, 242, 0.4)),
+    url('/images/brand/tips-bg.jpg') center / cover no-repeat,
+    #f8f4f2;  padding: 90px 0 80px;
+  text-align: center;
+}
+
+.tips-trends__wave {
+  display: none;
+}
+
+.tips-trends__inner {
+  position: relative;
+  z-index: 2;
+}
+
+.tips-trends__eyebrow {
+  margin-bottom: 14px;
+  font-size: 0.78rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #b77d83;
+  font-weight: 600;
+}
+
+.tips-trends__heading {
+  font-size: clamp(2.6rem, 5vw, 4.3rem);
+  line-height: 1.05;
+  margin-bottom: 18px;
+  color: #2a2222;
+  font-weight: 500;
+}
+
+.tips-trends__subhead {
+  max-width: 660px;
+  margin: 0 auto 48px;
+  color: #5f5553;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.tips-trends__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  text-align: left;
+}
+
+/* decorative wavy blobs */
+.tips-trends__wave {
+  position: absolute;
+  z-index: 1;
+  opacity: 0.55;
+  filter: blur(0.3px);
+  pointer-events: none;
+  background: linear-gradient(135deg, #f3c2d4, #e88be8);
+  border-radius: 999px;
+}
+
+/* left top */
+.tips-trends__wave--1 {
+  width: 170px;
+  height: 34px;
+  top: 130px;
+  left: -25px;
+  transform: rotate(28deg);
+}
+
+/* between card 1 & 2 */
+.tips-trends__wave--2 {
+  width: 70px;
+  height: 28px;
+  top: 420px;
+  left: 27%;
+  transform: rotate(45deg);
+}
+
+/* under card 2 / near card 3 */
+.tips-trends__wave--3 {
+  width: 36px;
+  height: 165px;
+  top: 565px;
+  left: 50.5%;
+  transform: translateX(-50%);
+}
+
+/* between card 3 & 4 */
+.tips-trends__wave--4 {
+  width: 78px;
+  height: 26px;
+  top: 470px;
+  right: 23%;
+  transform: rotate(-38deg);
+}
+
+/* right side */
+.tips-trends__wave--5 {
+  width: 170px;
+  height: 40px;
+  top: 315px;
+  right: -28px;
+  transform: rotate(-35deg);
+}
+
+/* optional small accent */
+.tips-trends__wave--6 {
+  width: 30px;
+  height: 125px;
+  top: 520px;
+  right: 3%;
+  transform: rotate(18deg);
+}
+
+@media (max-width: 1100px) {
+  .tips-trends__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tips-trends__wave--2,
+  .tips-trends__wave--3,
+  .tips-trends__wave--4,
+  .tips-trends__wave--6 {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .tips-trends {
+    padding: 70px 0 60px;
+  }
+
+  .tips-trends__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tips-trends__wave--1,
+  .tips-trends__wave--5 {
+    display: none;
+  }
+
+  .tips-trends__subhead {
+    margin-bottom: 34px;
+    font-size: 0.95rem;
+  }
+}
+/* ============================================================
+   One pink wave behind the whole home page
+   (stays still while the sections scroll over it)
+   ============================================================ */
+main:has(> .hero) {
+  position: relative;
+  isolation: isolate;
+}
+
+main:has(> .hero)::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(rgba(248, 244, 242, 0.4), rgba(248, 244, 242, 0.4)),
+    url('/images/brand/tips-bg.jpg') center / cover no-repeat,
+    #f8f4f2;
+  pointer-events: none;
+}
+
+/* light sections become see-through so the same wave shows behind all of them */
+main:has(> .hero) .tips-trends,
+main:has(> .hero) .categories-skincare-band,
+main:has(> .hero) .our-brand{
+  background: transparent;
+}
+
+/* Our Brand photos and button keep their own white boxes */
+main:has(> .hero) .our-brand__cta {
+  background: #ffffff;
+}
+/* keep the footer above the page-wide pink wave */
+.site-footer {
+  position: relative;
+  z-index: 1;
+}

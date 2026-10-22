@@ -1,0 +1,135 @@
+.account-card {
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  padding: var(--space-4);
+}
+
+.account-card h2 {
+  font-size: 1.4rem;
+  margin-bottom: var(--space-3);
+}
+
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 420px;
+}
+
+.account-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.account-form__field label {
+  font-size: 0.78rem;
+  color: var(--color-charcoal-soft);
+}
+
+.account-form__field input {
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  padding: 0.8rem 0.9rem;
+  font-size: 0.88rem;
+}
+
+.account-form__save {
+  align-self: flex-start;
+  background: var(--color-charcoal);
+  color: var(--color-white);
+  padding: 0.85rem 1.75rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  border-radius: 2px;
+  transition: background-color 0.2s ease;
+}
+
+.account-form__save:hover {
+  background: var(--color-rosegold-deep);
+}
+
+.account-empty {
+  text-align: center;
+  padding: var(--space-6) 0;
+  color: var(--color-charcoal-soft);
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.order-row {
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  padding: var(--space-3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.order-row__id {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.order-row__meta {
+  font-size: 0.78rem;
+  color: var(--color-charcoal-soft);
+}
+
+.order-row__status {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0.8rem;
+  border-radius: 20px;
+  background: var(--color-blush);
+  color: var(--color-rosegold-deep);
+}
+
+.order-row a {
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.account-just-placed {
+  background: var(--color-blush);
+  border-radius: 6px;
+  padding: var(--space-3);
+  margin-bottom: var(--space-3);
+  font-size: 0.9rem;
+}
+
+.address-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.address-card {
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  padding: var(--space-3);
+}
+
+.address-card h4 {
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.address-card p {
+  font-size: 0.82rem;
+  color: var(--color-charcoal-soft);
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .address-grid {
+    grid-template-columns: 1fr;
+  }
+}

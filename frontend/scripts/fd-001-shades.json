@@ -1,0 +1,71 @@
+{
+  "product": "fd-001",
+  "source": "maybelline.com (official)",
+  "shades": {
+    "110": {
+      "url": "https://www.maybelline.com/-/media/project/loreal/brand-sites/mny/americas/us/face-makeup/foundation/fit-me-matte-poreless-foundation/porcelain/maybelline-fit-me-matte-poreless-110-porcelain-041554433418-av11.jpg",
+      "name": "Porcelain",
+      "color": "#ffecd9"
+    },
+    "112": {
+      "url": "https://www.maybelline.com/-/media/project/loreal/brand-sites/mny/americas/us/face-makeup/foundation/fit-me-matte-poreless-foundation/natural-ivory/maybelline-fit-me-matte-poreless-112-natural-ivory-041554433425-av11.jpg",
+      "name": "Natural Ivory",
+      "color": "#ffdec9"
+    },
+    "115": {
+      "url": "https://www.maybelline.com/-/media/project/loreal/brand-sites/mny/americas/us/face-makeup/foundation/fit-me-matte-poreless-foundation/ivory/maybelline-fit-me-matte-poreless-115-ivory-041554433432-av11.jpg",
+      "name": "Ivory",
+      "color": "#f3d7c7"
+    },
+    "118": {
+      "url": "https://www.maybelline.com/-/media/project/loreal/brand-sites/mny/americas/us/face-makeup/foundation/fit-me-matte-poreless-foundation/light-beige/maybelline-fit-me-matte-poreless-118-light-beige-041554439462-av11.jpg",
+      "name": "Light Beige",
+      "color": "#ebc5ac"
+    },
+    "120": {
+      "url": "https://www.maybelline.com/-/media/project/loreal/brand-sites/mny/americas/us/face-makeup/foundation/fit-me-matte-poreless-foundation/classic-ivory/maybelline-fit-me-matte-poreless-120-classic-ivory-041554433449-av11.jpg",
+      "name": "Classic Ivory",
+      "color": "#e8c4a6"
+    },
+    "124": {
+      "url": "https://www.maybelline.com/-/media/project/loreal/brand-sites/mny/americas/us/face-makeup/foundation/fit-me-matte-poreless-foundation/soft-sand/maybelline-fit-me-matte-poreless-124-soft-sand-041554538694-av11.jpg",
+      "name": "Soft Sand",
+      "color": "#ebc1a6"
+    },
+    "125": {
+      "url": "https://www.maybelline.com/-/media/project/loreal/brand-sites/mny/americas/us/face-makeup/foundation/fit-me-matte-poreless-foundation/nude-beige/maybelline-fit-me-matte-poreless-125-nude-beige-041554433456-av11.jpg",
+      "name": "Nude Beige",
+      "color": "#e9bf9a"
+    },
+    "128": {
+      "url": "https://www.maybelline.com/-/media/project/loreal/brand-sites/mny/americas/us/face-makeup/foundation/fit-me-matte-poreless-foundation/warm-nude/maybelline-fit-me-matte-poreless-128-warm-nude-041554438161-av11.jpg",
+      "name": "Warm Nude",
+      "color": "#eac0ac"
+    },
+    "130": {
+      "url": "https://www.maybelline.com/-/media/project/loreal/brand-sites/mny/americas/us/face-makeup/foundation/fit-me-matte-poreless-foundation/buff-beige/maybelline-fit-me-matte-poreless-130-buff-beige-041554433463-av11.jpg",
+      "name": "Buff Beige",
+      "color": "#eab59c"
+    },
+    "220": {
+      "url": "https://www.maybelline.com/-/media/project/loreal/brand-sites/mny/americas/us/face-makeup/foundation/fit-me-matte-poreless-foundation/natural-beige/maybelline-fit-me-matte-poreless-220-natural-beige-041554433470-av11.jpg",
+      "name": "Natural Beige",
+      "color": "#ebc0a5"
+    },
+    "228": {
+      "url": "https://www.maybelline.com/-/media/project/loreal/brand-sites/mny/americas/us/face-makeup/foundation/fit-me-matte-poreless-foundation/soft-tan/maybelline-fit-me-matte-poreless-228-soft-tan-041554438178-av11.jpg",
+      "name": "Soft Tan",
+      "color": "#e6ae91"
+    },
+    "230": {
+      "url": "https://www.maybelline.com/-/media/project/loreal/brand-sites/mny/americas/us/face-makeup/foundation/fit-me-matte-poreless-foundation/natural-buff/maybelline-fit-me-matte-poreless-230-natural-buff-041554433487-av11.jpg",
+      "name": "Natural Buff",
+      "color": "#edb89d"
+    },
+    "310": {
+      "url": "https://www.maybelline.com/-/media/project/loreal/brand-sites/mny/americas/us/face-makeup/foundation/fit-me-matte-poreless-foundation/sun-beige/maybelline-fit-me-matte-poreless-310-sun-beige-041554433500-av11.jpg",
+      "name": "Sun Beige",
+      "color": "#e9b7a6"
+    }
+  }
+}

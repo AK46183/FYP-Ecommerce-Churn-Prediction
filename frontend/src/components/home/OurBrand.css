@@ -1,0 +1,249 @@
+/* ============================================================
+   MINAYSH - Our Brand (editorial: text left, photo collage right)
+   ============================================================ */
+
+.our-brand {
+  background: #ffffff;
+  padding: clamp(48px, 7vw, 90px) 0;
+}
+
+.our-brand__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+}
+
+/* ---------------- LEFT ---------------- */
+
+.our-brand__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.our-brand__eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--color-charcoal);
+  margin-bottom: 26px;
+}
+
+/* 3 round thumbnails */
+.our-brand__thumbs {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 30px;
+}
+
+.our-brand__thumb {
+  width: 50px;
+  height: 50px;
+  padding: 3px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: border-color 0.25s ease, transform 0.25s ease;
+}
+
+.our-brand__thumb img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.our-brand__thumb:hover {
+  transform: scale(1.06);
+}
+
+.our-brand__thumb.is-active {
+  border-color: var(--color-rosegold-deep);
+}
+
+/* text block fades in when the story changes */
+.our-brand__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: our-brand-fade 0.6s ease both;
+}
+
+.our-brand__title {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-body);
+  font-size: clamp(2.2rem, 3.6vw, 3.8rem);
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  color: var(--color-charcoal);
+  margin-bottom: 22px;
+}
+
+.our-brand__title span {
+  white-space: nowrap; /* each line stays on one line */
+}
+
+.our-brand__title-strong {
+  font-weight: 500;
+}
+
+.our-brand__title-light {
+  font-weight: 200;
+}
+
+.our-brand__text {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--color-charcoal);
+  margin-bottom: 34px;
+}
+
+/* white pill button with soft shadow */
+.our-brand__cta {
+  display: inline-flex;
+  align-items: center;
+  height: 50px;
+  padding: 0 1.6rem;
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 18px rgba(43, 37, 35, 0.12);
+  transition: box-shadow 0.25s ease, transform 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+}
+
+.our-brand__cta:hover {
+  transform: translateY(-2px);
+  background: var(--color-charcoal);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(43, 37, 35, 0.2);
+}
+
+/* ---------------- RIGHT: collage ---------------- */
+
+.our-brand__collage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 12px;
+  animation: our-brand-fade 0.7s ease both;
+  width: 100%;
+  max-width: 720px;
+  justify-self: center;
+}
+
+.our-brand__photo {
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--color-blush);
+  aspect-ratio: 1 / 0.56;
+}
+
+.our-brand__photo--main {
+  grid-column: 1 / -1;
+  aspect-ratio: 16 / 9;
+}
+
+.our-brand__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.8s ease;
+}
+
+.our-brand__photo:hover img {
+  transform: scale(1.04);
+}
+
+@keyframes our-brand-fade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------- tablet / phone ---------------- */
+
+@media (max-width: 900px) {
+  .our-brand__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .our-brand__title {
+    font-size: clamp(1.9rem, 8vw, 3rem);
+  }
+}
+
+@media (max-width: 520px) {
+  .our-brand__collage {
+    gap: 8px;
+  }
+
+  .our-brand__cta {
+    height: 46px;
+    font-size: 0.82rem;
+  }
+}
+
+/* ===== Our Brand: stories change on scroll (1st -> 2nd -> 3rd part) ===== */
+.our-brand.our-brand--scroll {
+  height: 300vh;              /* one screen of scrolling for each story */
+  padding: 0;
+}
+.our-brand__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 70px;          /* room for the sticky header */
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.our-brand__sticky > .our-brand__grid { width: 100%; }
+.our-brand__progress {
+  width: 120px;
+  height: 2px;
+  margin-top: 28px;
+  background: rgba(43, 37, 35, 0.12);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.our-brand__progress span {
+  display: block;
+  height: 100%;
+  background: var(--color-rosegold-deep, #b76e79);
+  transform-origin: left center;
+  transition: transform 0.15s linear;
+}
+@media (max-width: 900px) {
+  .our-brand.our-brand--scroll { height: 270vh; }
+  .our-brand__sticky { padding-top: 64px; }
+  .our-brand__sticky .our-brand__grid { gap: 18px; }
+  .our-brand__sticky .our-brand__eyebrow { margin-bottom: 12px; }
+  .our-brand__sticky .our-brand__thumbs { margin-bottom: 14px; }
+  .our-brand__sticky .our-brand__title { margin-bottom: 10px; font-size: clamp(1.7rem, 7vw, 2.4rem); }
+  .our-brand__sticky .our-brand__text { margin-bottom: 16px; }
+  .our-brand__progress { margin-top: 14px; }
+  .our-brand__sticky .our-brand__collage { max-width: 460px; margin: 0 auto; }
+}
+@media (max-width: 900px) and (max-height: 700px) {
+  .our-brand__sticky .our-brand__photo:not(.our-brand__photo--main) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .our-brand__progress span { transition: none; }
+}
