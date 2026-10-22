@@ -1,0 +1,66 @@
+.content-page {
+  padding: var(--space-5) 0 var(--space-7);
+}
+
+.content-page__body {
+  max-width: 760px;
+  margin: 0 auto;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--color-charcoal-soft);
+}
+
+.content-page__body h2 {
+  font-size: 1.4rem;
+  color: var(--color-charcoal);
+  margin: var(--space-4) 0 var(--space-2);
+}
+
+.content-page__body h2:first-child {
+  margin-top: 0;
+}
+
+.content-page__body p {
+  margin-bottom: var(--space-2);
+}
+
+.content-page__body ul {
+  list-style: disc;
+  padding-left: 1.4rem;
+  margin-bottom: var(--space-2);
+}
+
+.content-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 480px;
+  margin-top: var(--space-3);
+}
+
+.content-page__form input,
+.content-page__form textarea {
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  padding: 0.85rem 1rem;
+  font-size: 0.9rem;
+}
+
+.content-page__form textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.content-page__form button {
+  align-self: flex-start;
+  background: var(--color-charcoal);
+  color: #fff;
+  padding: 0.9rem 2rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  border-radius: 2px;
+}
+
+.content-page__form button:hover {
+  background: var(--color-rosegold-deep);
+}

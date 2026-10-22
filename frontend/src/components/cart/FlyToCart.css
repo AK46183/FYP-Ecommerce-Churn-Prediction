@@ -1,0 +1,212 @@
+/* ============================================================
+   MINAYSH - "Added to bag" card that flies into the bag icon
+   (same glowing style as the login profile card)
+   ============================================================ */
+
+.atb {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+}
+
+.atb__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 12, 22, 0.42);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  animation: atb-fade-in 0.25s ease-out both;
+  transition: opacity 0.45s ease;
+}
+
+.atb.is-flying .atb__backdrop {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* the card */
+.atb__card {
+  position: relative;
+  width: min(100%, 310px);
+  padding: 30px 24px 26px;
+  border-radius: 22px;
+  text-align: center;
+  color: #ffffff;
+  cursor: pointer;
+  transform-origin: center center;
+  will-change: transform;
+  /* frosted glass: transparent + blur */
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 220, 235, 0.12) 100%
+  );
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 0 26px rgba(255, 190, 215, 0.35),
+    0 24px 60px rgba(10, 4, 18, 0.3);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.25);
+  animation: atb-pop 0.45s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+
+.atb__content {
+  transition: opacity 0.2s ease;
+}
+
+.atb.is-flying .atb__content {
+  opacity: 0;
+}
+
+/* product photo in a white circle */
+.atb__photo {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 30% 25%, #ffffff, #fbe3ea 60%, #efc4d2);
+  box-shadow: 0 0 0 3px rgba(255, 214, 229, 0.5), 0 0 26px rgba(255, 200, 220, 0.55);
+}
+
+.atb__photo img {
+  width: 76%;
+  height: 76%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+.atb__photo-empty {
+  width: 40%;
+  height: 40%;
+  border-radius: 50%;
+  background: rgba(58, 34, 48, 0.15);
+}
+
+/* green tick on the photo */
+.atb__tick {
+  position: absolute;
+  right: -2px;
+  bottom: 2px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  background: #35a35c;
+  border: 3px solid #2d2236;
+  box-shadow: 0 0 14px rgba(53, 163, 92, 0.7);
+  animation: atb-tick 0.5s cubic-bezier(0.3, 1.7, 0.5, 1) 0.3s both;
+}
+
+.atb__eyebrow {
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  color: #e9b9ca;
+  margin-bottom: 6px;
+}
+
+.atb__title {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 500;
+  line-height: 1.15;
+  color: #ffffff;
+}
+
+.atb__name {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: rgba(255, 240, 246, 0.8);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+    line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.atb__shade {
+  margin-top: 4px;
+  font-size: 0.74rem;
+  color: #e9b9ca;
+}
+
+@keyframes atb-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes atb-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.75) translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes atb-tick {
+  from {
+    transform: scale(0) rotate(-45deg);
+  }
+  to {
+    transform: scale(1) rotate(0);
+  }
+}
+
+/* bag icon in the header bounces when the card lands */
+.is-bump {
+  animation: header-bag-bump 0.6s ease-out;
+}
+
+.is-bump .top-header__badge {
+  animation: header-badge-pop 0.6s ease-out;
+}
+
+@keyframes header-bag-bump {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.3) rotate(-8deg);
+  }
+  55% {
+    transform: scale(0.92) rotate(5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes header-badge-pop {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.6);
+  }
+}
+
+@media (max-width: 520px) {
+  .atb__card {
+    width: min(100%, 280px);
+    padding: 26px 20px 22px;
+  }
+
+  .atb__title {
+    font-size: 1.35rem;
+  }
+}

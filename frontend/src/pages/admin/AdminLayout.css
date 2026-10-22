@@ -1,0 +1,115 @@
+.admin-shell {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  min-height: 100vh;
+  background: #F6F4F2;
+}
+
+.admin-sidebar {
+  background: #211C1A;
+  color: #EDE7E3;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3) 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.admin-sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0 var(--space-3) var(--space-3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: var(--space-2);
+}
+
+.admin-sidebar__brand img {
+  height: 28px;
+}
+
+.admin-sidebar__brand span {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--color-rosegold);
+  text-transform: uppercase;
+}
+
+.admin-sidebar__nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0 0.6rem;
+  overflow-y: auto;
+}
+
+.admin-sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  color: rgba(237, 231, 227, 0.7);
+  transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+.admin-sidebar__link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.admin-sidebar__link.is-active {
+  background: var(--color-rosegold-deep);
+  color: #fff;
+}
+
+.admin-sidebar__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-3) 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: var(--space-2);
+}
+
+.admin-sidebar__user {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+}
+
+.admin-sidebar__user small {
+  color: rgba(237, 231, 227, 0.5);
+  font-size: 0.68rem;
+}
+
+.admin-sidebar__footer button {
+  color: rgba(237, 231, 227, 0.7);
+}
+
+.admin-sidebar__footer button:hover {
+  color: #fff;
+}
+
+.admin-main {
+  padding: var(--space-4);
+  overflow-x: hidden;
+}
+
+@media (max-width: 900px) {
+  .admin-shell {
+    grid-template-columns: 1fr;
+  }
+  .admin-sidebar {
+    position: static;
+    height: auto;
+  }
+  .admin-sidebar__nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-y: visible;
+  }
+}

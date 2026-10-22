@@ -1,0 +1,19 @@
+node_modules
+dist
+.DS_Store
+*.log
+.vite
+
+# build/backup archives (kept outside the project)
+*.zip
+
+# original large media + one-off tool output (not part of the website)
+media-backup/
+reports/
+
+# editor backup files
+*.bak
+
+# environment files (secrets)
+.env
+.env.*
