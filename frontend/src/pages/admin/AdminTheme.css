@@ -1,0 +1,184 @@
+/* ADMIN THEME — sea-green family
+   Sirf admin portal pe lagta hai, customer website pe koi asar nahi.
+   Har rule ke aage "body" is liye hai taake yeh purane rang pe jeete. */
+:root {
+  --sea-950: #06201e;
+  --sea-900: #0b2f2c;
+  --sea-800: #0f3d3a;
+  --sea-700: #155e56;
+  --sea-600: #1f7a6e;
+  --sea-500: #2e8b7a;
+  --sea-400: #4fa896;
+  --sea-300: #7cc9b8;
+  --sea-200: #a8e0d2;
+  --sea-100: #d9f2ec;
+  --sea-50: #eef8f5;
+  --sea-ink-soft: #4f6f6a;
+}
+
+/* 1. Sidebar layout (har admin page) */
+body .admin-shell {
+  background:
+    radial-gradient(ellipse 60% 45% at 60% 40%, rgba(46, 139, 122, 0.14), transparent 70%),
+    var(--sea-50);
+}
+body .admin-sidebar {
+  color: var(--sea-900);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.78), rgba(217, 242, 236, 0.5));
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 16px 40px rgba(11, 47, 44, 0.12), inset 0 1px 0 #fff;
+}
+body .admin-sidebar__brand span { color: var(--sea-600); }
+body .admin-sidebar__brand { border-bottom-color: rgba(11, 47, 44, 0.08); }
+body .admin-sidebar__link { color: var(--sea-ink-soft); }
+body .admin-sidebar__link:hover { background: rgba(255, 255, 255, 0.8); color: var(--sea-900); }
+body .admin-sidebar__link.is-active {
+  background: linear-gradient(135deg, var(--sea-800), var(--sea-600));
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(15, 61, 58, 0.3);
+}
+body .admin-sidebar__footer { border-top-color: rgba(11, 47, 44, 0.08); }
+body .admin-sidebar__user small { color: var(--sea-ink-soft); }
+body .admin-sidebar__footer button { color: var(--sea-900); }
+body .admin-sidebar__footer button:hover { background: var(--sea-500); color: #fff; }
+
+/* 2. Admin Home (Choose your workspace) */
+body .ah {
+  --ah-bg: var(--sea-50);
+  --ah-ink: var(--sea-900);
+  --ah-ink-soft: var(--sea-ink-soft);
+  --ah-panel: var(--sea-800);
+  --ah-accent: var(--sea-600);
+  --ah-accent-soft: var(--sea-300);
+  background:
+    radial-gradient(ellipse 60% 45% at 50% 55%, rgba(46, 139, 122, 0.16), transparent 70%),
+    var(--sea-50);
+}
+body .ah-card {
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(46, 139, 122, 0.4) 45%,
+    rgba(11, 47, 44, 0.58) 100%
+  );
+  border-color: rgba(217, 242, 236, 0.5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 24px 50px rgba(11, 47, 44, 0.22);
+}
+body .ah-card:hover { border-color: rgba(217, 242, 236, 0.85); }
+body .ah-card--main {
+  background:
+    radial-gradient(circle at 55% 80%, rgba(124, 201, 184, 0.55), transparent 60%),
+    linear-gradient(160deg, rgba(6, 32, 30, 0.72) 0%, rgba(21, 94, 86, 0.6) 60%, rgba(46, 139, 122, 0.55) 100%);
+  border-color: rgba(168, 224, 210, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 30px 60px rgba(15, 61, 58, 0.35);
+}
+body .ah-card__icon { color: var(--sea-800); }
+body .ah-card:hover .ah-card__go { color: var(--sea-900); }
+body .ah-preview { background: rgba(6, 32, 30, 0.55); }
+body .ah-cta:hover { background: var(--sea-500); }
+
+/* 3. Dashboard */
+body .db {
+  --db-ink: var(--sea-900);
+  --db-soft: var(--sea-ink-soft);
+  --db-accent: var(--sea-500);
+  --db-accent-soft: var(--sea-300);
+}
+body .db-topbar {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.78), rgba(217, 242, 236, 0.5));
+  box-shadow: 0 12px 30px rgba(11, 47, 44, 0.1);
+}
+body .db-chip,
+body .db-icon-btn { border-color: rgba(11, 47, 44, 0.08); }
+
+body .db-card--light {
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.96) 0%, rgba(238, 248, 245, 0.9) 100%);
+  box-shadow: inset 0 1px 0 #fff, 0 18px 40px rgba(11, 47, 44, 0.16);
+}
+body .db-card--dark {
+  background:
+    radial-gradient(circle at 85% 10%, rgba(124, 201, 184, 0.38), transparent 50%),
+    linear-gradient(160deg, var(--sea-700) 0%, var(--sea-950) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 20px 46px rgba(6, 32, 30, 0.35);
+}
+body .db-card--accent {
+  background:
+    radial-gradient(circle at 60% 85%, rgba(217, 242, 236, 0.5), transparent 60%),
+    linear-gradient(160deg, var(--sea-700) 0%, var(--sea-500) 60%, var(--sea-300) 100%);
+  border-color: rgba(217, 242, 236, 0.6);
+  box-shadow: 0 20px 46px rgba(15, 61, 58, 0.3);
+}
+body .db-card.is-front { box-shadow: 0 30px 60px rgba(15, 61, 58, 0.32); }
+
+body .db-pill--up { background: rgba(46, 139, 122, 0.16); color: var(--sea-700); }
+body .db-spark span { background: linear-gradient(180deg, var(--sea-200), rgba(124, 201, 184, 0.25)); }
+body .db-ring-chart { background: conic-gradient(var(--sea-500) calc(var(--p) * 1%), rgba(11, 47, 44, 0.08) 0); }
+body .db-list__rank { background: rgba(46, 139, 122, 0.14); color: var(--sea-600); }
+
+/* charts ki lines (SVG) */
+body .db-wave stop { stop-color: var(--sea-300); }
+body .db-wave path:last-of-type { stroke: var(--sea-300); }
+body .db-wave circle { stroke: var(--sea-500); }
+body .db-gauge stop:first-child { stop-color: var(--sea-300); }
+body .db-gauge stop:last-child { stop-color: var(--sea-500); }
+
+/* neeche chhote cards + explore more */
+body .db-dock__item { box-shadow: 0 10px 24px rgba(11, 47, 44, 0.08); }
+body .db-dock__icon { background: rgba(46, 139, 122, 0.14); color: var(--sea-600); }
+body .db-dock__item.is-active,
+body .db-dock__item--accent.is-active {
+  background: linear-gradient(160deg, var(--sea-700), var(--sea-900));
+  box-shadow: 0 14px 30px rgba(6, 32, 30, 0.3);
+}
+body .db-explore__card {
+  background:
+    radial-gradient(circle at 85% 20%, rgba(124, 201, 184, 0.4), transparent 55%),
+    linear-gradient(160deg, rgba(21, 94, 86, 0.92), rgba(6, 32, 30, 0.94));
+  box-shadow: 0 18px 40px rgba(6, 32, 30, 0.22);
+}
+body .db-explore__icon { color: var(--sea-600); }
+body .db-orders { box-shadow: 0 16px 40px rgba(11, 47, 44, 0.1); }
+body .db-link { color: var(--sea-600); }
+
+/* 4. Purane admin pages + Coming soon */
+body .admin-page__header h1 { color: var(--sea-900); }
+body .admin-page__header p { color: var(--sea-ink-soft); }
+body .admin-page__action-btn {
+  background: linear-gradient(135deg, var(--sea-800), var(--sea-600));
+  border-radius: 999px;
+}
+body .admin-page__action-btn:hover { background: var(--sea-500); }
+body .admin-stat-card,
+body .admin-table-wrap,
+body .admin-placeholder-card {
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.85), rgba(238, 248, 245, 0.7));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 14px 34px rgba(11, 47, 44, 0.08);
+}
+body .admin-stat-card small { color: var(--sea-600); }
+body .admin-table th { background: rgba(217, 242, 236, 0.6); color: var(--sea-ink-soft); }
+body .admin-table th,
+body .admin-table td { border-bottom-color: rgba(11, 47, 44, 0.07); }
+body .admin-badge--info { background: var(--sea-100); color: var(--sea-700); }
+body .admin-placeholder-card { color: var(--sea-ink-soft); }
+
+
+/* Sidebar ke group headings (Workspaces / Store) */
+body .admin-sidebar__group {
+  display: block;
+  margin: 12px 12px 4px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sea-500);
+}
+body .admin-sidebar__group:first-child { margin-top: 0; }
+
+/* Mobile pe headings chhupa do (sidebar line ban jata hai) */
+@media (max-width: 900px) {
+  body .admin-sidebar__group { display: none; }
+}
