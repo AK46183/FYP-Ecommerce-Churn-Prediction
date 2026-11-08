@@ -2,7 +2,4 @@ venv/
 __pycache__/
 *.pyc
 *.pyo
-model/churn_model.pkl
-model/thresholds.pkl
-data/
 .env
