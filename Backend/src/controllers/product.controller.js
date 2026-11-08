@@ -4,7 +4,7 @@ const ApiResponse = require('../utils/ApiResponse');
 
 const getProducts = async (req, res, next) => {
   try {
-    const products = await productService.getAllProducts();
+    const products = await productService.getAllProducts({ search: req.query.search, category: req.query.category });
     res.status(200).json(new ApiResponse(200, products));
   } catch (error) {
     next(error);
@@ -50,4 +50,12 @@ const removeProduct = async (req, res, next) => {
   }
 };
 
-module.exports = { getProducts, getProduct, addProduct, editProduct, removeProduct };
+const categorySummary = async (req, res, next) => {
+  try {
+    res.status(200).json(new ApiResponse(200, await productService.getCategorySummary()));
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getProducts, getProduct, addProduct, editProduct, removeProduct, categorySummary };

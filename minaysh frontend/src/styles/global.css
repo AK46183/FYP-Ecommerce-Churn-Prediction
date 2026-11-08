@@ -1,0 +1,455 @@
+:root {
+  /* Color tokens */
+  --color-ivory: #FBF7F4;
+  --color-white: #FFFFFF;
+  --color-blush: #F7E8E4;
+  --color-blush-deep: #F1DAD3;
+  --color-powder: #EBD4CC;
+  --color-rosegold: #C9A08C;
+  --color-rosegold-deep: #B08468;
+  --color-charcoal: #2B2523;
+  --color-charcoal-soft: #554C48;
+  --color-line: #E7DDD8;
+
+  /* Type */
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Spacing scale */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4.5rem;
+  --space-7: 7rem;
+
+  --max-width: 1400px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-charcoal);
+  background: var(--color-ivory);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img, video {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: 0.005em;
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+@media (max-width: 900px) {
+  .container {
+    padding: 0 var(--space-3);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus visibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-rosegold-deep);
+  outline-offset: 2px;
+}
+
+/* Utility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.no-scroll {
+  overflow: hidden;
+}
+
+/* ============================================================
+   MINAYSH - pink wave background on EVERY page (not admin)
+   ============================================================ */
+main:not(.admin-main) {
+  position: relative;
+  isolation: isolate;
+}
+main:not(.admin-main)::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(rgba(248, 244, 242, 0.4), rgba(248, 244, 242, 0.4)),
+    url('/images/brand/tips-bg.jpg') center / cover no-repeat,
+    #f8f4f2;
+  pointer-events: none;
+}
+main main::before { display: none; } /* only one wave layer */
+.site-footer { position: relative; z-index: 1; }
+
+/* let the wave show through the big page backgrounds */
+.page-header,
+.pdp,
+.pdp-hero { background: transparent; }
+
+/* ---------- Sign In / Sign Up: light version on the wave ---------- */
+.min-auth {
+  background: transparent;
+  color: #2b2523;
+}
+.min-auth__brand { color: #2b2523; }
+.min-auth__brand-star { color: #c27a93; }
+.min-auth__nav-links a { color: #5d4c52; }
+.min-auth__nav-links a:hover,
+.min-auth__nav-links a.is-current { color: #2b2523; }
+.min-auth__nav-links a.is-current::after { background: #c27a93; }
+.min-auth__eyebrow { color: #b0806a; }
+.min-auth__form-wrap h1 { color: #2b2523; }
+.min-auth__intro { color: #6b5a5f; }
+.min-auth__roles { border-color: rgba(43, 37, 35, 0.18); background: rgba(255, 255, 255, 0.45); }
+.min-auth__roles button { color: #6b5a5f; }
+.min-auth__roles button.is-selected { color: #fff; background: #2b2523; }
+.min-auth__form label { color: #4a3d42; }
+.min-auth__form > input,
+.min-auth__password > input {
+  color: #2b2523;
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(43, 37, 35, 0.18);
+}
+.min-auth__form input::placeholder { color: #a8979c; }
+.min-auth__form input:focus { background: #fff; border-color: #c27a93; }
+.min-auth__password button { color: #6b5a5f; }
+.min-auth__forgot { color: #9c5f74; }
+.min-auth__submit { color: #fff; background: #2b2523; border-color: #2b2523; }
+.min-auth__submit:hover { background: #a56c7b; border-color: #a56c7b; }
+.min-auth__submit.is-checking,
+.min-auth__submit:disabled { background: #6b5a5f; }
+.min-auth__spinner { border-color: #fff rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.3); }
+.min-auth__error,
+.min-auth__notice { color: #b3364f; }
+.min-auth__divider { color: #8c7a80; }
+.min-auth__divider::before,
+.min-auth__divider::after { background: rgba(43, 37, 35, 0.15); }
+.min-auth__google { color: #2b2523; background: rgba(255, 255, 255, 0.72); border-color: rgba(43, 37, 35, 0.18); }
+.min-auth__google:hover { background: #fff; }
+.min-auth__switch { color: #6b5a5f; }
+.min-auth__switch a { color: #2b2523; }
+.min-auth__demo { color: #8c7a80; }
+.min-auth__side-label { color: rgba(43, 37, 35, 0.45); }
+.min-auth__bottom { color: #8c7a80; }
+.min-auth__bottom span { color: #9c5f74; }
+.min-auth__video-frame { box-shadow: 0 24px 60px rgba(120, 60, 90, 0.18); }
+
+/* ===== Sign In / Sign Up: orchid instead of black ===== */
+.min-auth {
+  --orchid: #a845a4;        /* buttons, active tab, links */
+  --orchid-deep: #7b2f79;   /* headings + main text */
+  --orchid-soft: #9a6b98;   /* small grey-ish text */
+  color: var(--orchid-deep);
+}
+.min-auth__brand,
+.min-auth__form-wrap h1,
+.min-auth__nav-links a:hover,
+.min-auth__nav-links a.is-current,
+.min-auth__switch a { color: var(--orchid-deep); }
+.min-auth__brand-star,
+.min-auth__eyebrow,
+.min-auth__forgot,
+.min-auth__bottom span { color: var(--orchid); }
+.min-auth__nav-links a.is-current::after { background: var(--orchid); }
+.min-auth__nav-links a,
+.min-auth__intro,
+.min-auth__roles button,
+.min-auth__form label,
+.min-auth__password button,
+.min-auth__divider,
+.min-auth__switch,
+.min-auth__demo,
+.min-auth__bottom { color: var(--orchid-soft); }
+.min-auth__form label { color: var(--orchid-deep); }
+.min-auth__roles { border-color: rgba(168, 69, 164, 0.3); }
+.min-auth__roles button.is-selected { color: #fff; background: var(--orchid); }
+.min-auth__form > input,
+.min-auth__password > input,
+.min-auth__google { color: var(--orchid-deep); border-color: rgba(168, 69, 164, 0.28); }
+.min-auth__form input:focus { border-color: var(--orchid); box-shadow: 0 0 0 3px rgba(168, 69, 164, 0.12); }
+.min-auth__form input::placeholder { color: #b99ab7; }
+.min-auth__submit { background: var(--orchid); border-color: var(--orchid); color: #fff; }
+.min-auth__submit:hover { background: var(--orchid-deep); border-color: var(--orchid-deep); }
+.min-auth__submit.is-checking,
+.min-auth__submit:disabled { background: #c58ac3; }
+.min-auth__divider::before,
+.min-auth__divider::after { background: rgba(168, 69, 164, 0.22); }
+.min-auth__side-label { color: rgba(123, 47, 121, 0.5); }
+
+/* ===== Sign In / Sign Up: orchid shine on the buttons ===== */
+/* shiny orchid buttons */
+.min-auth__submit,
+.min-auth__roles button.is-selected {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #8f3a8c 0%, #b553b1 45%, #c96bc5 55%, #9a3f97 100%);
+  box-shadow: 0 8px 22px rgba(168, 69, 164, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+.min-auth__submit:hover {
+  background: linear-gradient(135deg, #7b2f79 0%, #a845a4 50%, #7b2f79 100%);
+}
+.min-auth__submit::after,
+.min-auth__roles button.is-selected::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-20deg);
+  animation: orchid-sweep 3.8s ease-in-out infinite;
+  pointer-events: none;
+}
+.min-auth__roles button.is-selected::after { animation-delay: 1.2s; }
+
+@keyframes orchid-sweep {
+  0%, 55% { left: -60%; }
+  100% { left: 130%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .min-auth__submit::after,
+  .min-auth__roles button.is-selected::after { animation: none; }
+}
+
+/* ===== Sign In + Sign Up as two small buttons side by side ===== */
+.min-auth__form { flex-direction: row; flex-wrap: wrap; justify-content: space-between; }
+.min-auth__form > * { flex: 0 0 100%; }
+.min-auth__form > .min-auth__submit,
+.min-auth__form > .min-auth__alt {
+  flex: 0 0 calc(50% - 6px);
+  width: auto;
+  min-height: 44px;
+  margin-top: 22px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.min-auth__alt {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #a845a4;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(168, 69, 164, 0.55);
+  text-decoration: none;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.min-auth__alt:hover {
+  color: #fff;
+  border-color: #a845a4;
+  background: linear-gradient(135deg, #8f3a8c 0%, #b553b1 50%, #9a3f97 100%);
+}
+.min-auth__alt::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 45%;
+  background: linear-gradient(100deg, transparent, rgba(232, 160, 228, 0.35), transparent);
+  transform: skewX(-20deg);
+  animation: orchid-sweep 3.8s ease-in-out 1.9s infinite;
+  pointer-events: none;
+}
+.min-auth__form > .min-auth__forgot { text-align: right; }
+@media (max-width: 380px) {
+  .min-auth__form > .min-auth__submit,
+  .min-auth__form > .min-auth__alt { flex-basis: 100%; }
+}
+
+/* ===== Category pages: wave behind, smaller shiny glass cards ===== */
+main:not(.admin-main) .page-header { background: var(--color-blush); }
+main:not(.admin-main) .listing { background: transparent; }
+@media (min-width: 1001px) {
+  .listing__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 26px 20px; }
+}
+.listing__grid .product-card {
+  position: relative;
+  overflow: hidden;
+  padding: 10px 0 14px;
+  border-radius: 26px;
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.22) 45%, rgba(255, 240, 248, 0.35) 100%);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 10px 30px rgba(160, 70, 120, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(255, 255, 255, 0.3);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+/* shine that sweeps across on hover */
+.listing__grid .product-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-18deg);
+  transition: left 0.8s ease;
+}
+.listing__grid .product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 38px rgba(160, 70, 120, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+.listing__grid .product-card:hover::before { left: 130%; }
+.listing__grid .product-card__media {
+  aspect-ratio: 1 / 0.85;
+  margin: 0 10px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.62);
+}
+.listing__grid .product-card__media img { mix-blend-mode: multiply; max-height: 88%; }
+.listing__grid .product-card > :not(.product-card__media) { margin-left: 16px; margin-right: 16px; }
+
+/* ===== Smaller title band (Face Wash, Makeup ...) ===== */
+main:not(.admin-main) .page-header { padding: 22px 0 18px; }
+.page-header__title { font-size: clamp(1.7rem, 2.6vw, 2.2rem); margin-bottom: 0.2rem; line-height: 1.15; }
+.page-header__subtitle { font-size: 0.85rem; }
+
+/* ===== Sign In / Sign Up: sunset field background ===== */
+main.min-auth::before {
+  background:
+    linear-gradient(90deg, rgba(255, 244, 249, 0.86) 0%, rgba(255, 244, 249, 0.72) 38%, rgba(255, 244, 249, 0.15) 62%, rgba(255, 244, 249, 0) 80%),
+    url('/images/brand/login-bg.webp') center 62% / cover no-repeat,
+    #f3dde6;
+}
+@media (max-width: 860px) {
+  main.min-auth::before {
+    background:
+      linear-gradient(rgba(255, 244, 249, 0.78), rgba(255, 244, 249, 0.7)),
+      url('/images/brand/login-bg.webp') center 62% / cover no-repeat,
+      #f3dde6;
+  }
+}
+
+/* ===== Sign In / Sign Up: only a very light white over the picture ===== */
+main.min-auth::before {
+  background:
+    linear-gradient(90deg, rgba(255, 244, 249, 0.22) 0%, rgba(255, 244, 249, 0.15) 38%, rgba(255, 244, 249, 0.04) 62%, rgba(255, 244, 249, 0) 80%),
+    url('/images/brand/login-bg.webp') center 62% / cover no-repeat,
+    #f3dde6;
+}
+@media (max-width: 860px) {
+  main.min-auth::before {
+    background:
+      linear-gradient(rgba(255, 244, 249, 0.25), rgba(255, 244, 249, 0.2)),
+      url('/images/brand/login-bg.webp') center 62% / cover no-repeat,
+      #f3dde6;
+  }
+}
+
+/* ===== Sign In / Sign Up: smaller video, moved right, lined up with the form ===== */
+@media (min-width: 861px) {
+  main.min-auth .min-auth__center--split { align-items: start; }
+  main.min-auth .min-auth__center--split .min-auth__video-side {
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding-right: clamp(16px, 3vw, 60px);
+    padding-top: 0;
+    margin-top: 0;
+  }
+  .min-auth__video-frame {
+    width: min(500px, 28vw) !important;
+    height: min(700px, 88vh) !important;   /* from the top line down to the Google button */
+  }
+  .min-auth__video-frame .min-auth__video { width: 100%; height: 100%; object-fit: cover; }
+}
+/* labels and small text over the darker field: light so they can be read */
+main.min-auth .min-auth__form label,
+main.min-auth .min-auth__forgot,
+main.min-auth .min-auth__divider,
+main.min-auth .min-auth__switch,
+main.min-auth .min-auth__demo,
+main.min-auth .min-auth__bottom { color: #fff6fb; text-shadow: 0 1px 6px rgba(60, 20, 60, 0.6); }
+main.min-auth .min-auth__switch a { color: #ffe3f4; }
+
+/* ===== Sign In / Sign Up: light white on the left, darker black on the right ===== */
+@media (min-width: 861px) {
+  main.min-auth::before {
+    background:
+      linear-gradient(90deg,
+        rgba(255, 244, 249, 0.22) 0%,
+        rgba(255, 244, 249, 0.15) 30%,
+        rgba(255, 244, 249, 0) 48%,
+        rgba(22, 10, 24, 0) 50%,
+        rgba(22, 10, 24, 0.42) 72%,
+        rgba(22, 10, 24, 0.68) 100%),
+      url('/images/brand/login-bg.webp') center 62% / cover no-repeat,
+      #f3dde6;
+  }
+  /* top-right links sit on the dark side now: make them light */
+  main.min-auth .min-auth__nav-links a { color: #fff3fa; text-shadow: 0 1px 6px rgba(40, 10, 40, 0.5); }
+  main.min-auth .min-auth__nav-links a.is-current::after { background: #f6c6e4; }
+}

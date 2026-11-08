@@ -1,9 +1,10 @@
 const { logActivity } = require('../services/activityLogger.service');
 
 const logProductView = async (req, res, next) => {
-  console.log('logProductView middleware called, user:', req.user);
   if (req.user) {
-    logActivity(req.user.id, 'product_view', req.params.id);
+    const id = req.params.id;
+    if (/^\d+$/.test(id)) logActivity(req.user.id, 'product_view', Number(id));
+    else logActivity(req.user.id, 'product_view', null, { sku: id });
   }
   next();
 };

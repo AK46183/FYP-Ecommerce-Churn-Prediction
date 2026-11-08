@@ -1,0 +1,50 @@
+.coupon-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.9rem 0;
+}
+.coupon-box input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  border: 1px solid var(--color-line, #e6dcd8);
+  border-radius: 6px;
+  background: #fff;
+}
+.coupon-box button {
+  padding: 0.6rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid var(--color-charcoal, #2b2326);
+  border-radius: 6px;
+  background: var(--color-charcoal, #2b2326);
+  color: #fff;
+  cursor: pointer;
+}
+.coupon-box button:disabled { opacity: 0.45; cursor: default; }
+.coupon-box__error { flex-basis: 100%; margin: 0; font-size: 0.76rem; color: #B23A2F; }
+
+.coupon-box--applied {
+  align-items: center;
+  flex-wrap: nowrap;
+  padding: 0.6rem 0.75rem;
+  border: 1px dashed #b76e79;
+  border-radius: 8px;
+  background: #fbf3f1;
+  color: #8a4a55;
+}
+.coupon-box--applied div { flex: 1; display: grid; }
+.coupon-box--applied b { font-size: 0.82rem; letter-spacing: 0.06em; color: var(--color-charcoal, #2b2326); }
+.coupon-box--applied small { font-size: 0.72rem; }
+.coupon-box--applied button { padding: 0.3rem; background: transparent; border: 0; color: inherit; }
+
+/* Cart item ke neeche stock / price message */
+.cart-issue { margin: 0.35rem 0 0; font-size: 0.74rem; font-weight: 600; color: #a66a1f; }
+.cart-issue--soldout,
+.cart-issue--low,
+.cart-issue--unknown { color: #B23A2F; }
+.cart-discount-row { color: #2E7D42; }
+.cart-blocked { margin: 0.5rem 0 0; font-size: 0.76rem; color: #B23A2F; }

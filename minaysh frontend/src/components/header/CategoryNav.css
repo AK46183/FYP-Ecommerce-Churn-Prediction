@@ -1,0 +1,77 @@
+.category-nav {
+  position: relative;
+  z-index: 1000;
+  background: var(--color-blush);
+  overflow: visible;
+}
+
+.category-nav__inner {
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+}
+
+.category-nav__list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: var(--space-4);
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+
+  overflow: visible;
+}
+
+/* IMPORTANT:
+   Mega menu will now position relative to
+   the exact nav item — e.g. MAKEUP
+*/
+.category-nav__item {
+  position: relative;
+  display: block;
+}
+
+/* Main navigation links */
+.category-nav__link {
+  display: block;
+
+  padding: 0.95rem 0 0.85rem;
+
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+
+  color: var(--color-charcoal-soft);
+
+  white-space: nowrap;
+  text-decoration: none;
+
+  border-bottom: 1px solid transparent;
+
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* Hover / active nav item */
+.category-nav__item.is-active .category-nav__link,
+.category-nav__link:hover {
+  color: var(--color-charcoal);
+  border-bottom-color: var(--color-rosegold-deep);
+}
+
+/* Keep cascading menu visible outside navbar */
+.category-nav__item .kiko-menu {
+  overflow: visible;
+}
+
+/* Desktop only nav */
+@media (max-width: 1100px) {
+  .category-nav {
+    display: none;
+  }
+}

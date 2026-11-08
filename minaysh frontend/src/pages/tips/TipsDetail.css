@@ -1,0 +1,75 @@
+.tips-detail {
+  padding: var(--space-5) 0;
+}
+
+.tips-detail__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.tips-detail__video-wrap {
+  aspect-ratio: 4 / 5;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--color-blush);
+}
+
+.tips-detail__video-wrap video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tips-detail__tutorials h2 {
+  font-size: 1.6rem;
+  margin-bottom: var(--space-3);
+}
+
+.tips-detail__tutorials ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.tips-detail__tutorials li {
+  padding: var(--space-2);
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  font-size: 0.92rem;
+  color: var(--color-charcoal-soft);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.tips-detail__tutorials li:hover {
+  border-color: var(--color-rosegold-deep);
+  color: var(--color-charcoal);
+}
+
+.tips-detail__products {
+  background: var(--color-blush);
+  padding: var(--space-6) 0;
+  margin-top: var(--space-6);
+}
+
+.tips-detail__products h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: var(--space-4);
+}
+
+.tips-detail__products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+}
+
+@media (max-width: 900px) {
+  .tips-detail__grid {
+    grid-template-columns: 1fr;
+  }
+  .tips-detail__products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

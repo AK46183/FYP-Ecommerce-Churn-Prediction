@@ -1,0 +1,282 @@
+.shop-skincare {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-7);
+}
+
+.shop-skincare__heading {
+  text-align: center;
+  font-size: clamp(2rem, 3.4vw, 2.7rem);
+  margin-bottom: var(--space-5);
+}
+
+.shop-skincare__carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.shop-skincare__track {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0.5rem 0.25rem 1rem;
+  scrollbar-width: none;
+}
+
+.shop-skincare__track::-webkit-scrollbar {
+  display: none;
+}
+
+.shop-skincare__card {
+  flex: 0 0 calc(25% - 18px);
+  scroll-snap-align: start;
+  min-width: 240px;
+}
+.shop-skincare__card > .product-card {
+  height: 100%;
+}
+
+.shop-skincare__arrow {
+  position: absolute;
+  top: 38%;
+  z-index: 3;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(43, 37, 35, 0.14);
+  color: var(--color-charcoal);
+  transition: background-color 0.2s ease;
+}
+
+.shop-skincare__arrow:hover {
+  background: var(--color-rosegold);
+  color: var(--color-white);
+}
+
+.shop-skincare__arrow--left {
+  left: -21px;
+}
+
+.shop-skincare__arrow--right {
+  right: -21px;
+}
+
+.shop-skincare__viewall {
+  text-align: center;
+  margin-top: var(--space-3);
+}
+
+/* View All: same dark button with rose-gold fill + shine on hover */
+.shop-skincare__viewall a {
+  gap: 10px;
+  height: 44px;
+  padding: 0 2rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate; /* keeps the fill + shine behind the text */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: var(--color-charcoal);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.shop-skincare__viewall a span {
+  transition: transform 0.25s ease;
+}
+
+.shop-skincare__viewall a:hover span {
+  transform: translateX(4px);
+}
+
+.shop-skincare__viewall a::before {
+  /* rose-gold that fills from left to right on hover */
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(135deg, #e4bfae 0%, #c9967f 50%, #a87660 100%);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s cubic-bezier(0.6, 0, 0.2, 1);
+}
+
+.shop-skincare__viewall a::after {
+  /* shine that keeps passing over while hovered */
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 45%;
+  z-index: -1;
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translateX(-150%) skewX(-20deg);
+  opacity: 0;
+}
+
+.shop-skincare__viewall a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(168, 118, 96, 0.4);
+}
+
+.shop-skincare__viewall a:hover::before {
+  transform: scaleX(1);
+}
+
+.shop-skincare__viewall a:hover::after {
+  opacity: 1;
+  animation: btn-shine-viewall 1.4s ease-in-out 0.35s infinite;
+}
+
+@keyframes btn-shine-viewall {
+  from {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  to {
+    transform: translateX(330%) skewX(-20deg);
+  }
+}
+
+@media (max-width: 1000px) {
+  .shop-skincare__card {
+    flex: 0 0 calc(45% - 12px);
+  }
+  .shop-skincare__arrow {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .shop-skincare__card {
+    flex: 0 0 72%;
+  }
+}
+/* ---------- Beach background behind Shop Skin Care ---------- */
+/* ---------- Sunset sea video behind Shop Skin Care ---------- */
+.shop-skincare {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.shop-skincare__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 70%;
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* soft pink layer on top of the video (0.25 = how soft) */
+.shop-skincare::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(255, 236, 244, 0.25);
+  pointer-events: none;
+}
+
+.shop-skincare__heading {
+  color: #ffffff;
+  text-shadow: 0 2px 16px rgba(60, 20, 40, 0.45);
+}
+
+/* exactly 4 cards fit, none cut off */
+.shop-skincare__card {
+  flex: 0 0 calc((100% - 3 * var(--space-4)) / 4);
+}
+
+/* glass card: white photo on top, frosted info below */
+.shop-skincare__card > .product-card {
+  height: 100%;
+  background: rgba(255, 250, 252, 0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  padding: 0 0 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(80, 40, 60, 0.08);
+}
+
+.shop-skincare .product-card__media {
+  aspect-ratio: 1 / 0.8;
+  background: #ffffff;
+  border-radius: 0;
+  margin-bottom: 14px;
+}
+
+.shop-skincare .product-card > *:not(.product-card__media) {
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.shop-skincare .product-card__image {
+  max-height: 90%;
+}
+
+/* phones: no video (saves data), show the still image instead */
+@media (max-width: 768px) {
+  .shop-skincare__video {
+    display: none;
+  }
+
+  .shop-skincare {
+    background: url('/videos/sea-bg-poster.jpg') center 70% / cover no-repeat;
+  }
+}
+/* ---------- shorter Shop Skin Care section ---------- */
+.shop-skincare {
+  padding-top: 44px;
+  padding-bottom: 52px;
+}
+
+.shop-skincare__heading {
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+  margin-bottom: 26px;
+}
+
+/* shorter photo area */
+.shop-skincare .product-card__media {
+  aspect-ratio: 1 / 0.66;
+  margin-bottom: 10px;
+}
+
+/* tighter text + button area */
+.shop-skincare .product-card__name {
+  min-height: 0;
+  margin-bottom: 4px;
+}
+
+.shop-skincare .product-card__price {
+  margin-bottom: 10px;
+}
+
+.shop-skincare__card > .product-card {
+  padding-bottom: 12px;
+}
+
+.shop-skincare__viewall {
+  margin-top: 18px;
+}

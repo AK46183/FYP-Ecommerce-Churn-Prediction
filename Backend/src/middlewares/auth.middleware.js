@@ -16,11 +16,24 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
+// Token ho to user set karo, na ho to bhi aage jane do (guest product dekh sake)
+const optionalAuth = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    try {
+      req.user = jwt.verify(authHeader.split(' ')[1], process.env.JWT_SECRET);
+    } catch {
+      // invalid token -> guest
+    }
+  }
+  next();
+};
+
 const adminMiddleware = (req, res, next) => {
-  if (req.user.role !== 'admin') {
+  if (!req.user || req.user.role !== 'admin') {
     return res.status(403).json({ success: false, message: 'Admin access only' });
   }
   next();
 };
 
-module.exports = { authMiddleware, adminMiddleware };
+module.exports = { authMiddleware, adminMiddleware, optionalAuth };

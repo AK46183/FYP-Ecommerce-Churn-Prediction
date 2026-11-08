@@ -1,0 +1,121 @@
+/* =========================================
+   KIKO-STYLE CASCADING MEGA MENU
+========================================= */
+
+.kiko-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+
+  width: 238px;
+  background: #ffffff;
+
+  z-index: 9999;
+
+  border: 1px solid #eeeeee;
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.05),
+    0 14px 35px rgba(0, 0, 0, 0.06);
+}
+
+/* =========================
+   FIRST LEVEL
+========================= */
+
+.kiko-menu__level1 {
+  width: 238px;
+  background: #ffffff;
+}
+
+.kiko-menu__level1-item {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  min-height: 42px;
+
+  padding: 0 20px;
+
+  background: #ffffff;
+
+  color: #222222;
+
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+
+  text-decoration: none;
+
+  border-bottom: 1px solid #eeeeee;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.kiko-menu__level1-item:last-child {
+  border-bottom: none;
+}
+
+.kiko-menu__level1-item:hover,
+.kiko-menu__level1-item.is-active {
+  background: #fafafa;
+  color: #000000;
+}
+
+/* =========================
+   SECOND LEVEL
+========================= */
+
+.kiko-menu__level2 {
+  position: absolute;
+
+  left: 100%;
+
+  width: 238px;
+
+  background: #ffffff;
+
+  border: 1px solid #eeeeee;
+
+  box-shadow:
+    6px 8px 18px rgba(0, 0, 0, 0.04),
+    12px 14px 30px rgba(0, 0, 0, 0.05);
+
+  z-index: 10000;
+}
+
+.kiko-menu__level2-item {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  min-height: 42px;
+
+  padding: 0 20px;
+
+  background: #ffffff;
+
+  color: #222222;
+
+  font-size: 13px;
+  font-weight: 400;
+
+  text-decoration: none;
+
+  border-bottom: 1px solid #eeeeee;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.kiko-menu__level2-item:last-child {
+  border-bottom: none;
+}
+
+.kiko-menu__level2-item:hover {
+  background: #fafafa;
+  color: #000000;
+}

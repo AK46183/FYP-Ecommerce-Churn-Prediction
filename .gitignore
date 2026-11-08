@@ -1,0 +1,11 @@
+
+# Secrets aur backups
+.env
+.env.*
+!.env.example
+backend-env-backup*
+*.zip
+Backend-old*/
+.venv/
+node_modules/
+__pycache__/

@@ -1,0 +1,40 @@
+export const topCategories = [
+  {
+    key: 'lips',
+    label: 'LIPS',
+    path: '/makeup/lip',
+    image: '/images/categories/lips.png',
+    decor: '/images/categories/lips-flower.png',
+    shapeColor: '#f6c3c8',
+  },
+  {
+    key: 'eyes',
+    label: 'EYES',
+    path: '/makeup/eye',
+    image: '/images/categories/eyes.png',
+    shapeColor: '#eadcdc',
+  },
+  {
+    key: 'face',
+    label: 'FACE',
+    path: '/makeup/face',
+    image: '/images/categories/face.png',
+    decor: '/images/categories/face-powder.png',
+    shapeColor: '#f5d9de',
+  },
+  {
+    key: 'skincare',
+    label: 'SKIN CARE',
+    path: '/skincare',
+    image: '/images/categories/skincare.png',
+    decor: '/images/categories/skincare-leaves.png',
+    shapeColor: '#f5b4d0',
+  },
+  {
+    key: 'accessories',
+    label: 'ACCESSORIES',
+    path: '/accessories',
+    image: '/images/categories/accessories.png',
+    shapeColor: '#ece7e7',
+  },
+]

@@ -4,7 +4,7 @@ const activityLogSchema = new mongoose.Schema({
   userId: { type: Number, required: true },
   eventType: {
     type: String,
-    enum: ['product_view', 'cart_add', 'cart_remove', 'checkout', 'login'],
+    enum: ['product_view', 'cart_add', 'cart_remove', 'checkout', 'login', 'cart_reminder'],
     required: true,
   },
   productId: { type: Number },

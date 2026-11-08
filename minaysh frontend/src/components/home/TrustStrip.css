@@ -1,0 +1,59 @@
+.trust-strip {
+  background: #f8f1ee; /* soft blush band, different from the white section above */
+  margin-top: 0; /* white gap after Our Brand */
+  padding: 44px 0;
+}
+
+.trust-strip__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+}
+
+.trust-strip__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+  color: var(--color-charcoal);
+}
+
+/* thin divider lines between the 3 items */
+.trust-strip__item + .trust-strip__item {
+  border-left: 1px solid rgba(183, 125, 131, 0.25);
+}
+
+/* icon inside a soft white circle */
+.trust-strip__item svg {
+  box-sizing: content-box;
+  padding: 12px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(183, 125, 131, 0.15);
+}
+
+.trust-strip__title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.trust-strip__text {
+  font-size: 0.8rem;
+  color: var(--color-charcoal-soft);
+}
+
+@media (max-width: 700px) {
+  .trust-strip__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  /* items stack on phones, so the lines go on top instead of the side */
+  .trust-strip__item + .trust-strip__item {
+    border-left: 0;
+    border-top: 1px solid rgba(183, 125, 131, 0.25);
+    padding-top: 20px;
+  }
+}

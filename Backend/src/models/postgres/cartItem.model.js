@@ -5,6 +5,8 @@ const Product = require('./product.model');
 
 const CartItem = sequelize.define('CartItem', {
   quantity: { type: DataTypes.INTEGER, defaultValue: 1 },
+  shade: { type: DataTypes.STRING, allowNull: true },
+  size: { type: DataTypes.STRING, allowNull: true },
 }, {
   tableName: 'cart_items',
   timestamps: true,

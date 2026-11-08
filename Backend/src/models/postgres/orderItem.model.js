@@ -6,6 +6,12 @@ const Product = require('./product.model');
 const OrderItem = sequelize.define('OrderItem', {
   quantity: { type: DataTypes.INTEGER, allowNull: false },
   price: { type: DataTypes.FLOAT, allowNull: false },
+  // Order ke waqt ki copy (product baad mein badle to bhi order sahi dikhe)
+  sku: { type: DataTypes.STRING },
+  name: { type: DataTypes.STRING },
+  image: { type: DataTypes.STRING },
+  shade: { type: DataTypes.STRING },
+  size: { type: DataTypes.STRING },
 }, {
   tableName: 'order_items',
   timestamps: true,
