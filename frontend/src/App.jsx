@@ -1,3 +1,4 @@
+import AdminChats from './pages/admin/AdminChats.jsx'
 import WelcomeModal from './components/auth/WelcomeModal.jsx'
 import PageTitle from './components/layout/PageTitle.jsx'
 import { Routes, Route, Outlet } from 'react-router-dom'
@@ -108,6 +109,7 @@ export default function App() {
             <Route path="orders" element={<AdminOrders />} />
             <Route path="customers" element={<AdminCustomers />} />
             <Route path="messages" element={<AdminMessages />} />
+            <Route path="chats" element={<AdminChats />} />
             <Route path="promotions" element={<AdminPromotions />} />
             <Route path="bundles" element={<AdminBundles />} />
             <Route path="tips-trends" element={<AdminTipsTrends />} />

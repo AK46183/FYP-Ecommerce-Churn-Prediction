@@ -105,7 +105,7 @@ export default function AdminInventory() {
       </div>
 
       {error && <p className="admin-error">{error}</p>}
-
+      {products === null && !error && <p className="admin-loading">Loading products…</p>}
       <div className="admin-table-wrap">
         <table className="admin-table">
           <thead>
