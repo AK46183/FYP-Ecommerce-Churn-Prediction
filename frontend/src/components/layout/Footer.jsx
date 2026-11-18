@@ -18,7 +18,7 @@ export default function Footer() {
     setError('')
     try {
       const r = await subscribeNewsletter(email.trim())
-      setSubmitted(r.alreadySubscribed ? "You're already on the list — thank you!" : "You're subscribed — check your inbox.")
+      setSubmitted(r.alreadySubscribed ? "You're already on the list. Thank you!" : "You're subscribed. Check your inbox.")
       setEmail('')
     } catch (err) {
       setError(err.message)
@@ -33,7 +33,7 @@ export default function Footer() {
         <div className="site-footer__newsletter">
           <h3>Stay in the loop!</h3>
           <p>
-            Be the first to hear about new arrivals, beauty edits and MINAYSH exclusives — straight
+            Be the first to hear about new arrivals, beauty edits and MINAYSH exclusives, straight
             to your inbox.
           </p>
           <form onSubmit={handleSubmit} className="site-footer__form">

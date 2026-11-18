@@ -157,6 +157,22 @@
 }
 .skin-chat__consent button.is-quiet { background: transparent; color: var(--color-charcoal, #2b2523); }
 
+.skin-chat__chooser { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 12px; border-top: 1px solid var(--color-line, #e7ddd8); background: #fff; }
+.skin-chat__chooser button {
+  flex: 1 1 auto;
+  padding: 8px 12px;
+  border: 1px solid var(--color-charcoal, #2b2523);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-charcoal, #2b2523);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.skin-chat__chooser button.is-primary { background: var(--color-charcoal, #2b2523); color: #fff; }
+.skin-chat__chooser button.is-quiet { flex: 0 0 auto; border-color: transparent; }
+
 .skin-chat__form {
   display: flex;
   align-items: center;

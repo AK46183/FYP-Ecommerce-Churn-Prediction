@@ -64,7 +64,7 @@ function CardPreview({ type, data, now }) {
     return (
       <div className="ah-preview">
         <span className="ah-preview__label">Revenue · last 30 days</span>
-        <strong className="ah-preview__value">{dash ? pkr(dash.revenue.total) : '—'}</strong>
+        <strong className="ah-preview__value">{dash ? pkr(dash.revenue.total) : '-'}</strong>
         <div className="ah-bars">
           {bars.map((h, i) => (
             <span key={i} style={{ height: `${h}%` }} />
@@ -79,9 +79,9 @@ function CardPreview({ type, data, now }) {
       <div className="ah-preview">
         <span className="ah-preview__label">Customers at risk</span>
         <div className="ah-rows">
-          <div className="ah-row"><span className="ah-chip ah-chip--high">High</span><b>{c ? c.highRisk : '—'}</b></div>
-          <div className="ah-row"><span className="ah-chip ah-chip--mid">Medium</span><b>{c ? c.mediumRisk : '—'}</b></div>
-          <div className="ah-row"><span className="ah-chip ah-chip--low">Low</span><b>{c ? c.lowRisk : '—'}</b></div>
+          <div className="ah-row"><span className="ah-chip ah-chip--high">High</span><b>{c ? c.highRisk : '-'}</b></div>
+          <div className="ah-row"><span className="ah-chip ah-chip--mid">Medium</span><b>{c ? c.mediumRisk : '-'}</b></div>
+          <div className="ah-row"><span className="ah-chip ah-chip--low">Low</span><b>{c ? c.lowRisk : '-'}</b></div>
         </div>
       </div>
     )
@@ -91,7 +91,7 @@ function CardPreview({ type, data, now }) {
     return (
       <div className="ah-preview">
         <span className="ah-preview__label">Discount codes live</span>
-        <strong className="ah-preview__value">{active ? `${active.length} active` : '—'}</strong>
+        <strong className="ah-preview__value">{active ? `${active.length} active` : '-'}</strong>
         <div className="ah-tags">
           {(active || []).slice(0, 3).map((c) => (
             <span key={c.code}>{c.code}</span>
@@ -111,9 +111,9 @@ function CardPreview({ type, data, now }) {
         {data.nextSale === undefined ? 'Next sale' : sale ? `${sale.title || sale.name || 'Next sale'} starts in` : 'No sale scheduled'}
       </span>
       <div className="ah-countdown">
-        <div><b>{sale ? pad(days) : '—'}</b><small>Days</small></div>
-        <div><b>{sale ? pad(hrs) : '—'}</b><small>Hrs</small></div>
-        <div><b>{sale ? pad(min) : '—'}</b><small>Min</small></div>
+        <div><b>{sale ? pad(days) : '-'}</b><small>Days</small></div>
+        <div><b>{sale ? pad(hrs) : '-'}</b><small>Hrs</small></div>
+        <div><b>{sale ? pad(min) : '-'}</b><small>Min</small></div>
       </div>
     </div>
   )

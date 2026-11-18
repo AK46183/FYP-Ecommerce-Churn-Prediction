@@ -487,7 +487,7 @@ export default function Login() {
           </p>
 
           <p className="min-auth__demo">
-            Secure sign in — your account is verified by the MINAYSH server.
+            Secure sign in. Your account is verified by the MINAYSH server.
           </p>
 
         </motion.section>

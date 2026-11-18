@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { api } from '../../services/api.js'
 import { useCart } from '../../context/CartContext.jsx'
 import { allProducts } from '../../data/products.js'
+import FaceCapture from './FaceCapture.jsx'
 import './ChatWidget.css'
 
 // MINAYSH Skin Assistant: neeche kone ka chat button + chat panel (text + optional selfie scan)
@@ -152,6 +153,8 @@ export default function ChatWidget() {
   const [text, setText] = useState('')
   const [busy, setBusy] = useState(false)
   const [askConsent, setAskConsent] = useState(false)
+  const [chooser, setChooser] = useState(false) // camera ya upload
+  const [liveScan, setLiveScan] = useState(false)
   const listRef = useRef(null)
   const inputRef = useRef(null)
   const fileRef = useRef(null)
@@ -173,7 +176,7 @@ export default function ChatWidget() {
   useEffect(() => {
     const el = listRef.current
     if (el) el.scrollTop = el.scrollHeight
-  }, [messages, busy, open, askConsent])
+  }, [messages, busy, open, askConsent, chooser])
 
   useEffect(() => {
     if (!open) return undefined
@@ -214,7 +217,7 @@ export default function ChatWidget() {
     } catch {
       /* ignore */
     }
-    if (agreed) fileRef.current?.click()
+    if (agreed) setChooser(true)
     else setAskConsent(true)
   }
 
@@ -226,7 +229,14 @@ export default function ChatWidget() {
     } catch {
       /* ignore */
     }
-    fileRef.current?.click()
+    setChooser(true)
+  }
+
+  function onLiveShot({ base64, preview }) {
+    setLiveScan(false)
+    const message = text.trim()
+    setText('')
+    send({ message, imageBase64: base64, imageMime: 'image/jpeg' }, { from: 'user', text: message, image: preview })
   }
 
   async function onFile(e) {
@@ -287,12 +297,37 @@ export default function ChatWidget() {
                   MINAYSH, and the result is an estimate, not a medical diagnosis.
                 </p>
                 <div>
-                  <button type="button" onClick={() => onConsent(true)}>I agree, choose photo</button>
+                  <button type="button" onClick={() => onConsent(true)}>I agree</button>
                   <button type="button" className="is-quiet" onClick={() => onConsent(false)}>Cancel</button>
                 </div>
               </div>
             )}
           </div>
+
+          {chooser && (
+            <div className="skin-chat__chooser">
+              <button
+                type="button"
+                className="is-primary"
+                onClick={() => {
+                  setChooser(false)
+                  setLiveScan(true)
+                }}
+              >
+                Live scan with camera
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setChooser(false)
+                  fileRef.current?.click()
+                }}
+              >
+                Upload a photo
+              </button>
+              <button type="button" className="is-quiet" onClick={() => setChooser(false)}>Cancel</button>
+            </div>
+          )}
 
           <form className="skin-chat__form" onSubmit={onSubmit}>
             <button type="button" className="skin-chat__photo" onClick={onPickPhoto} disabled={busy} aria-label="Send a selfie for a skin check" title="Send a selfie for a skin check">
@@ -314,6 +349,17 @@ export default function ChatWidget() {
           </form>
           <p className="skin-chat__note">Chats are saved to improve our service. Photos are never saved.</p>
         </section>
+      )}
+
+      {liveScan && (
+        <FaceCapture
+          onCapture={onLiveShot}
+          onClose={() => setLiveScan(false)}
+          onUpload={() => {
+            setLiveScan(false)
+            fileRef.current?.click()
+          }}
+        />
       )}
 
       <button

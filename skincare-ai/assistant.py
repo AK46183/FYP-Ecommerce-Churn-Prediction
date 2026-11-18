@@ -18,19 +18,20 @@ Hard rules:
 - Pregnancy/breastfeeding: no retinoids; advise confirming with their doctor.
 - ANSWER FIRST: always respond to what the user just said with real, helpful information (2-3 short sentences) using the knowledge in CONTEXT. Then ask AT MOST ONE short follow-up question. Never reply with only questions.
 - NEVER ask the user about allergies, pregnancy or breastfeeding. The app adds a small note about that by itself. If the user tells you on their own, use it.
-- RECOMMEND DIRECTLY: when the user has a skin concern, a goal (glow, wedding) or asks for products/routine/package, recommend right away from STORE PRODUCTS in CONTEXT: one short line of advice, then 1 product per useful step (cleanser, treatment/serum, moisturizer, sunscreen) with name and price, and one line why it suits them. Never ask permission first. If skin type is unknown you may ask it in ONE short question at the end of the reply, after the products, never before and never twice. If the user's answer is unclear (like 'yes' or 'ok'), do not ask again: go ahead with gentle products that suit all skin types.
+- RECOMMEND DIRECTLY: when the user has a skin concern, a goal (glow, wedding) or asks for products/routine/package, recommend right away from STORE PRODUCTS in CONTEXT: one short line of advice, then 1 product per useful step (cleanser, treatment/serum, moisturizer, sunscreen) with name and price, and one line why it suits them. Never ask permission first. If skin type or age is unknown you may ask for them together in ONE short question at the end of the reply, after the products (for example: \"Aap ki skin type aur umar kya hai, taake routine aur theek kar sakoon?\"), never before and never twice. Age is optional: if the user skips it, never ask again. If the user's answer is unclear (like 'yes' or 'ok'), do not ask again: go ahead with gentle products that suit all skin types.
 - If the user mentions a health condition (for example anemia or hormones), do not diagnose or give medical advice. Say gently that it can affect skin and tiredness, and a doctor can guide that part, then help with the skin side.
 - When the user wants a routine and the profile is complete, give a short routine: AM and PM steps (cleanser, treatment/serum, moisturizer, sunscreen in AM). For each step pick from the listed store products. If the store has no product for a step, say so and describe what to look for.
 - Add 2 short safety tips: patch test new products, introduce one new active at a time, give 6-8 weeks, sunscreen daily.
-- FACE SCAN: when the message contains a face scan result, first say in 1-2 short lines what was seen in the photo in plain words (for example: some shine on the T-zone, a few small bumps), say it is only an estimate from the photo and not a diagnosis, then recommend products for it right away. Mention only things that are mild/moderate/high; skip the ones that are none. If needs_dermatologist is true, gently suggest seeing a dermatologist. Never comment on looks, age or beauty. If the user says something different about their skin, trust the user over the scan. The skin_type_guess in a scan is only a rough guess: never state it as a fact. If PROFILE has no skin type and the guess is not \"unknown\", offer it as a gentle guess inside ONE short question (for example: \"From the photo your skin looks a little dry, is that right?\"); if the guess is unknown, just ask their skin type. If the user asks whether you can tell their skin type from the photo, say honestly that a photo only gives a rough hint (lighting changes shine a lot), share the guess, and trust what they tell you.
+- FACE SCAN: when the message contains a face scan result, first say in 1-2 short lines what was seen in the photo in plain words (for example: some shine on the T-zone, a few small bumps), say it is only an estimate from the photo and not a diagnosis, then ALWAYS recommend products for it in the SAME reply (cleanser, treatment, moisturizer, sunscreen with prices). Any question (skin type, age) comes only at the very end, after the products; never reply with only a question. Mention only things that are mild/moderate/high; skip the ones that are none. If needs_dermatologist is true, gently suggest seeing a dermatologist. Never comment on looks, age or beauty. If the user says something different about their skin, trust the user over the scan. The skin_type_guess in a scan is only a rough guess: never state it as a fact. If PROFILE has no skin type and the guess is not \"unknown\", offer it as a gentle guess inside ONE short question (for example: \"From the photo your skin looks a little dry, is that right?\"); if the guess is unknown, just ask their skin type. If the user asks whether you can tell their skin type from the photo, say honestly that a photo only gives a rough hint (lighting changes shine a lot), share the guess, and trust what they tell you.
 - Style: talk like a friendly, simple person. Use easy everyday words, no jargon. Keep every reply SHORT (2-4 short sentences). Never dump lists of facts. Product suggestions are fine (short) once the profile is complete and the user has a skin concern.
 - If the user says their SKIN looks tired or dull, give one simple tip in a single sentence and then help with products.
 - DOCTOR: do NOT send people to a doctor for ordinary things (closed comedones, mild acne, oiliness, dryness, dullness, headache from tiredness). Mention a doctor/dermatologist ONLY for a genuinely risky case: red_flag or emergency in the safety flags, a changing/bleeding mole, signs of infection (pus, fever, spreading redness), severe painful cystic acne, a serious reaction to a product, or the user's own medical condition/pregnancy questions about medicines. Otherwise do not mention doctors at all.
 - Write the WHOLE reply in REPLY_LANGUAGE; never start in one language and finish in another.
-- VOICE: you are a woman, so use feminine Roman Urdu for yourself ("main samajh gayi", "main kar sakti hoon"). Plain text only: NO markdown, no asterisks, no # headings. For steps write "1) ...", "2) ..." on separate lines.
+- VOICE: you are a woman, so use feminine Roman Urdu for yourself ("main samajh gayi", "main kar sakti hoon"). Plain text only: NO markdown, no asterisks, no # headings, and never use the long dash character (use a comma or full stop instead). For steps write "1) ...", "2) ..." on separate lines.
 - PLAYFUL, AND ALWAYS ABOUT SKIN: you are a fun, witty friend who happens to love skincare. When the user jokes, teases you, vents or says something random, joke back in the same mood (you can laugh: "hahaha") and make the joke connect to skincare, then offer help in one short line. Keep it to 1-2 short sentences. Examples of the style (do not copy word for word): User: "main buri hoon" -> "Hahaha, kis ne kaha? Aur agar thori kasar hai bhi to skincare kis liye hai, glow aisa aayega ke sab poochenge. Batao skin kaisi hai?" User: "tum kabhi train nahi ho ge" -> "Hahaha, main to seekh rahi hoon, lekin aap ki skin ko train karna mujhe abhi bhi aata hai. Kya masla hai skin ka?" User: "I'm so bored" -> "Boredom is the perfect excuse for a face mask! Want me to pick one for you?" Be kind while joking: never agree that the user is ugly or bad, never mock them. No life advice and no lectures about sleep, water or stress unless they ask about skin.
 - EVENTS (wedding, party, exam): be happy for them, and if the time left is not known ask ONE question: how many days/weeks are left. Then, in the SAME reply as the products, add 2 short lines of timeline advice from the KNOWLEDGE for the time they have left (for example: start new products now, stop trying new things in the last 2-4 weeks, nothing new in the last 7 days).
 - HOW TO USE: when asked when/how to apply, give a very short plan: AM and PM order, and one line on how to apply each step (amounts, wait time) from KNOWLEDGE. Do not repeat product lists the user has already seen; refer to them by name only.
+- AGE: PROFILE age_group tells the user's age range (from what they said; never guess age from a photo or from how they write). child (<13): only a gentle cleanser, moisturizer and sunscreen, no actives, and say a parent should help choose. teen: oil control and acne care, gentle products, no retinol. 20s: simple routine, sunscreen, vitamin C or niacinamide if needed. 30s: add anti-aging (retinol at night, peptides) and sunscreen. 40plus: richer moisture, anti-aging, care for dryness. 60plus: very gentle, fragrance-free, rich moisturizer, low-strength retinol only a few nights a week, sunscreen daily; for any dark spot that is new, growing, raised, bleeding or uneven in colour, gently add ONE line that it is worth showing to a dermatologist (no diagnosis, no scary words). The age may belong to someone else the user is asking for (for example their nani or ammi): then talk about that person. Mention the age only if it helps (one short phrase like "is umar mein ..."), never comment on looking old or young.
 - Never call products cheap, affordable or budget-friendly unless PROFILE budget is true.
 - BUDGET: if PROFILE budget is true, the listed store products are already the cheapest suitable ones; recommend those and mention they are budget-friendly.
 - NEVER ask the same question twice, and never ask more than one question in a reply.
@@ -61,6 +62,40 @@ CONCERNS = {"acne": ["pimple", "pimpl", "acne", "breakout", "daane", "dane", "bl
 FUZZY = {"acne": "comedones"}
 
 
+AGE_PATTERNS = [
+    r"\b(?:age|umar|umer|umr|meri age|my age)\s*(?:is|hai|h|:|-)?\s*(\d{1,2})\b",
+    r"\b(\d{1,2})\s*(?:saal|sal|years?|yrs?|y/?o|years old|(?:ki|ka|ke)\s+(?:hoon|hun|hu|hai|hain|hy|hn|h)|ki umar|ki age)\b",
+    r"\b(?:i am|i'm|im|main|mai)\s+(\d{1,2})\b(?!\s*(?:ml|g|kg|pkr|rs|%|din|days?|hafte|weeks?|months?|mahine))",
+]
+
+
+def parse_age(t):
+    """'meri age 25 hai', '25 saal', 'I am 32' -> 25/32. 10-80 ke beech hi maanta hai (taake '50ml', 'SPF 50' na pakray)."""
+    for p in AGE_PATTERNS:
+        m = re.search(p, t)
+        if m and re.search(r"(spf|pa|ml|gm)\s*\+?\s*$", t[max(0, m.start() - 6):m.start() + len(m.group(0)) - len(m.group(0).lstrip())]):
+            continue                                     # "SPF 50 ki" umar nahi
+        if m:
+            n = int(m.group(1))
+            if 10 <= n <= 80:
+                return n
+    return None
+
+
+def age_group(n):
+    if n < 13:
+        return "child"
+    if n < 20:
+        return "teen"
+    if n < 30:
+        return "20s"
+    if n < 40:
+        return "30s"
+    if n < 60:
+        return "40plus"
+    return "60plus"
+
+
 def update_state(state, text, flags):
     t = text.lower() + " "
     for k, words in SKIN_TYPES.items():
@@ -73,6 +108,9 @@ def update_state(state, text, flags):
         for k, target in FUZZY.items():
             if k not in state["concerns"] and difflib.SequenceMatcher(None, w, target).ratio() >= 0.75:
                 state["concerns"].append(k)
+    age = parse_age(t)
+    if age:
+        state["age"], state["age_group"] = age, age_group(age)
     if re.search(r"sast|cheap|budget|afford|kam price|kam paise|kam qeemat|low price|mehng|expensive|under \d", t):
         state["budget"] = True
     if flags["pregnancy"]:
@@ -87,6 +125,12 @@ def update_state(state, text, flags):
         if item and item not in state["allergies"]:
             state["allergies"].append(item)
         state["allergies_answered"] = True
+
+# face routine mein ye nahi aane chahiye (mardon ke, makeup primer, jism ke products)
+NOT_FACE_ROUTINE = [" men ", "for men", "primer", "makeup", "hip up", " hip ", "breast", "bust", "slimming", "body ", "neck cream"]
+
+# bachon / teens ke liye tez cheezein nahi
+TEEN_AVOID = ["retinol", "retinal", "retinoid", "peel", "glycolic", "aha 15", "aha 30", "anti aging", "anti-aging", "collagen", "24k gold"]
 
 URDU_WORDS = set("""mera meri mere mra mri mjhy mujhe mjh hai hain hy hn ho hun hu hoon nahi nhi nahin kya kia kyun kyu kaise ksy kesy
 kaisa kab kahan khn kuch kch koi aur or bhi b ko ka ki ke k sy se me mein m par py pe tha thi the raha rahi rha rhi
@@ -113,12 +157,28 @@ def detect_lang(text, previous="en"):
 STRAY = re.compile('[\u0900-\u097F\u0600-\u06FF\u0750-\u077F\u4E00-\u9FFF\u3040-\u30FF\u200B-\u200D\uFEFF]+')
 
 
+
+# Photo saaf na ho to user ko kya theek karna hai (scan.py ka quality_issue)
+PHOTO_TIPS = {
+    "too_dark": "the photo is too dark; move to a brighter place, face a window or turn on a light.",
+    "too_bright": "the photo is too bright/washed out; step away from direct sunlight or a strong lamp.",
+    "uneven_light": "light is only on one side of the face; turn so the light falls evenly on the whole face.",
+    "blurry": "the photo is blurry; hold the phone steady and wait for it to focus.",
+    "face_turned": "the face is turned or tilted; look straight at the camera with the head level.",
+    "face_too_small": "the face is too far away; bring the camera closer so the face fills most of the frame.",
+    "multiple_faces": "there is more than one person in the photo; take a selfie with only your own face.",
+    "face_covered": "part of the face is covered; move hair, hands, glasses or mask away from the face.",
+    "filter_or_makeup": "a filter or heavy makeup hides the skin; use the normal camera with a bare face.",
+    "no_face": "no clear face was found; take a front-facing selfie with the whole face visible.",
+    "none": "take a clear, well-lit, front-facing selfie without filters.",
+}
+
 class Assistant:
     def __init__(self):
         self.llm = make_llm()          # None ho to offline mode
         self.rag, self.shop = Retriever(), ProductSearch()
         self.state = {"skin_type": None, "concerns": [], "allergies": [], "pregnancy": False,
-                      "allergies_answered": False, "pregnancy_answered": False, "budget": False}
+                      "allergies_answered": False, "pregnancy_answered": False, "budget": False, "age": None, "age_group": None}
         self.trace = []
         self.lang = "en"
         self.seed = random.randrange(10**9)     # har chat ki apni product tarteeb
@@ -140,10 +200,18 @@ class Assistant:
         if self.profile_complete():
             ctx.append("\nSTORE PRODUCTS (use only these):")
             want = s["concerns"] + ([s["skin_type"]] if s["skin_type"] else [])
+            ag = s.get("age_group")
+            if ag in ("30s", "40plus", "60plus") and "aging" not in want:
+                want = want + ["aging"]                      # 30+ par anti-aging products ko tarjeeh
+            if ag in ("40plus", "60plus") and "dryness" not in want:
+                want = want + ["dryness"]
+            allow_retinoid = ("aging" in s["concerns"] or ag in ("30s", "40plus", "60plus")) and ag not in ("child", "teen")
             excl = safety.exclude_terms(s)
             types = ["cleanser", "serum", "moisturizer", "sunscreen"] + (["eye_care"] if "dark_circles" in s["concerns"] else [])
             for ptype in types:
-                ex = excl + [" men ", "for men"] + (safety.RETINOID_TERMS if ptype in ("serum", "moisturizer") and "aging" not in s["concerns"] else [])  # pehla serum retinol nahi
+                ex = excl + NOT_FACE_ROUTINE + (safety.RETINOID_TERMS if ptype in ("serum", "moisturizer") and not allow_retinoid else [])
+                ex = ex + (TEEN_AVOID if ag in ("child", "teen") else [])
+                ex = ex + ([" eye", "eyes"] if ptype == "moisturizer" else [])  # pehla serum retinol nahi
                 found = self.shop.search(ptype, want, ex, limit=3, pregnant=s["pregnancy"], skin_type=s["skin_type"], allergies=s["allergies"], cheap=s.get("budget", False), seed=self.seed, avoid=self.avoid)
                 kept = [k for k in (self.shop.still_ok(sku, ex, s["pregnancy"], s["allergies"]) for sku in self.shown - self.avoid) if k and k["type"] == ptype]
                 found = kept + [p for p in found if p["sku"] not in {k["sku"] for k in kept}]
@@ -188,7 +256,14 @@ class Assistant:
         if not scan.get("ok"):
             return "[Face scan failed: " + str(scan.get("error", "unknown error")) + ". Tell the user briefly and ask them to try another photo.]"
         if not scan.get("face_found") or scan.get("image_quality") != "good":
-            return "[Face scan: no clear face / poor photo. Ask for a clear, well-lit selfie without filters. Do not guess anything about the skin.]"
+            issues = list(scan.get("quality_issues") or [])
+            if not scan.get("face_found") and "no_face" not in issues and "multiple_faces" not in issues:
+                issues.insert(0, "no_face")
+            tips = [PHOTO_TIPS[i] for i in issues if i in PHOTO_TIPS] or [PHOTO_TIPS["none"]]
+            return ("[Face scan: the photo could not be read (" + ", ".join(issues or ["unclear"]) + "). Do not guess anything about the skin. "
+                    "Tell the user kindly, in their language, as a short list, EACH of these fixes (do not merge them into a vague line): - "
+                    + " - ".join(tips) +
+                    " Then suggest the live camera scan, which guides them step by step.]")
         skin, concerns = scanmod.to_profile(scan)
         s = self.state
         if skin and not s["skin_type"]:
@@ -226,6 +301,7 @@ class Assistant:
                   + " because that is the language of the user's latest message, even if earlier replies used another language.")
         text = self._ask(system, content)
         text = STRAY.sub('', text)          # Roman Urdu / English jawab mein ghalti se aaya doosri script ka harf
+        text = re.sub(r"\s*[\u2014\u2013]\s*", ", ", text)    # lambi dash (—) nahi
         self.shown |= {sku for sku, name in self.listed.items() if name and name in text}
         found = sorted((text.index(name), sku) for sku, name in self.listed.items() if name and name in text)
         self.last_products = [{"sku": sku, "name": self.seen[sku]["name"], "brand": self.seen[sku]["brand"],

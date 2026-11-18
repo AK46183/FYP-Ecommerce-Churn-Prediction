@@ -96,7 +96,7 @@ export const seasons = [
     tagline: 'Bridal glow and gifting',
     image: '/images/brand/story1-a.jpg',
     description:
-      'Bridal makeup, perfumes and prep skincare. High-value orders — reward big spenders and bring back old bridal clients.',
+      'Bridal makeup, perfumes and prep skincare. High-value orders, reward big spenders and bring back old bridal clients.',
     strategies: [
       { id: 'we1', title: 'Bridal Prep Plan', type: 'Bundle', target: 'Medium risk', offer: '4-week skincare plan at 20% off', channel: 'Email', uplift: '+13%' },
       { id: 'we2', title: 'Guest Glam Offer', type: 'Discount', target: 'All customers', offer: 'Buy 2 get 1 on makeup', channel: 'Instagram', uplift: '+17%' },

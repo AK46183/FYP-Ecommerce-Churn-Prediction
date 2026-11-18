@@ -35,7 +35,7 @@ export default function AdminCategories() {
           </thead>
           <tbody>
             {rows?.length === 0 && (
-              <tr><td colSpan={4} className="admin-table__empty">No products yet — run npm run seed:catalog.</td></tr>
+              <tr><td colSpan={4} className="admin-table__empty">No products yet. Run npm run seed:catalog.</td></tr>
             )}
             {rows?.map((c) => (
               <tr key={c.categoryId ?? c.name}>

@@ -99,21 +99,21 @@ export default function AdminReports() {
       <div className="admin-stats-grid">
         <div className="admin-stat-card">
           <span>Revenue</span>
-          <strong>{dash ? pkr(dash.revenue.total) : '—'}</strong>
+          <strong>{dash ? pkr(dash.revenue.total) : '-'}</strong>
           {dash && <small>{dash.revenue.change >= 0 ? '+' : ''}{dash.revenue.change}% vs previous period</small>}
         </div>
         <div className="admin-stat-card">
           <span>Orders</span>
-          <strong>{dash ? dash.orders.total : '—'}</strong>
+          <strong>{dash ? dash.orders.total : '-'}</strong>
           {dash && <small>{dash.orders.fulfilled}% delivered</small>}
         </div>
         <div className="admin-stat-card">
           <span>Average order value</span>
-          <strong>{dash ? pkr(dash.avgOrderValue.value) : '—'}</strong>
+          <strong>{dash ? pkr(dash.avgOrderValue.value) : '-'}</strong>
         </div>
         <div className="admin-stat-card">
           <span>New customers</span>
-          <strong>{dash ? dash.customers.newThisPeriod : '—'}</strong>
+          <strong>{dash ? dash.customers.newThisPeriod : '-'}</strong>
           {dash && <small>{dash.customers.total} customers in total</small>}
         </div>
       </div>

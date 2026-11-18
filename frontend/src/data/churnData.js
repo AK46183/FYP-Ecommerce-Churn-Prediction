@@ -23,12 +23,12 @@ function seeded(seed) {
 // High risk ki wajahen + un ke hisaab se wapas laane ki strategy
 const highReasons = [
   {
-    why: 'No order in {days} days — usually orders every 3 weeks',
+    why: 'No order in {days} days, usually orders every 3 weeks',
     strategy: 'Send a "We miss you" SMS with 30% off her favourite {fav}. Follow up by email after 3 days.',
     channel: 'SMS + Email',
   },
   {
-    why: 'Only buys during sales — left after the last discount ended',
+    why: 'Only buys during sales, left after the last discount ended',
     strategy: 'Give her early access to the next sale and a PKR 500 coupon valid for 7 days.',
     channel: 'Push',
   },
@@ -49,10 +49,10 @@ const highReasons = [
   },
 ]
 const lowReasons = [
-  'Orders every {gap} days on time — very regular buyer',
+  'Orders every {gap} days on time, very regular buyer',
   'High satisfaction: left 5-star reviews on last orders',
   'Loyalty member, buys at full price (not discount-driven)',
-  'Recently ordered {fav} again — strong repeat habit',
+  'Recently ordered {fav} again, strong repeat habit',
 ]
 
 function makeCustomer(rand, i, type) {
@@ -100,7 +100,7 @@ function makeCustomer(rand, i, type) {
     reason: lowReasons[Math.floor(rand() * lowReasons.length)].replace('{gap}', gap).replace('{fav}', fav),
     // kitne hafte bina offer ke chhod sakte hain
     ignoreWeeks: 4 + Math.floor(rand() * 5) - i,
-    action: 'No discount needed. Only send new arrivals and a thank-you note — offers here would just cut profit.',
+    action: 'No discount needed. Only send new arrivals and a thank-you note, offers here would just cut profit.',
     channel: 'Newsletter',
   }
 }

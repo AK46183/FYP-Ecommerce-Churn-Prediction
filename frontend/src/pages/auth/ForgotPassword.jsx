@@ -35,7 +35,7 @@ export default function ForgotPassword() {
 
         {sent ? (
           <p className="auth-page__footer-note">
-            If an account exists for {email}, a reset link is on its way. Check your inbox (and spam) — the link works for 30 minutes.
+            If an account exists for {email}, a reset link is on its way. Check your inbox (and spam). The link works for 30 minutes.
           </p>
         ) : (
           <form className="auth-page__form" onSubmit={handleSubmit}>

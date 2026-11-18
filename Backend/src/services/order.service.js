@@ -9,6 +9,7 @@ const ApiError = require('../utils/ApiError');
 const { sequelize } = require('../config/db.postgres');
 const { sendOrderConfirmation, sendOrderStatus } = require('./mail.service');
 const couponService = require('./coupon.service');
+const { bundleDeal } = require('./bundleDeal.service');
 const { notifyAdmin } = require('./notification.service');
 const { handleProductChange, LOW_STOCK } = require('./productAlert.service');
 
@@ -154,6 +155,8 @@ const findVariant = (product, shade, size) => {
 
 /** Shade / size ke hisaab se sahi price (kuch variants ki price alag hai) */
 const resolvePrice = (product, shade, size) => {
+  // sirf ek size/shade ho to main price (admin wali) hi asli price hai
+  if (!Array.isArray(product.variants) || product.variants.length <= 1) return product.price;
   const v = findVariant(product, shade, size);
   return typeof v?.price === 'number' && v.price > 0 ? v.price : product.price;
 };
@@ -222,6 +225,10 @@ const createOrder = async (userId, payload) => {
       await couponService.redeem(result.coupon, t);
     }
 
+    // Bundle deal (har 3 alag products par PKR 1,000 off) — coupon ke saath bhi lagta hai
+    const bundle = bundleDeal(priced);
+    discount = Math.min(subtotal, discount + bundle.discount);
+
     const created = await Order.create({
       userId,
       status: 'pending',
@@ -289,9 +296,9 @@ const createOrder = async (userId, payload) => {
   const units = emailItems.reduce((n, i) => n + i.quantity, 0);
   notifyAdmin({
     type: 'order',
-    title: `New order MN-${order.id} — PKR ${Math.round(order.totalAmount).toLocaleString('en-PK')}`,
+    title: `New order MN-${order.id}: PKR ${Math.round(order.totalAmount).toLocaleString('en-PK')}`,
     body: `${order.customerName} (${order.customerEmail}) ordered ${units} item(s):\n`
-      + emailItems.map((i) => `• ${i.name}${i.shade ? ` — ${i.shade}` : ''} × ${i.quantity}`).join('\n')
+      + emailItems.map((i) => `• ${i.name}${i.shade ? `: ${i.shade}` : ''} × ${i.quantity}`).join('\n')
       + `\nDeliver to: ${order.shippingAddress?.city || ''} · ${order.payment === 'cod' ? 'Cash on Delivery' : 'Card'}`
       + (order.couponCode ? `\nCoupon: ${order.couponCode}` : ''),
     link: '/admin/orders',

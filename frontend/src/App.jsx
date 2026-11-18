@@ -16,6 +16,8 @@ import Home from './pages/home/Home.jsx'
 
 // Products / categories
 import ProductListing from './pages/products/ProductListing.jsx'
+import BundleOfferPage from './pages/bundle/BundleOfferPage.jsx'
+import NewDropPage from './pages/new/NewDropPage.jsx'
 import ProductDetails from './pages/products/ProductDetails.jsx'
 
 // Cart / checkout
@@ -122,6 +124,10 @@ export default function App() {
         {/* ---------- Storefront ---------- */}
         <Route element={<StorefrontLayout />}>
           <Route path="/" element={<Home />} />
+
+          <Route path="/new" element={<NewDropPage />} />
+
+          <Route path="/bundle-offer" element={<BundleOfferPage />} />
 
           <Route path="/:category" element={<ProductListing />} />
           <Route path="/:category/:subCategory" element={<ProductListing />} />

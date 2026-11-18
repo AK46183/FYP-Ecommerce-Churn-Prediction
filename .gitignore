@@ -9,3 +9,5 @@ Backend-old*/
 .venv/
 node_modules/
 __pycache__/
+
+backup-before-bundle/

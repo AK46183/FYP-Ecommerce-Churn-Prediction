@@ -10,12 +10,14 @@ MAX_BYTES = 4 * 1024 * 1024
 ALLOWED_MIME = {"image/jpeg", "image/png", "image/webp"}
 LEVELS = ["none", "mild", "moderate", "high"]
 SKIN_TYPES = ["oily", "dry", "combination", "normal", "unknown"]
+QUALITY_ISSUES = ["none", "too_dark", "too_bright", "uneven_light", "blurry", "face_turned", "face_too_small", "multiple_faces", "face_covered", "filter_or_makeup", "no_face"]
 FIELDS = ["oiliness", "acne", "dryness", "redness", "dark_spots", "dark_circles"]
 
 PROMPT = """You are a cosmetic skin-surface checker for a skincare shop. Look ONLY at the visible facial skin in this photo.
 Return ONLY a JSON object with exactly these keys:
 {"face_found": true/false,
  "image_quality": "good" | "poor",
+ "quality_issues": [zero or more of "too_dark", "too_bright", "uneven_light", "blurry", "face_turned", "face_too_small", "multiple_faces", "face_covered", "filter_or_makeup", "no_face"],
  "skin_type_guess": "oily" | "dry" | "combination" | "normal" | "unknown",
  "oiliness": "none" | "mild" | "moderate" | "high",
  "acne": "none" | "mild" | "moderate" | "high",
@@ -27,8 +29,9 @@ Return ONLY a JSON object with exactly these keys:
  "notes": "one short neutral sentence about what is visible"}
 Rules:
 - This is a cosmetic estimate, not medical. Never name a disease or diagnosis.
-- needs_dermatologist is true only for something that clearly looks serious (open wound, heavy inflamed cystic acne, an unusual dark irregular lesion).
+- needs_dermatologist is true only for something that clearly looks serious: an open wound, heavy inflamed cystic acne, or a single spot that is clearly darker than the others, raised, with an irregular border or uneven colour.
 - If there is no clear human face, or it is too dark/blurry/heavily filtered or covered with makeup, set face_found or image_quality accordingly and use "unknown"/"none".
+- quality_issues: EVERY problem that makes the skin hard to read, most important first (empty list when image_quality is good). face_turned = face tilted or turned to the side, or looking up/down. face_too_small = the face fills only a small part of the photo. multiple_faces = more than one person in the photo (set image_quality to "poor").
 - Say nothing about who the person is, their age, gender, ethnicity, attractiveness or emotions."""
 
 
@@ -38,6 +41,7 @@ def _clean(raw):
            "image_quality": raw.get("image_quality") if raw.get("image_quality") in ("good", "poor") else "poor",
            "skin_type_guess": raw.get("skin_type_guess") if raw.get("skin_type_guess") in SKIN_TYPES else "unknown",
            "needs_dermatologist": bool(raw.get("needs_dermatologist")),
+           "quality_issues": [q for q in (raw.get("quality_issues") or [raw.get("quality_issue")]) if q in QUALITY_ISSUES and q != "none"][:4],
            "notes": str(raw.get("notes") or "")[:200]}
     for f in FIELDS:
         v = str(raw.get(f) or "none").lower()

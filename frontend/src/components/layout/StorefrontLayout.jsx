@@ -1,4 +1,5 @@
 import ChatWidget from '../chat/ChatWidget.jsx'
+import WhatsAppButton from '../chat/WhatsAppButton.jsx'
 import { Outlet } from 'react-router-dom'
 import Header from '../header/Header.jsx'
 import Footer from './Footer.jsx'
@@ -20,6 +21,8 @@ export default function StorefrontLayout() {
 
       {/* "Add to Bag" fly animation + message, for every product on the site */}
       <FlyToCart />
+      {/* WhatsApp (Skincare Assistant ke upar) */}
+      <WhatsAppButton />
       <ChatWidget />
     </>
   )

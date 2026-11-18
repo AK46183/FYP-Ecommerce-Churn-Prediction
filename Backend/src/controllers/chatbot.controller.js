@@ -104,7 +104,9 @@ const sendMessage = async (req, res, next) => {
       sessionId: session_id, userId: req.user?.id || null, message, hadImage: !!image,
       scan: out.scan, reply: out.reply, profile: out.profile, products,
     }).catch((e) => console.error('Chat save nahi hui:', e.message));
-    res.status(200).json(new ApiResponse(200, { reply: out.reply, scanned, products }));
+    // lambi dash (—) website par nahi dikhani
+    const reply = String(out.reply || '').replace(/\s*[—–]\s*/g, ', ');
+    res.status(200).json(new ApiResponse(200, { reply, scanned, products }));
   } catch (error) {
     next(error);
   }

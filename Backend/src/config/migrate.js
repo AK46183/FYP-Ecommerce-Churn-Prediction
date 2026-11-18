@@ -31,7 +31,7 @@ const syncDatabase = async (sequelize) => {
     }
   }
 
-  if (added.length) console.log(`DB updated — new columns: ${added.join(', ')}`);
+  if (added.length) console.log(`DB updated, new columns: ${added.join(', ')}`);
 };
 
 module.exports = { syncDatabase };

@@ -35,7 +35,7 @@ export default function ContactUs() {
   return (
     <ContentPage title="Contact Us" subtitle="We'd love to hear from you.">
       {sent ? (
-        <p>Thank you for reaching out — we&apos;ve emailed you a confirmation and our team will respond within 1-2 business days.</p>
+        <p>Thank you for reaching out! We&apos;ve emailed you a confirmation and our team will respond within 1-2 business days.</p>
       ) : (
         <form className="content-page__form" onSubmit={handleSubmit}>
           <input type="text" placeholder="Your name" value={form.name} onChange={update('name')} required />
@@ -47,7 +47,7 @@ export default function ContactUs() {
             <option value="complaint">Complaint</option>
           </select>
           {(form.topic === 'order' || form.topic === 'complaint') && (
-            <input type="text" placeholder="Order number (e.g. MN-12) — optional" value={form.orderRef} onChange={update('orderRef')} />
+            <input type="text" placeholder="Order number (e.g. MN-12, optional)" value={form.orderRef} onChange={update('orderRef')} />
           )}
           <textarea placeholder="How can we help?" value={form.message} onChange={update('message')} required minLength={5} />
           {error && <p className="content-page__error" role="alert">{error}</p>}
