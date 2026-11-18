@@ -1,3 +1,4 @@
+import { MessageSquare } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { NavLink, Outlet, Link, useNavigate, useLocation } from 'react-router-dom'
 import { getUnreadCount } from '../../services/adminApi.js'
@@ -41,6 +42,7 @@ const storeItems = [
   { to: '/admin/orders', label: 'Orders', icon: ShoppingCart },
   { to: '/admin/customers', label: 'Customers', icon: Users },
   { to: '/admin/messages', label: 'Inbox', icon: Mail, badgeKey: 'inbox' },
+  { to: '/admin/chats', label: 'Skin Assistant Chats', icon: MessageSquare },
   { to: '/admin/promotions', label: 'Promotions', icon: Tag },
   { to: '/admin/bundles', label: 'Bundle Offers', icon: Gift },
   { to: '/admin/tips-trends', label: 'Tips & Trends Content', icon: Sparkles },

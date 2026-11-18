@@ -1,0 +1,81 @@
+/* =====================================================================
+   MINAYSH: phone / tablet fixes (sab ek jagah)
+   main.jsx mein global.css ke baad import hoti hai, is liye in ki
+   rules baqi CSS se baad mein lagti hain.
+   ===================================================================== */
+
+/* ---------- Product cards: "Add to Bag" phone par card se bahar na nikle ---------- */
+@media (max-width: 600px) {
+  .product-card__actions { gap: 6px; }
+  .product-card__heart { flex: 0 0 34px; width: 34px; height: 34px; }
+  .product-card__add-btn {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+}
+@media (max-width: 360px) {
+  .product-card__add-btn { letter-spacing: 0.03em; padding: 0 8px; }
+}
+
+/* ---------- Skincare Assistant widget ---------- */
+/* header (80) ke neeche: mobile menu header ke andar hai, is liye chat us ke oopar na aaye.
+   Panel ki oonchai itni ke us ka oopar wala hissa header ke neeche na chhupe. */
+.skin-chat { z-index: 70; }
+.skin-chat__panel { height: min(560px, calc(100vh - 200px)); }
+@media (max-width: 600px) {
+  /* phone par sirf gol button, taake "Proceed to Checkout" jaise buttons na dhake */
+  .skin-chat__fab:not(.is-open) { width: 52px; padding: 0; justify-content: center; }
+  .skin-chat__fab:not(.is-open) span { display: none; }
+  .skin-chat__panel { height: calc(100dvh - 170px); }
+  .skin-chat__form input:not([hidden]) { font-size: 16px; } /* iPhone par zoom na ho */
+}
+
+/* ---------- Checkout: radio buttons apne label ke saath baayein taraf ---------- */
+.checkout-form__radio { justify-content: flex-start; gap: 10px; }
+.checkout-form__radio input[type='radio'] { width: auto; flex: 0 0 auto; margin: 0; }
+
+/* ---------- Account: tabs ki patti ka scrollbar chhupao ---------- */
+.account-sidebar { scrollbar-width: none; }
+.account-sidebar::-webkit-scrollbar { display: none; }
+
+/* ---------- Forms: phone par input zoom na ho ---------- */
+@media (max-width: 600px) {
+  input[type='text'], input[type='email'], input[type='tel'], input[type='password'],
+  input[type='search'], input[type='number'], input:not([type]), select, textarea { font-size: 16px; }
+}
+
+/* ---------- Admin panel: phone / tablet ---------- */
+@media (max-width: 900px) {
+  .admin-sidebar { height: auto !important; min-height: 0 !important; max-height: none !important; }
+  .admin-sidebar__nav { flex: none !important; align-items: center; scrollbar-width: none; }
+  .admin-sidebar__nav::-webkit-scrollbar { display: none; }
+  .admin-sidebar__link { flex: 0 0 auto; height: auto !important; min-height: 0 !important; }
+  .admin-page__header { flex-wrap: wrap; gap: 10px; }
+  .admin-page__header .admin-search,
+  .admin-page__header form { width: 100%; }
+  .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .admin-table th, .admin-table td { white-space: nowrap; }
+  .admin-table .admin-table__message { white-space: normal; min-width: 180px; }
+}
+
+/* ---------- Home: "Beauty Inspiration" (Tips & Trends) cards ---------- */
+/* Desktop wali fixed oonchai phone par bhi lag rahi thi, is liye 4 mein se sirf ~1.5 card dikhte the
+   aur baqi kat jate the. Phone / tablet par oonchai khud ba khud, cards ke beech jagah. */
+@media (max-width: 900px) {
+  .tips-x { height: auto; gap: 14px; }
+  .tips-x__card,
+  .tips-x__card.is-open { height: 300px; flex: none; }
+  .tips-x__card .tips-x__title,
+  .tips-x__card.is-open .tips-x__title { font-size: 1.6rem; }
+}
+@media (max-width: 560px) {
+  .tips-x { gap: 12px; }
+  .tips-x__card,
+  .tips-x__card.is-open { height: 240px; }
+  .tips-trends__heading { font-size: 2.2rem; }
+}

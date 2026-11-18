@@ -9,11 +9,14 @@ const adminRoutes = require('./routes/admin.routes');
 const accountRoutes = require('./routes/account.routes');
 const supportRoutes = require('./routes/support.routes');
 const couponRoutes = require('./routes/coupon.routes');
+const chatbotRoutes = require('./routes/chatbot.routes');
 const errorMiddleware = require('./middlewares/error.middleware');
 
 const app = express();
 
 app.use(cors());
+// chatbot: tasveer (selfie) ke liye bara body, is liye aam express.json se pehle
+app.use('/api/chatbot', express.json({ limit: '6mb' }), chatbotRoutes);
 app.use(express.json());
 
 app.get('/', (req, res) => {
