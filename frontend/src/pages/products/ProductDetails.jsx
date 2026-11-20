@@ -38,10 +38,12 @@ export default function ProductDetailsPage() {
 //   shades:   ['Black', 'White']                        (older data)
 function getOptions(product) {
   if (Array.isArray(product.variants) && product.variants.length) {
+    // sirf ek size/shade ho to us ki apni (purani sync wali) price nahi: admin wali main price hi chale
+    const single = product.variants.length === 1
     return product.variants
       .map((v) => ({
         label: shadeLabel(v),
-        price: hasValidPrice(v) ? v.price : null,
+        price: !single && hasValidPrice(v) ? v.price : null,
         oldPrice: Number.isFinite(v.oldPrice) && v.oldPrice > 0 ? v.oldPrice : null,
         available: v.available !== false && v.stock !== 0,
       }))
@@ -53,6 +55,26 @@ function getOptions(product) {
       .filter((o) => o.label)
   }
   return []
+}
+
+// Catalog ke "baad mein complete hoga" jaise developer jumle customer ko na dikhen
+const PLACEHOLDER = /\s*Product information[^.]*(?:will be completed|coming soon)[^.]*\./gi
+function cleanDescription(product) {
+  const text = String(product.description || '').replace(PLACEHOLDER, '').trim()
+  const name = String(product.name || '').trim()
+  if (text && text.replace(/\.$/, '') !== name.replace(/\.$/, '')) return text
+  const size = product.sizes?.[0] || product.size
+  const isSun = /sun|spf/i.test(`${product.subCategory} ${product.category} ${name}`)
+  return [
+    `${name} by ${product.brand || 'MINAYSH'}${size ? `, ${size}` : ''}.`,
+    isSun ? 'Daily sun protection from our Sun Care range.' : '',
+    'Not sure if it suits your skin? Ask our Skincare Assistant for a quick recommendation.',
+  ].filter(Boolean).join(' ')
+}
+function defaultHowToUse(product) {
+  return /sun|spf/i.test(`${product.subCategory} ${product.category} ${product.name}`)
+    ? 'Apply generously as the last step of your morning skincare, 15 minutes before going out. Reapply every 2 hours when in the sun, and after sweating or swimming.'
+    : ''
 }
 
 function ProductDetails({ product }) {
@@ -71,7 +93,9 @@ function ProductDetails({ product }) {
 
   const option = options[selected] || null
   const price = option?.price ?? product.price
-  const oldPrice = option?.price ? option.oldPrice : product.oldPrice
+  // size/shade ki apni purani price na ho (aur price product jaisi ho) to product ki purani price dikhao
+  // size/shade ki apni purani price na ho to product ki purani price (agar abhi wali se zyada ho)
+  const oldPrice = option?.oldPrice || (product.oldPrice > price ? product.oldPrice : null)
   const discount = hasValidPrice({ price }) && oldPrice > price ? Math.round((1 - price / oldPrice) * 100) : 0
 
   const canBuy = isPurchasable({ ...product, price }) && (option ? option.available : true)
@@ -81,9 +105,11 @@ function ProductDetails({ product }) {
     (n) => n.key.toLowerCase() === String(product.category || '').toLowerCase()
   )
 
+  const description = cleanDescription(product)
+  const howToUse = product.howToUse || defaultHowToUse(product)
   const tabs = [
-    product.description && { key: 'description', label: 'Description', body: product.description },
-    product.howToUse && { key: 'how', label: 'How to Use', body: product.howToUse },
+    description && { key: 'description', label: 'Description', body: description },
+    howToUse && { key: 'how', label: 'How to Use', body: howToUse },
     product.ingredients && { key: 'ingredients', label: 'Ingredients', body: product.ingredients },
     Array.isArray(product.benefits) && product.benefits.length && {
       key: 'benefits',

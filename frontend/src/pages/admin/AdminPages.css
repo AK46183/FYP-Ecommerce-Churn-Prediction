@@ -143,7 +143,7 @@
     overflow-x: auto;
   }
 }
-
+.admin-loading { color: #4a6b66; margin: 12px 0; font-style: italic; }
 /* ---------- Backend-connected tables ---------- */
 .admin-error {
   margin: 0 0 var(--space-3);

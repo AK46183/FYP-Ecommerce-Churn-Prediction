@@ -163,8 +163,10 @@ export default function Login() {
           setChecking(true)
           try {
             const { user: signedIn } = await loginWithGoogle(response.access_token)
+            // Google sirf customers ke liye; admin ko kabhi Google se andar na jane do
             if (signedIn.role === 'admin') {
-              navigate('/admin', { replace: true })
+              logout()
+              setError('Admin accounts cannot use Google sign-in. Please choose the Admin tab and sign in with your email and password.')
               return
             }
             try {
@@ -448,7 +450,10 @@ export default function Login() {
                 </>
               )}
             </button>
-            <Link to="/register" className="min-auth__alt">Sign Up</Link>
+            {/* Admin ke liye sign up nahi: admin account sirf store owner banata hai */}
+            {role === 'customer' && (
+              <Link to="/register" className="min-auth__alt">Sign Up</Link>
+            )}
 
             {/* GOOGLE SIGN IN — CUSTOMER */}
 
@@ -478,16 +483,22 @@ export default function Login() {
 
           </form>
 
-          <p className="min-auth__switch">
-            New to MINAYSH?{' '}
+          {role === 'customer' ? (
+            <p className="min-auth__switch">
+              New to MINAYSH?{' '}
 
-            <Link to="/register">
-              Create an account
-            </Link>
-          </p>
+              <Link to="/register">
+                Create an account
+              </Link>
+            </p>
+          ) : (
+            <p className="min-auth__switch">
+              Admin access only. Admin accounts are created by the store owner.
+            </p>
+          )}
 
           <p className="min-auth__demo">
-            Secure sign in — your account is verified by the MINAYSH server.
+            Secure sign in. Your account is verified by the MINAYSH server.
           </p>
 
         </motion.section>

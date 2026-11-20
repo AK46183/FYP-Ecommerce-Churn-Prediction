@@ -220,7 +220,7 @@ function EngagementResults({ data }) {
       </div>
 
       {messages.length === 0 ? (
-        <p className="ch-eng__empty">No messages yet — press “Run scoring” to send them to at-risk customers.</p>
+        <p className="ch-eng__empty">No messages yet. Press “Run scoring” to send them to at-risk customers.</p>
       ) : (
         <div className="ch-eng__table">
           <table>
@@ -319,7 +319,7 @@ export default function AdminChurn() {
     setBusy('run')
     try {
       const r = await runScoring(true)
-      setToast(`Scored ${r.scored} customers — High ${r.counts.High}, Medium ${r.counts.Medium}, Low ${r.counts.Low}. ${r.engagementsSent} messages sent.`)
+      setToast(`Scored ${r.scored} customers: High ${r.counts.High}, Medium ${r.counts.Medium}, Low ${r.counts.Low}. ${r.engagementsSent} messages sent.`)
       setReloadKey((k) => k + 1)
     } catch (e) {
       setToast(e.message)
@@ -406,18 +406,18 @@ export default function AdminChurn() {
     ? [
         {
           level: data.counts.high > 130 ? 'critical' : 'high',
-          text: `${data.counts.high} customers are at high risk — launch a win-back SMS campaign within 48 hours.`,
+          text: `${data.counts.high} customers are at high risk. Launch a win-back SMS campaign within 48 hours.`,
           to: `/admin/marketing/new?season=${season}`,
           cta: 'Make strategy',
         },
         {
           level: 'high',
-          text: `Top 5 high-risk VIPs could cost about ${pkr(data.revenueAtRisk)} — call them personally this week.`,
+          text: `Top 5 high-risk VIPs could cost about ${pkr(data.revenueAtRisk)}. Call them personally this week.`,
           to: null,
         },
         {
           level: 'medium',
-          text: `${data.drivers[0].value}% leave because of "${data.drivers[0].label}" — add an automatic reminder on day 30.`,
+          text: `${data.drivers[0].value}% leave because of "${data.drivers[0].label}". Add an automatic reminder on day 30.`,
           to: `/admin/marketing?season=${season}`,
           cta: 'See strategies',
         },
@@ -431,7 +431,7 @@ export default function AdminChurn() {
         <header className="ch-top">
           <div>
             <span className="ch-eyebrow">Churn Monitoring</span>
-            <p className="ch-sub">Click a customer to see why — and what to do</p>
+            <p className="ch-sub">Click a customer to see why, and what to do</p>
           </div>
           <div className="ch-top__right">
             <div className="ch-legend">
@@ -506,7 +506,7 @@ export default function AdminChurn() {
 
           <div className="ch-panels">
             <div className="ch-panel">
-              <h3>Churn rate — last 6 months</h3>
+              <h3>Churn rate, last 6 months</h3>
               <TrendChart points={data.trend} />
             </div>
 

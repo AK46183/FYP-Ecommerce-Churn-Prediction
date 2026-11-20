@@ -18,7 +18,7 @@ const getTransporter = () => {
     nodemailer = require('nodemailer');
   } catch {
     nodemailerMissing = true;
-    console.warn('[mail] nodemailer install nahi hai — Backend folder mein "npm install" chalayein.');
+    console.warn('[mail] nodemailer install nahi hai: Backend folder mein "npm install" chalayein.');
     return null;
   }
   const port = Number(process.env.SMTP_PORT) || 465;
@@ -34,7 +34,7 @@ const getTransporter = () => {
 const mailStatus = () =>
   isConfigured()
     ? `SMTP ready (${process.env.SMTP_USER})`
-    : 'SMTP not configured — emails will be printed in this terminal';
+    : 'SMTP not configured, emails will be printed in this terminal';
 
 const escapeHtml = (s = '') =>
   String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -53,7 +53,7 @@ const layout = (title, bodyHtml) => `<!doctype html>
           ${bodyHtml}
         </td></tr>
         <tr><td style="padding:16px 28px;background:#faf6f4;font-size:11px;color:#8c7a80">
-          ${STORE} — Beauty, made personal. This email was sent from ${escapeHtml(FRONTEND_URL())}
+          ${STORE} | Beauty, made personal. This email was sent from ${escapeHtml(FRONTEND_URL())}
         </td></tr>
       </table>
     </td></tr>
@@ -123,7 +123,7 @@ const itemsTable = (items) => `
     ${items.map((i) => `
       <tr>
         <td style="padding:8px 0;border-bottom:1px solid #eee">
-          <b>${escapeHtml(i.name)}</b>${i.shade ? ` <span style="color:#8c7a80">— ${escapeHtml(i.shade)}</span>` : ''}
+          <b>${escapeHtml(i.name)}</b>${i.shade ? ` <span style="color:#8c7a80">· ${escapeHtml(i.shade)}</span>` : ''}
           <br><span style="color:#8c7a80">Qty ${i.quantity}</span>
         </td>
         <td align="right" style="padding:8px 0;border-bottom:1px solid #eee">${pkr(i.price * i.quantity)}</td>
@@ -135,7 +135,7 @@ const sendOrderConfirmation = (order, items) => {
   return sendMail({
     to: order.customerEmail,
     type: 'order',
-    subject: `Order MN-${order.id} confirmed — ${STORE}`,
+    subject: `Order MN-${order.id} confirmed | ${STORE}`,
     text: `Thank you ${order.customerName}! Order MN-${order.id} placed. Total ${pkr(order.totalAmount)}.`,
     html: layout(`Thank you for your order!`, `
       <p>Hi ${escapeHtml(order.customerName || '')}, we have received your order <b>MN-${order.id}</b>.</p>
@@ -172,7 +172,7 @@ const sendOrderStatus = (order, email, name) =>
   sendMail({
     to: email,
     type: 'status',
-    subject: `Order MN-${order.id} ${order.status} — ${STORE}`,
+    subject: `Order MN-${order.id} ${order.status} | ${STORE}`,
     text: `Hi ${name}, your order MN-${order.id} ${STATUS_TEXT[order.status] || order.status}.`,
     html: layout(`Your order ${STATUS_TEXT[order.status] || order.status}`, `
       <p>Hi ${escapeHtml(name || '')}, an update on order <b>MN-${order.id}</b>:
@@ -200,7 +200,7 @@ const sendContactAck = (name, email) =>
   sendMail({
     to: email,
     type: 'contact',
-    subject: `We received your message — ${STORE}`,
+    subject: `We received your message | ${STORE}`,
     text: `Hi ${name}, thanks for contacting ${STORE}. We will reply within 1-2 business days.`,
     html: layout('Thanks for reaching out', `
       <p>Hi ${escapeHtml(name)}, we have received your message. Our team will reply within 1–2 business days.</p>`),
@@ -235,7 +235,7 @@ const sendCartReminder = (user, items) =>
     subject: `You left something in your bag, ${user.name.split(' ')[0]} ✦`,
     text: `Hi ${user.name}, your MINAYSH bag is waiting: ${items.map((i) => i.name).join(', ')}. ${FRONTEND_URL()}/cart`,
     html: layout('Your bag is waiting for you', `
-      <p>Hi ${escapeHtml(user.name.split(' ')[0])}, you left these in your bag — they're still saved for you:</p>
+      <p>Hi ${escapeHtml(user.name.split(' ')[0])}, you left these in your bag, they're still saved for you:</p>
       ${itemsTable(items)}
       <p style="font-size:13px;color:#5a4a50">Popular items sell out fast, so don't wait too long.</p>
       ${button(`${FRONTEND_URL()}/cart`, 'Complete my order')}`),
@@ -245,7 +245,7 @@ const sendEngagementEmail = ({ email, name, message, type, couponCode }) =>
   sendMail({
     to: email,
     type: 'engagement',
-    subject: type === 'support' ? `We're sorry, ${name.split(' ')[0]} — ${STORE}` : `A little something for you, ${name.split(' ')[0]} ✦`,
+    subject: type === 'support' ? `We're sorry, ${name.split(' ')[0]} | ${STORE}` : `A little something for you, ${name.split(' ')[0]} ✦`,
     text: message,
     html: layout(type === 'support' ? 'We want to make it right' : 'We miss you!', `
       <p>${escapeHtml(message)}</p>
@@ -267,7 +267,7 @@ const sendProductAlert = ({ user, product, kind, oldPrice, from }) => {
     type: isRestock ? 'restock' : 'price_drop',
     subject,
     text: `Hi ${first}, ${product.name} (${where}) ${isRestock ? 'is back in stock' : `dropped from ${pkr(oldPrice)} to ${pkr(product.price)}`}. ${link}`,
-    html: layout(isRestock ? 'Good news — it’s back!' : 'The price just dropped', `
+    html: layout(isRestock ? 'Good news, it’s back!' : 'The price just dropped', `
       <p>Hi ${escapeHtml(first)}, an item ${where} ${isRestock ? 'is <b>back in stock</b>' : 'is now <b>cheaper</b>'}:</p>
       <table width="100%" cellpadding="0" cellspacing="0" style="margin:12px 0;border:1px solid #eee;border-radius:10px">
         <tr>
@@ -275,12 +275,12 @@ const sendProductAlert = ({ user, product, kind, oldPrice, from }) => {
           <td style="padding:12px;font-size:14px">
             <b>${escapeHtml(product.name)}</b><br>
             ${isRestock
-              ? `<span style="color:#2E7D42">In stock now — ${pkr(product.price)}</span>`
+              ? `<span style="color:#2E7D42">In stock now: ${pkr(product.price)}</span>`
               : `<span style="text-decoration:line-through;color:#8c7a80">${pkr(oldPrice)}</span> <b style="color:#b76e79">${pkr(product.price)}</b>`}
           </td>
         </tr>
       </table>
-      <p style="font-size:13px;color:#5a4a50">${isRestock ? 'Popular items sell out fast — grab yours before it is gone again.' : 'Prices can change any time.'}</p>
+      <p style="font-size:13px;color:#5a4a50">${isRestock ? 'Popular items sell out fast. Grab yours before it is gone again.' : 'Prices can change any time.'}</p>
       ${button(link, isRestock ? 'Shop now' : 'See the new price')}`),
   });
 };

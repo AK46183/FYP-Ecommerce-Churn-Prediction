@@ -19,7 +19,7 @@ const handle = (fn, status = 200, message) => async (req, res, next) => {
 };
 
 /* Dashboard */
-const dashboardOverview = handle((req) => adminService.getDashboard(req.query.range));
+const dashboardOverview = handle((req) => require('../services/dashboardCache.service').getDashboardCached(req.query.range));
 
 /* Orders */
 const getAllOrders = handle(() => orderService.getAllOrders());

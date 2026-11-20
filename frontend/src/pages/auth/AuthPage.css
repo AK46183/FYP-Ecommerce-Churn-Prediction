@@ -708,3 +708,58 @@
 
 .auth-page__error { margin: 0 0 0.75rem; font-size: 0.82rem; color: #B23A2F; }
 .auth-page__submit:disabled { opacity: 0.65; cursor: wait; }
+
+/* ===== Naya style: form ek saaf safed card mein (video aur background wahi) ===== */
+.min-auth__center--split .min-auth__form-wrap {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  padding: 36px 36px 30px;
+  box-shadow: 0 24px 60px rgba(43, 20, 30, 0.28);
+  color: var(--color-charcoal, #2b2523);
+}
+.min-auth__form-wrap h1 { color: var(--color-charcoal, #2b2523); text-shadow: none; }
+.min-auth__eyebrow { color: var(--color-rosegold-deep, #a0715a); opacity: 1; }
+.min-auth__intro { color: var(--color-charcoal-soft, #554c48); opacity: 1; }
+.min-auth__roles { background: #f6eeea; border: 0; }
+.min-auth__roles button { color: var(--color-charcoal-soft, #554c48); }
+.min-auth__roles button.is-selected { background: #fff; color: var(--color-charcoal, #2b2523); box-shadow: 0 2px 8px rgba(43, 37, 35, 0.08); }
+.min-auth__form label {
+  color: var(--color-charcoal, #2b2523); opacity: 1;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.min-auth__form input,
+.min-auth__password > input {
+  background: #fff; border: 1px solid #e7ddd8; border-radius: 10px; color: var(--color-charcoal, #2b2523);
+}
+.min-auth__form input::placeholder { color: #b3a8a3; }
+.min-auth__form input:focus { border-color: #a0715a; box-shadow: 0 0 0 3px rgba(176, 132, 104, 0.15); background: #fff; }
+.min-auth__password button { color: var(--color-charcoal-soft, #554c48); }
+.min-auth__forgot { color: var(--color-rosegold-deep, #a0715a); }
+.min-auth__submit {
+  background: linear-gradient(90deg, #b98a6e, #a0715a); color: #fff; border: 0; border-radius: 999px;
+  box-shadow: 0 10px 22px rgba(160, 113, 90, 0.35);
+}
+.min-auth__submit:hover { background: linear-gradient(90deg, #a0715a, #8a5f4a); color: #fff; }
+.min-auth__alt { background: #fff; color: var(--color-rosegold-deep, #a0715a); border: 1px solid #e3cfc4; border-radius: 999px; }
+.min-auth__divider { color: #9a8f8a; }
+.min-auth__divider::before, .min-auth__divider::after { background: #e7ddd8; }
+.min-auth__google { background: #fff; color: var(--color-charcoal, #2b2523); border: 1px solid #e7ddd8; border-radius: 999px; }
+.min-auth__google:hover { background: #fbf3ef; }
+.min-auth__switch, .min-auth__demo { color: var(--color-charcoal-soft, #554c48); opacity: 1; }
+.min-auth__switch a { color: var(--color-rosegold-deep, #a0715a); }
+.min-auth__error, .auth-page__error { background: #fbe3e1; color: #b3261e; border-radius: 10px; padding: 10px 12px; }
+.min-auth__center:not(.min-auth__center--split) .min-auth__form-wrap {
+  background: rgba(255, 255, 255, 0.95); border-radius: 24px; padding: 36px; color: var(--color-charcoal, #2b2523);
+  box-shadow: 0 24px 60px rgba(43, 20, 30, 0.28);
+}
+@media (max-width: 600px) {
+  .min-auth__center--split .min-auth__form-wrap,
+  .min-auth__center:not(.min-auth__center--split) .min-auth__form-wrap { padding: 26px 20px; border-radius: 20px; }
+}
+/* global.css ka purana rule (safed text) card ke andar override */
+main.min-auth .min-auth__form-wrap .min-auth__form label { color: var(--color-charcoal, #2b2523); text-shadow: none; }
+main.min-auth .min-auth__form-wrap .min-auth__forgot { color: var(--color-rosegold-deep, #a0715a); text-shadow: none; }
+main.min-auth .min-auth__form-wrap .min-auth__divider { color: #9a8f8a; text-shadow: none; }
+main.min-auth .min-auth__form-wrap .min-auth__switch,
+main.min-auth .min-auth__form-wrap .min-auth__demo { color: var(--color-charcoal-soft, #554c48); text-shadow: none; }
+main.min-auth .min-auth__form-wrap .min-auth__switch a { color: var(--color-rosegold-deep, #a0715a); }

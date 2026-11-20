@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
@@ -10,10 +10,12 @@ import {
   Store,
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { getDashboard, getCoupons } from '../../services/adminApi.js'
+import { getUpcomingEvents } from '../../services/saleApi.js'
 import './AdminHome.css'
 import './AdminTheme.css'
 
-// 4 workspaces. side: 'left' | 'center' | 'right'. Preview numbers abhi sample hain.
+// 4 workspaces. side: 'left' | 'center' | 'right'. Preview numbers backend ke asli data se aate hain.
 const workspaces = [
   {
     key: 'dashboard',
@@ -49,14 +51,20 @@ const workspaces = [
   },
 ]
 
-// Card ke neeche wala chhota preview box
-function CardPreview({ type }) {
+const pkr = (n) => `PKR ${Math.round(Number(n) || 0).toLocaleString('en-PK')}`
+const pad = (n) => String(Math.max(0, n)).padStart(2, '0')
+
+// Card ke neeche wala chhota preview box. data = { dashboard, coupons, nextSale } (load hone tak null)
+function CardPreview({ type, data, now }) {
+  const dash = data.dashboard
   if (type === 'dashboard') {
-    const bars = [38, 52, 44, 70, 62, 88]
+    const values = dash?.revenue?.bars?.map((b) => b.value) || []
+    const max = Math.max(1, ...values)
+    const bars = values.length ? values.map((v) => Math.max(6, Math.round((v / max) * 100))) : [20, 20, 20, 20, 20, 20, 20]
     return (
       <div className="ah-preview">
-        <span className="ah-preview__label">Revenue this month</span>
-        <strong className="ah-preview__value">PKR 842,500</strong>
+        <span className="ah-preview__label">Revenue · last 30 days</span>
+        <strong className="ah-preview__value">{dash ? pkr(dash.revenue.total) : '-'}</strong>
         <div className="ah-bars">
           {bars.map((h, i) => (
             <span key={i} style={{ height: `${h}%` }} />
@@ -66,33 +74,46 @@ function CardPreview({ type }) {
     )
   }
   if (type === 'churn') {
+    const c = dash?.churn
     return (
       <div className="ah-preview">
         <span className="ah-preview__label">Customers at risk</span>
         <div className="ah-rows">
-          <div className="ah-row"><span className="ah-chip ah-chip--high">High</span><b>128</b></div>
-          <div className="ah-row"><span className="ah-chip ah-chip--mid">Medium</span><b>346</b></div>
-          <div className="ah-row"><span className="ah-chip ah-chip--low">Low</span><b>1,027</b></div>
+          <div className="ah-row"><span className="ah-chip ah-chip--high">High</span><b>{c ? c.highRisk : '-'}</b></div>
+          <div className="ah-row"><span className="ah-chip ah-chip--mid">Medium</span><b>{c ? c.mediumRisk : '-'}</b></div>
+          <div className="ah-row"><span className="ah-chip ah-chip--low">Low</span><b>{c ? c.lowRisk : '-'}</b></div>
         </div>
       </div>
     )
   }
   if (type === 'marketing') {
+    const active = data.coupons ? data.coupons.filter((c) => c.active !== false) : null
     return (
       <div className="ah-preview">
-        <span className="ah-preview__label">Campaigns live</span>
-        <strong className="ah-preview__value">3 active</strong>
-        <div className="ah-tags"><span>Email</span><span>SMS</span><span>Push</span></div>
+        <span className="ah-preview__label">Discount codes live</span>
+        <strong className="ah-preview__value">{active ? `${active.length} active` : '-'}</strong>
+        <div className="ah-tags">
+          {(active || []).slice(0, 3).map((c) => (
+            <span key={c.code}>{c.code}</span>
+          ))}
+        </div>
       </div>
     )
   }
+  const sale = data.nextSale
+  const ms = sale ? Math.max(0, new Date(sale.start) - now) : 0
+  const days = Math.floor(ms / 86400000)
+  const hrs = Math.floor((ms % 86400000) / 3600000)
+  const min = Math.floor((ms % 3600000) / 60000)
   return (
     <div className="ah-preview">
-      <span className="ah-preview__label">11.11 Sale starts in</span>
+      <span className="ah-preview__label">
+        {data.nextSale === undefined ? 'Next sale' : sale ? `${sale.title || sale.name || 'Next sale'} starts in` : 'No sale scheduled'}
+      </span>
       <div className="ah-countdown">
-        <div><b>08</b><small>Days</small></div>
-        <div><b>14</b><small>Hrs</small></div>
-        <div><b>32</b><small>Min</small></div>
+        <div><b>{sale ? pad(days) : '-'}</b><small>Days</small></div>
+        <div><b>{sale ? pad(hrs) : '-'}</b><small>Hrs</small></div>
+        <div><b>{sale ? pad(min) : '-'}</b><small>Min</small></div>
       </div>
     </div>
   )
@@ -103,6 +124,24 @@ export default function AdminHome() {
   const navigate = useNavigate()
   const rootRef = useRef(null)
   const firstName = user?.name ? user.name.split(' ')[0] : 'Admin'
+
+  // Cards ke numbers: Dashboard wala hi data (taake dono jagah ek jaise hon)
+  const [data, setData] = useState({ dashboard: null, coupons: null, nextSale: undefined })
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => {
+    let alive = true
+    const set = (patch) => alive && setData((d) => ({ ...d, ...patch }))
+    getDashboard('30d').then((dashboard) => set({ dashboard })).catch(() => {})
+    getCoupons().then((coupons) => set({ coupons: Array.isArray(coupons) ? coupons : [] })).catch(() => set({ coupons: [] }))
+    getUpcomingEvents()
+      .then((events) => set({ nextSale: events.find((e) => new Date(e.start) > new Date()) || null }))
+      .catch(() => set({ nextSale: null }))
+    const timer = setInterval(() => setNow(new Date()), 30000) // countdown har 30 second
+    return () => {
+      alive = false
+      clearInterval(timer)
+    }
+  }, [])
 
   // Mouse ke saath cards ka halka hilna (smooth floating)
   useEffect(() => {
@@ -158,7 +197,7 @@ export default function AdminHome() {
         </div>
         <h2>{ws.title}</h2>
         <p>{ws.description}</p>
-        <CardPreview type={ws.key} />
+        <CardPreview type={ws.key} data={data} now={now} />
       </Link>
     )
   }

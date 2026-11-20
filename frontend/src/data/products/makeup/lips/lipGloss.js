@@ -375,7 +375,7 @@
     "gallery": [
       "/images/products/makeup/lips/gloss/mc-gloss-9307101823212.jpg"
     ],
-    "description": "Hyper-glossy, cherry-scented lip gloss offering smooth, juicy shine in 9 shades Introducing the all-new Jelly Job Full-Bodied Shine Gloss! No filler, just jelly—get full-bodied shine for volumized-looking lips with just a swipe. Our lightweight formula, paired with a new spatula applicator, delivers jelly-smooth shine and jelly-juicy volume, creating the glassy, high-shine lips of your dreams. Exp",
+    "description": "Hyper-glossy, cherry-scented lip gloss offering smooth, juicy shine in 9 shades Introducing the all-new Jelly Job Full-Bodied Shine Gloss! No filler, just jelly, get full-bodied shine for volumized-looking lips with just a swipe. Our lightweight formula, paired with a new spatula applicator, delivers jelly-smooth shine and jelly-juicy volume, creating the glassy, high-shine lips of your dreams. Exp",
     "variants": [
       {
         "id": "47900616917228",

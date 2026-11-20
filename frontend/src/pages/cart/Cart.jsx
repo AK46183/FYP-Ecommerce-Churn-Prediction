@@ -11,11 +11,11 @@ import './Cart.css'
 const SHIPPING = SHIPPING_STANDARD
 
 export default function Cart() {
-  const { items, removeItem, updateQuantity, subtotal, issueFor, hasBlockingIssue, coupon } = useCart()
+  const { items, removeItem, updateQuantity, subtotal, issueFor, hasBlockingIssue, coupon, bundle } = useCart()
   const { toggle } = useWishlist()
 
   const discount = couponDiscount(coupon, subtotal, SHIPPING)
-  const total = items.length > 0 ? Math.max(0, subtotal - discount + SHIPPING) : 0
+  const total = items.length > 0 ? Math.max(0, subtotal - discount - bundle.discount + SHIPPING) : 0
 
   return (
     <>
@@ -110,6 +110,12 @@ export default function Cart() {
                   <div className="cart-summary__row cart-discount-row">
                     <span>Discount ({coupon.code})</span>
                     <span>− {formatPKR(discount)}</span>
+                  </div>
+                )}
+{bundle.discount > 0 && (
+                  <div className="cart-summary__row cart-discount-row">
+                    <span>Bundle deal ({bundle.bundles} × 3 items)</span>
+                    <span>− {formatPKR(bundle.discount)}</span>
                   </div>
                 )}
                 <CouponBox shipping={SHIPPING} />

@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../config/db.postgres');
+const { encryptedText } = require('../../utils/fieldCrypto');
 
 const User = sequelize.define('User', {
   name: { type: DataTypes.STRING, allowNull: false },
@@ -7,7 +8,7 @@ const User = sequelize.define('User', {
   password: { type: DataTypes.STRING, allowNull: false },
   role: { type: DataTypes.STRING, defaultValue: 'customer' },
   city: { type: DataTypes.STRING, allowNull: true },
-  phone: { type: DataTypes.STRING, allowNull: true },
+  phone: encryptedText('phone', { allowNull: true }), // AES-256-GCM encrypted
   // Churn model ka "complain" feature yahin se aata hai (admin mark karta hai)
   hasComplaint: { type: DataTypes.BOOLEAN, defaultValue: false },
   // Google se login karne walon ke liye

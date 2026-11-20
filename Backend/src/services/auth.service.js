@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/postgres/user.model');
 const ApiError = require('../utils/ApiError');
+const { passwordProblem } = require('../validators/auth.validator');
 const { logActivity } = require('./activityLogger.service');
 const { sendWelcome, sendPasswordReset } = require('./mail.service');
 const { notifyAdmin } = require('./notification.service');
@@ -49,7 +50,7 @@ const loginUser = async ({ email, password }) => {
   const user = await User.findOne({ where: { email: normalizeEmail(email) } });
   if (!user) throw new ApiError(401, 'Invalid email or password');
 
-  const isMatch = await bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(String(password), user.password);
   if (!isMatch) throw new ApiError(401, 'Invalid email or password');
 
   logActivity(user.id, 'login');
@@ -82,10 +83,11 @@ const updateMe = async (userId, { name, phone, city }) => {
 };
 
 const changePassword = async (userId, { currentPassword, newPassword }) => {
-  if (!newPassword || newPassword.length < 6) throw new ApiError(400, 'New password must be at least 6 characters');
+  const problem = passwordProblem(newPassword);
+  if (problem) throw new ApiError(400, problem);
   const user = await User.findByPk(userId);
   if (!user) throw new ApiError(404, 'User not found');
-  const ok = await bcrypt.compare(currentPassword || '', user.password);
+  const ok = await bcrypt.compare(String(currentPassword || ''), user.password);
   if (!ok) throw new ApiError(400, 'Current password is incorrect');
   user.password = await bcrypt.hash(newPassword, 10);
   await user.save();
@@ -110,8 +112,9 @@ const forgotPassword = async ({ email }) => {
 };
 
 const resetPassword = async ({ token, password }) => {
-  if (!token) throw new ApiError(400, 'Reset link is invalid');
-  if (!password || password.length < 6) throw new ApiError(400, 'Password must be at least 6 characters');
+  if (!token || typeof token !== 'string') throw new ApiError(400, 'Reset link is invalid');
+  const problem = passwordProblem(password);
+  if (problem) throw new ApiError(400, problem);
 
   const user = await User.findOne({ where: { resetTokenHash: hashToken(String(token)) } });
   if (!user || !user.resetTokenExpires || user.resetTokenExpires < new Date()) {
@@ -172,6 +175,9 @@ const googleLogin = async ({ accessToken }) => {
     isNew = true;
     sendWelcome(user);
     notifyNewCustomer(user, 'Google');
+  } else if (user.role === 'admin') {
+    // Admin sirf email + password se (Admin tab) login karta hai, Google se nahi
+    throw new ApiError(403, 'Admin accounts cannot use Google sign-in. Please choose the Admin tab and sign in with your email and password.');
   } else if (!user.googleId) {
     user.googleId = profile.sub;
     await user.save();

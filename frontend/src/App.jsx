@@ -1,3 +1,4 @@
+import AdminChats from './pages/admin/AdminChats.jsx'
 import WelcomeModal from './components/auth/WelcomeModal.jsx'
 import PageTitle from './components/layout/PageTitle.jsx'
 import { Routes, Route, Outlet } from 'react-router-dom'
@@ -15,6 +16,8 @@ import Home from './pages/home/Home.jsx'
 
 // Products / categories
 import ProductListing from './pages/products/ProductListing.jsx'
+import BundleOfferPage from './pages/bundle/BundleOfferPage.jsx'
+import NewDropPage from './pages/new/NewDropPage.jsx'
 import ProductDetails from './pages/products/ProductDetails.jsx'
 
 // Cart / checkout
@@ -108,6 +111,7 @@ export default function App() {
             <Route path="orders" element={<AdminOrders />} />
             <Route path="customers" element={<AdminCustomers />} />
             <Route path="messages" element={<AdminMessages />} />
+            <Route path="chats" element={<AdminChats />} />
             <Route path="promotions" element={<AdminPromotions />} />
             <Route path="bundles" element={<AdminBundles />} />
             <Route path="tips-trends" element={<AdminTipsTrends />} />
@@ -120,6 +124,10 @@ export default function App() {
         {/* ---------- Storefront ---------- */}
         <Route element={<StorefrontLayout />}>
           <Route path="/" element={<Home />} />
+
+          <Route path="/new" element={<NewDropPage />} />
+
+          <Route path="/bundle-offer" element={<BundleOfferPage />} />
 
           <Route path="/:category" element={<ProductListing />} />
           <Route path="/:category/:subCategory" element={<ProductListing />} />

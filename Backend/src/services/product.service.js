@@ -3,6 +3,12 @@ const Product = require('../models/postgres/product.model');
 const Category = require('../models/postgres/category.model');
 const ApiError = require('../utils/ApiError');
 const { handleProductChange } = require('./productAlert.service');
+const cache = require('../utils/cache');
+
+// Products ki list (search ke baghair) 5 minute cache mein: har page par 700+ products database se dobara nahi aate.
+// Admin product badle ya order stock badle to cache foran saaf (clearProductCache).
+const LIST_TTL = (Number(process.env.PRODUCT_CACHE_SECONDS) || 300) * 1000;
+const clearProductCache = () => cache.clear('products:');
 
 const getAllProducts = async ({ search, category } = {}) => {
   const where = {};
@@ -14,7 +20,9 @@ const getAllProducts = async ({ search, category } = {}) => {
     ];
   }
   const include = [{ model: Category, ...(category && { where: { name: category } }) }];
-  return Product.findAll({ where, include, order: [['id', 'ASC']] });
+  const load = () => Product.findAll({ where, include, order: [['id', 'ASC']] });
+  if (search) return load(); // search ke nateeje cache nahi (bahut qism ke hote hain)
+  return cache.wrap(`products:list:${category || 'all'}`, LIST_TTL, async () => (await load()).map((p) => p.toJSON()));
 };
 
 // id number bhi ho sakta hai (12) ya frontend ka sku ('sun-001')
@@ -32,7 +40,9 @@ const getProductById = async (idOrSku) => {
 const EDITABLE = ['name', 'description', 'price', 'oldPrice', 'stock', 'imageUrl', 'badge', 'available', 'brand', 'subCategory', 'categoryId'];
 
 const createProduct = async (data) => {
-  return Product.create(data);
+  const product = await Product.create(data);
+  clearProductCache();
+  return product;
 };
 
 const updateProduct = async (idOrSku, data = {}) => {
@@ -45,6 +55,7 @@ const updateProduct = async (idOrSku, data = {}) => {
   }
   const before = { stock: product.stock, available: product.available, price: product.price };
   await product.update(changes);
+  clearProductCache();
   // Wishlist / cart walon ko "back in stock" ya "price drop" email (intezar nahi)
   handleProductChange(before, product);
   return product;
@@ -54,6 +65,7 @@ const deleteProduct = async (idOrSku) => {
   const product = await findProduct(idOrSku);
   if (!product) throw new ApiError(404, 'Product not found');
   await product.destroy();
+  clearProductCache();
   return true;
 };
 
@@ -88,6 +100,7 @@ const getCategorySummary = async () => {
 };
 
 module.exports = {
+  clearProductCache,
   getAllProducts,
   getProductById,
   createProduct,

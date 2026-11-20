@@ -20,7 +20,7 @@ function shadeLabel(shade) {
 export default function CartDrawer() {
   const {
     items, count, subtotal, isCartOpen, closeCart,
-    removeItem, updateQuantity, issueFor, coupon, hasBlockingIssue,
+    removeItem, updateQuantity, issueFor, coupon, hasBlockingIssue, bundle,
   } = useCart()
   const closeRef = useRef(null)
 
@@ -47,7 +47,7 @@ export default function CartDrawer() {
   if (!isCartOpen) return null
 
   const discount = couponDiscount(coupon, subtotal, SHIPPING)
-  const total = items.length ? Math.max(0, subtotal - discount + SHIPPING) : 0
+  const total = items.length ? Math.max(0, subtotal - discount - bundle.discount + SHIPPING) : 0
 
   return createPortal(
     <div className="minaysh-cart" role="presentation">
@@ -144,8 +144,11 @@ export default function CartDrawer() {
               {discount > 0 && (
                 <div className="minaysh-cart__total-row cart-discount-row"><span>Discount ({coupon.code})</span><span>− {formatPKR(discount)}</span></div>
               )}
+              {bundle.discount > 0 && (
+                <div className="minaysh-cart__total-row cart-discount-row"><span>Bundle deal ({bundle.bundles} × 3 items)</span><span>− {formatPKR(bundle.discount)}</span></div>
+              )}
               <div className="minaysh-cart__total-row minaysh-cart__total-row--grand"><span>Estimated total</span><strong>{formatPKR(total)}</strong></div>
-              {hasBlockingIssue && <p className="cart-blocked">Some items need attention — open your bag to fix them.</p>}
+              {hasBlockingIssue && <p className="cart-blocked">Some items need attention. Open your bag to fix them.</p>}
               <Link to={hasBlockingIssue ? '/cart' : '/checkout'} className="minaysh-cart__checkout" onClick={closeCart}>
                 {hasBlockingIssue ? 'Review bag' : 'Check out'}
               </Link>

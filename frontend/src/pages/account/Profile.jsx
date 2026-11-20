@@ -40,7 +40,7 @@ export default function Profile() {
   async function handlePassword(e) {
     e.preventDefault()
     setPwStatus({ type: '', text: '' })
-    if (pw.next.length < 6) return setPwStatus({ type: 'error', text: 'New password must be at least 6 characters.' })
+    if (!/^(?=.*[A-Za-z])(?=.*\d).{8,128}$/.test(pw.next)) return setPwStatus({ type: 'error', text: 'New password must be at least 8 characters and include a letter and a number.' })
     if (pw.next !== pw.confirm) return setPwStatus({ type: 'error', text: 'New passwords do not match.' })
     setPwSaving(true)
     try {

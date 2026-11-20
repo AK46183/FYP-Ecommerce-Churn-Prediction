@@ -156,7 +156,7 @@ const toCustomerCard = (s, type) => {
     name: s.name,
     initials: initials(s.name),
     email: s.email,
-    city: s.city || '—',
+    city: s.city || '-',
     orders: s.stats?.orders ?? 0,
     avgOrder: s.stats?.avgOrder ?? 0,
     lastOrderDays: s.stats?.lastOrderDays ?? s.features?.days_since_last_order ?? 0,
@@ -363,7 +363,7 @@ const engageCustomer = async (userId) => {
   const features = buildFeatures(user, user.Orders);
   const prediction = await predictChurn(features);
   const msg = await sendEngagement({ user, features, prediction, trigger: 'manual', force: true });
-  if (!msg) throw new ApiError(400, 'Customer is Low risk — no engagement message needed');
+  if (!msg) throw new ApiError(400, 'Customer is Low risk, no engagement message needed');
   return msg;
 };
 
