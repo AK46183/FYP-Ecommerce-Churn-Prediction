@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../config/db.postgres');
 const User = require('./user.model');
+const { encryptedText, encryptedAddress } = require('../../utils/fieldCrypto');
 
 const Order = sequelize.define('Order', {
   status: { type: DataTypes.STRING, defaultValue: 'pending' }, // pending, processing, shipped, delivered, cancelled
@@ -13,9 +14,9 @@ const Order = sequelize.define('Order', {
   payment: { type: DataTypes.STRING, defaultValue: 'cod' }, // cod | card
   customerName: { type: DataTypes.STRING },
   customerEmail: { type: DataTypes.STRING },
-  phone: { type: DataTypes.STRING },
-  // { street, city, province, postal }
-  shippingAddress: { type: DataTypes.JSONB, allowNull: true },
+  phone: encryptedText('phone'), // AES-256-GCM encrypted
+  // { street, city, province, postal }: poora encrypted, sirf city plain (reports)
+  shippingAddress: encryptedAddress('shippingAddress', { allowNull: true }),
 }, {
   tableName: 'orders',
   timestamps: true,

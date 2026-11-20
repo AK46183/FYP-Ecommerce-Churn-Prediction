@@ -192,7 +192,7 @@ export default function ChatWidget() {
     setBusy(true)
     try {
       const data = await api('/chatbot/message', { method: 'POST', body: { sessionId, ...body } })
-      push({ from: 'bot', text: data?.reply || 'Sorry, I could not answer that. Please try again.', products: data?.products || [] })
+      push({ from: 'bot', text: data?.reply || 'Sorry, I could not answer that. Please try again.', products: data?.products || [], sources: data?.sources || [] })
     } catch (err) {
       push({ from: 'bot', error: true, text: err.message || 'Something went wrong. Please try again.' })
     } finally {
@@ -283,6 +283,9 @@ export default function ChatWidget() {
                 {m.hadImage && !m.image && <em>Photo sent</em>}
                 {m.text && <p>{m.text}</p>}
                 {m.from === 'bot' && <ProductCards products={m.products} onView={() => setOpen(false)} />}
+                {m.from === 'bot' && m.sources?.length > 0 && (
+                  <small className="skin-chat__sources">Based on: {m.sources.join(' · ')}</small>
+                )}
               </div>
             ))}
             {busy && (

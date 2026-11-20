@@ -5,11 +5,13 @@ Chalao:  python server.py        (default port 8001)
        ->     {"reply": "...", "scan": {...} | null, "profile": {...}, "products": [{sku, name, brand, price, type}]}
   POST /reset {"session_id": "abc"}
 .env:  SKINCARE_PORT=8001   SKINCARE_SERVICE_KEY=koi-lambi-random-string (Node bhi yehi X-Service-Key header mein bheje)"""
-import base64, json, os, threading, time
+import base64, hmac, json, os, threading, time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import config
 import scan
 from assistant import Assistant
+from rag import KnowledgeBaseError, get_retriever
+import seclog
 
 PORT = int(os.environ.get("SKINCARE_PORT", "8001"))
 SERVICE_KEY = os.environ.get("SKINCARE_SERVICE_KEY") or None
@@ -27,12 +29,16 @@ def get_session(sid):
         if sid not in _sessions:
             if len(_sessions) >= MAX_SESSIONS:
                 del _sessions[min(_sessions, key=lambda k: _sessions[k]["t"])]
-            _sessions[sid] = {"bot": Assistant(), "t": now, "lock": threading.Lock()}
+            bot = Assistant()
+            bot.session_hash = seclog.sid_hash(sid)
+            _sessions[sid] = {"bot": bot, "t": now, "lock": threading.Lock()}
         _sessions[sid]["t"] = now
         return _sessions[sid]
 
 
 def handle_chat(data):
+    if not isinstance(data, dict):
+        return 400, {"error": "JSON object chahiye"}
     sid = str(data.get("session_id") or "").strip()[:80]
     message = str(data.get("message") or "").strip()[:MAX_MESSAGE]
     image = data.get("image_base64")
@@ -40,7 +46,10 @@ def handle_chat(data):
         return 400, {"error": "session_id chahiye"}
     if not message and not image:
         return 400, {"error": "message ya image chahiye"}
-    sess = get_session(sid)
+    try:
+        sess = get_session(sid)
+    except KnowledgeBaseError:
+        return 503, {"error": "Knowledge base unavailable (integrity check failed)"}
     with sess["lock"]:                         # ek session mein ek waqt mein ek hi message
         bot, result = sess["bot"], None
         if image:
@@ -54,7 +63,8 @@ def handle_chat(data):
         reply = bot.chat(message, scan=result)
         profile = {k: bot.state[k] for k in ("skin_type", "concerns", "allergies", "pregnancy")}
         products = list(getattr(bot, "last_products", []))
-    return 200, {"reply": reply, "scan": result, "profile": profile, "products": products}
+        sources = list(getattr(bot, "last_sources", []))
+    return 200, {"reply": reply, "scan": result, "profile": profile, "products": products, "sources": sources}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -67,17 +77,28 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def _authorized(self):
-        return SERVICE_KEY is None or self.headers.get("X-Service-Key") == SERVICE_KEY
+        if SERVICE_KEY is None:
+            return True
+        given = self.headers.get("X-Service-Key") or ""
+        return hmac.compare_digest(given.encode(), SERVICE_KEY.encode())   # timing attack se bachao
 
     def do_GET(self):
         if self.path == "/health":
-            return self._send(200, {"ok": True, "llm": bool(config.GEMINI_KEY or config.CLAUDE_KEY), "sessions": len(_sessions)})
+            try:
+                get_retriever()._recheck()
+                kb = True
+            except Exception:
+                kb = False
+            return self._send(200 if kb else 503, {"ok": kb, "llm": bool(config.GEMINI_KEY or config.CLAUDE_KEY), "knowledge_base": kb})
         self._send(404, {"error": "not found"})
 
     def do_POST(self):
         if not self._authorized():
             return self._send(401, {"error": "unauthorized"})
-        n = int(self.headers.get("Content-Length") or 0)
+        try:
+            n = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            return self._send(400, {"error": "Content-Length theek nahi"})
         if n <= 0 or n > MAX_BODY:
             return self._send(413, {"error": "body khali hai ya bohat bari"})
         try:
@@ -92,7 +113,8 @@ class Handler(BaseHTTPRequestHandler):
                     _sessions.pop(str(data.get("session_id") or ""), None)
                 return self._send(200, {"ok": True})
         except Exception as e:
-            return self._send(500, {"error": "Service mein masla aa gaya", "detail": str(e)[:200]})
+            print("ERROR", self.path, type(e).__name__, str(e)[:300])        # detail sirf server ke log mein
+            return self._send(500, {"error": "Service mein masla aa gaya"})
         self._send(404, {"error": "not found"})
 
     def log_message(self, fmt, *args):          # message ka matn log nahi karte (privacy)
@@ -100,5 +122,13 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    try:
+        get_retriever()
+        print("Knowledge base verified.")
+    except KnowledgeBaseError as e:
+        print("KNOWLEDGE BASE CHECK FAILED -> chat band rahegi (fail-closed):", e)
+        print("Review karke chalayein: python kb_guard.py scan  aur  python kb_guard.py approve --by \"<naam>\"")
+    if not SERVICE_KEY:
+        print("WARNING: SKINCARE_SERVICE_KEY set nahi. .env mein ek lambi random key rakhein (Backend/.env mein bhi wohi).")
     print(f"Skincare AI service: http://127.0.0.1:{PORT}  (LLM: {'on' if (config.GEMINI_KEY or config.CLAUDE_KEY) else 'OFFLINE'}, key check: {'on' if SERVICE_KEY else 'off'})")
     ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()

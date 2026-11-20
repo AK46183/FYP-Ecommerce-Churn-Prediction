@@ -17,7 +17,7 @@ export default function ResetPassword() {
   async function handleSubmit(e) {
     e.preventDefault()
     setError('')
-    if (password.length < 6) return setError('Password must be at least 6 characters.')
+    if (!/^(?=.*[A-Za-z])(?=.*\d).{8,128}$/.test(password)) return setError('Password must be at least 8 characters and include a letter and a number.')
     if (password !== confirm) return setError('Passwords do not match.')
     setSaving(true)
     try {

@@ -8,19 +8,37 @@ const ChatMessage = require('../models/mongo/chatMessage.model');
 
 const AI_URL = (process.env.SKINCARE_AI_URL || 'http://127.0.0.1:8001').replace(/\/$/, '');
 const SERVICE_KEY = process.env.SKINCARE_SERVICE_KEY || null;
+// AI ke jawab mein sirf saada text jaye (koi HTML/script nahi), aur had se lamba na ho
+const cleanReply = (t) => String(t || '')
+  .replace(/<[^>]*>/g, '')
+  .replace(/\s*[—–]\s*/g, ', ')   // lambi dash website par nahi dikhani
+  .slice(0, 4000);
+// Database mein save karne se pehle card / CNIC / OTP jaise number chhupa do
+const maskSensitive = (t) => String(t || '')
+  .replace(/\b(?:\d[ -]?){13,19}\b/g, '[hidden number]')
+  .replace(/\b\d{5}-?\d{7}-?\d\b/g, '[hidden CNIC]')
+  .replace(/\b(otp|cvv|pin)\s*[:#-]?\s*\d{3,8}\b/gi, '$1 [hidden]');
 const MAX_MESSAGE = 1000;
 const MAX_IMAGE_B64 = 5.5 * 1024 * 1024; // ~4 MB tasveer
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
 
-// chhota in-memory rate limit: har session/IP ke liye 1 minute mein 20 messages
-const hits = new Map();
-const limited = (key) => {
-  const now = Date.now();
-  const list = (hits.get(key) || []).filter((t) => now - t < 60_000);
-  list.push(now);
-  hits.set(key, list);
-  if (hits.size > 5000) hits.clear();
-  return list.length > 20;
+// Limits (AI har jawab par paisa/quota khata hai, is liye spam aur "denial of wallet" se bachao):
+//  - har session aur har IP: 1 minute mein 20 messages
+//  - har IP: 24 ghante mein 300 messages aur 30 tasveerein
+const { rateLimit } = require('../middlewares/security.middleware');
+const perMinute = rateLimit({ name: 'chat-min', windowMs: 60_000, max: 20, key: (req) => req.chatKey });
+const perMinuteIp = rateLimit({ name: 'chat-min-ip', windowMs: 60_000, max: 20 });
+const perDayIp = rateLimit({ name: 'chat-day', windowMs: 24 * 60 * 60_000, max: Number(process.env.CHAT_DAILY_LIMIT) || 300,
+  message: 'Daily chat limit reached. Please come back tomorrow.' });
+const imagesPerDay = rateLimit({ name: 'chat-img', windowMs: 24 * 60 * 60_000, max: Number(process.env.SCAN_DAILY_LIMIT) || 30,
+  message: 'Daily skin scan limit reached. Please try again tomorrow.' });
+const limited = async (req, res, hasImage) => {
+  for (const mw of [perMinute, perMinuteIp, perDayIp, ...(hasImage ? [imagesPerDay] : [])]) {
+    let passed = false;
+    mw(req, res, () => { passed = true; });
+    if (!passed) return true; // middleware ne 429 bhej diya
+  }
+  return false;
 };
 
 const callAI = async (path, body, timeoutMs = 90_000) => {
@@ -46,14 +64,14 @@ const callAI = async (path, body, timeoutMs = 90_000) => {
 
 // Chat ko MongoDB mein save karta hai. Chat ko kabhi rokta nahi: Mongo band ho to bas save nahi hota.
 const SCAN_FIELDS = ['oiliness', 'acne', 'dryness', 'redness', 'dark_spots', 'dark_circles', 'skin_type_guess', 'needs_dermatologist'];
-const saveTurn = async ({ sessionId, userId, message, hadImage, scan, reply, profile, products }) => {
+const saveTurn = async ({ sessionId, userId, message, hadImage, scan, reply, profile, products, sources }) => {
   if (mongoose.connection.readyState !== 1) return; // MongoDB connected nahi
   const scanSummary = scan && scan.ok && scan.face_found
     ? Object.fromEntries(SCAN_FIELDS.filter((k) => k in scan).map((k) => [k, scan[k]]))
     : null;
   await ChatMessage.insertMany([
-    { sessionId, userId, role: 'user', text: message, hadImage, scan: scanSummary },
-    { sessionId, userId, role: 'bot', text: reply, productSkus: (products || []).map((p) => p.sku) },
+    { sessionId, userId, role: 'user', text: maskSensitive(message), hadImage, scan: scanSummary },
+    { sessionId, userId, role: 'bot', text: reply, productSkus: (products || []).map((p) => p.sku), sources: sources || [] },
   ]);
   await ChatSession.updateOne(
     { sessionId },
@@ -91,22 +109,25 @@ const sendMessage = async (req, res, next) => {
     if (image && (image.length > MAX_IMAGE_B64 || !ALLOWED_MIME.includes(mime))) {
       throw new ApiError(400, 'Tasveer JPG/PNG/WEBP ho aur 4 MB se chhoti ho');
     }
-    if (limited(session_id) || limited(`ip-${req.ip}`)) throw new ApiError(429, 'Bohat zyada messages. Ek minute baad try karein.');
+    req.chatKey = session_id;
+    if (await limited(req, res, !!image)) return; // 429 jawab ja chuka
 
     const out = await callAI('/chat', { session_id, message, ...(image && { image_base64: image, image_mime: mime }) });
     // scan ka poora JSON client ko nahi bhejte, sirf itna ke scan hua ya nahi
     const scanned = out.scan ? { ok: !!out.scan.ok, faceFound: !!out.scan.face_found } : null;
     // bot ne jin store products ka naam liya (chat mein product cards ke liye)
     const products = (Array.isArray(out.products) ? out.products : []).slice(0, 6).map((p) => ({
-      sku: String(p.sku), name: String(p.name), brand: p.brand || '', price: Number(p.price) || 0,
+      sku: String(p.sku).slice(0, 40), name: String(p.name).slice(0, 160), brand: String(p.brand || '').slice(0, 60), price: Number(p.price) || 0,
+    }));
+    // jawab kin knowledge files se bana (attribution); sirf naam aur hash, matn nahi
+    const sources = (Array.isArray(out.sources) ? out.sources : []).slice(0, 5).map((s) => ({
+      title: String(s.title || '').slice(0, 80), source: String(s.source || '').slice(0, 60), sha256: String(s.sha256 || '').slice(0, 16),
     }));
     saveTurn({
       sessionId: session_id, userId: req.user?.id || null, message, hadImage: !!image,
-      scan: out.scan, reply: out.reply, profile: out.profile, products,
+      scan: out.scan, reply: out.reply, profile: out.profile, products, sources,
     }).catch((e) => console.error('Chat save nahi hui:', e.message));
-    // lambi dash (—) website par nahi dikhani
-    const reply = String(out.reply || '').replace(/\s*[—–]\s*/g, ', ');
-    res.status(200).json(new ApiResponse(200, { reply, scanned, products }));
+    res.status(200).json(new ApiResponse(200, { reply: cleanReply(out.reply), scanned, products, sources: sources.map((s) => s.title) }));
   } catch (error) {
     next(error);
   }
@@ -182,7 +203,7 @@ const getSession = async (req, res, next) => {
         skinType: session.skinType, concerns: session.concerns, startedAt: session.createdAt, lastMessageAt: session.lastMessageAt,
       },
       messages: messages.map((m) => ({
-        role: m.role, text: m.text, hadImage: m.hadImage, scan: m.scan, productSkus: m.productSkus || [], at: m.createdAt,
+        role: m.role, text: m.text, hadImage: m.hadImage, scan: m.scan, productSkus: m.productSkus || [], sources: m.sources || [], at: m.createdAt,
       })),
     }));
   } catch (error) {
@@ -199,7 +220,7 @@ const serviceStatus = async (req, res, next) => {
     try {
       const r = await fetch(`${AI_URL}/health`, { signal: ctrl.signal });
       const j = await r.json();
-      ai = { running: !!j.ok, llm: !!j.llm };
+      ai = { running: true, llm: !!j.llm, knowledgeBase: j.knowledge_base !== false };
     } catch {
       /* service band */
     } finally {
@@ -211,4 +232,19 @@ const serviceStatus = async (req, res, next) => {
   }
 };
 
-module.exports = { sendMessage, resetChat, listSessions, getSession, serviceStatus };
+// DELETE /api/chatbot/admin/sessions/:sessionId  -> customer ki chat mitao (erasure request)
+const deleteSession = async (req, res, next) => {
+  try {
+    needMongo();
+    const sessionId = String(req.params.sessionId || '').slice(0, 80);
+    const [msgs, sess] = await Promise.all([ChatMessage.deleteMany({ sessionId }), ChatSession.deleteOne({ sessionId })]);
+    if (!sess.deletedCount && !msgs.deletedCount) throw new ApiError(404, 'Chat nahi mili');
+    // deletion log (kis admin ne, kab, kitne messages) — chat ka matn nahi
+    console.log(JSON.stringify({ event: 'chat_erased', at: new Date().toISOString(), by: req.user?.id, session: sessionId.slice(-8), messages: msgs.deletedCount }));
+    res.status(200).json(new ApiResponse(200, { deleted: msgs.deletedCount }, 'Chat deleted'));
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { sendMessage, resetChat, listSessions, getSession, serviceStatus, deleteSession };

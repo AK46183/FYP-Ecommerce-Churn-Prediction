@@ -31,8 +31,8 @@ export default function Register() {
       return
     }
 
-    if (password.length < 6) {
-      setError('Password must have at least 6 characters.')
+    if (!/^(?=.*[A-Za-z])(?=.*\d).{8,128}$/.test(password)) {
+      setError('Password must be at least 8 characters and include a letter and a number.')
       return
     }
 
@@ -161,7 +161,7 @@ export default function Register() {
                     ? 'text'
                     : 'password'
                 }
-                placeholder="At least 6 characters"
+                placeholder="8+ characters, a letter and a number"
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) =>

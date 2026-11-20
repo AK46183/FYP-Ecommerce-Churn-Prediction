@@ -45,6 +45,30 @@ export default function AdminChats() {
     }
   }, [openId])
 
+  // erasure request: customer ki chat mitao (do dafa click = pakka)
+  const [confirmDel, setConfirmDel] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  useEffect(() => setConfirmDel(false), [openId])
+  async function deleteChat() {
+    if (!confirmDel) {
+      setConfirmDel(true)
+      setTimeout(() => setConfirmDel(false), 4000)
+      return
+    }
+    setDeleting(true)
+    try {
+      await api(`/chatbot/admin/sessions/${encodeURIComponent(openId)}`, { method: 'DELETE' })
+      setOpenId(null)
+      setChat(null)
+      load()
+    } catch (err) {
+      setError(err.message || 'Chat could not be deleted.')
+    } finally {
+      setDeleting(false)
+      setConfirmDel(false)
+    }
+  }
+
   const pages = data ? Math.max(1, Math.ceil(data.total / LIMIT)) : 1
   const stats = data?.stats
 
@@ -139,6 +163,9 @@ export default function AdminChats() {
               <header>
                 <strong>{chat.session.userId ? `User #${chat.session.userId}` : 'Guest'}</strong>
                 <span>Started {fmt(chat.session.startedAt)} · {chat.session.messageCount} messages</span>
+                <button type="button" className={`admin-chats__delete${confirmDel ? ' is-confirm' : ''}`} onClick={deleteChat} disabled={deleting}>
+                  {deleting ? 'Deleting…' : confirmDel ? 'Click again to delete' : 'Delete chat'}
+                </button>
               </header>
               <div className="admin-chats__msgs">
                 {chat.messages.map((m, i) => (
@@ -151,6 +178,7 @@ export default function AdminChats() {
                       </small>
                     )}
                     {m.productSkus?.length > 0 && <small>Products: {m.productSkus.join(', ')}</small>}
+                    {m.sources?.length > 0 && <small>Sources: {m.sources.map((s) => `${s.title} (${s.source}, ${s.sha256})`).join(' · ')}</small>}
                     <time>{fmt(m.at)}</time>
                   </div>
                 ))}

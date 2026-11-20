@@ -10,6 +10,8 @@ const { sequelize } = require('../config/db.postgres');
 const { sendOrderConfirmation, sendOrderStatus } = require('./mail.service');
 const couponService = require('./coupon.service');
 const { bundleDeal } = require('./bundleDeal.service');
+const cache = require('../utils/cache');
+const clearProductCache = () => cache.clear('products:'); // stock badla to products ki list dobara
 const { notifyAdmin } = require('./notification.service');
 const { handleProductChange, LOW_STOCK } = require('./productAlert.service');
 
@@ -111,6 +113,7 @@ const updateOrderStatus = async (orderId, status) => {
       await product.reload();
       handleProductChange(before, product);
     }
+    clearProductCache();
   }
 
   // Customer ko status email + admin inbox
@@ -285,6 +288,7 @@ const createOrder = async (userId, payload) => {
     created.setDataValue('items', priced);
     return created;
   });
+  clearProductCache();
 
   logActivity(userId, 'checkout', null, { orderId: order.id, totalAmount: order.totalAmount });
   const emailItems = order.getDataValue('items').map((l) => ({

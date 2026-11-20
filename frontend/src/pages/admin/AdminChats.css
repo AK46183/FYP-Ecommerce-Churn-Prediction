@@ -32,3 +32,7 @@
 .admin-chats__msg time { font-size: 0.66rem; opacity: 0.6; }
 .admin-chats__msg--user { align-self: flex-end; background: #2b2523; color: #fff; border-bottom-right-radius: 4px; }
 .admin-chats__msg--bot { align-self: flex-start; background: #fff; border: 1px solid #e7ddd8; border-bottom-left-radius: 4px; }
+
+.admin-chats__delete { justify-self: start; margin-top: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid #c9b6b0; background: #fff; color: #8a3b32; font-size: 0.78rem; cursor: pointer; }
+.admin-chats__delete.is-confirm { background: #b3261e; border-color: #b3261e; color: #fff; }
+.admin-chats__delete:disabled { opacity: 0.6; cursor: default; }

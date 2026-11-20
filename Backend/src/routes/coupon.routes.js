@@ -2,10 +2,11 @@
 const express = require('express');
 const router = express.Router();
 const { optionalAuth } = require('../middlewares/auth.middleware');
+const { limits } = require('../middlewares/security.middleware');
 const couponService = require('../services/coupon.service');
 const ApiResponse = require('../utils/ApiResponse');
 
-router.post('/validate', optionalAuth, async (req, res, next) => {
+router.post('/validate', limits.coupon, optionalAuth, async (req, res, next) => {
   try {
     const { code, subtotal, shipping } = req.body || {};
     const r = await couponService.evaluate(code, {

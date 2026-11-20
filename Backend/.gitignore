@@ -1,2 +1,5 @@
 node_modules/
 .env
+
+# backups (asli customer data, kabhi git mein nahi)
+backups/

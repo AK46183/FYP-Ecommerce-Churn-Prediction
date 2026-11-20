@@ -4,3 +4,4 @@ __pycache__/
 vector_store/
 .venv/
 eval_results*.csv
+logs/

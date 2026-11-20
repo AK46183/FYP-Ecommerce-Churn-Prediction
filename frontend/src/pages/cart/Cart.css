@@ -183,3 +183,60 @@
     position: static;
   }
 }
+
+/* ===== Naya style (Checkout jaisa): saaf safed panel + blush summary ===== */
+.cart-page__layout { gap: 32px; align-items: start; }
+.cart-page__items {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  padding: 6px 24px;
+}
+.cart-item { padding: 20px 0; gap: 18px; border-bottom: 1px solid var(--color-line); }
+.cart-item:last-child { border-bottom: 0; }
+.cart-item__image {
+  width: 92px; height: 92px; object-fit: contain; padding: 8px;
+  border-radius: 50%; background: #fbf3ef;
+}
+.cart-item h3 { font-size: 0.95rem; font-weight: 500; color: var(--color-charcoal); line-height: 1.35; }
+.cart-item__variant { font-size: 0.76rem; color: var(--color-charcoal-soft); margin-top: 3px; }
+.cart-item__remove { border-radius: 50%; width: 30px; height: 30px; display: grid; place-items: center; color: var(--color-charcoal-soft); }
+.cart-item__remove:hover { background: #fbf3ef; color: var(--color-rosegold-deep); }
+.cart-item__qty { border: 1px solid var(--color-line); border-radius: 999px; padding: 2px 4px; background: #fff; }
+.cart-item__qty button { border-radius: 50%; width: 28px; height: 28px; }
+.cart-item__qty button:hover { background: #fbf3ef; }
+.cart-item__save { font-size: 0.76rem; color: var(--color-rosegold-deep); }
+.cart-item__price { font-size: 0.98rem; font-weight: 600; color: var(--color-charcoal); }
+
+.cart-summary {
+  position: sticky; top: 110px;
+  background: linear-gradient(160deg, #fff7f3, #f8e6de);
+  border: 0; border-radius: 28px; padding: 28px 30px;
+  box-shadow: 0 8px 24px rgba(185, 138, 110, 0.12);
+}
+.cart-summary h3 {
+  font-family: var(--font-display); font-size: 1.45rem; font-weight: 500; font-style: italic;
+  color: var(--color-rosegold-deep); margin-bottom: 14px;
+}
+.cart-summary__row { font-size: 0.88rem; color: var(--color-charcoal-soft); padding: 7px 0; }
+.cart-summary__row--total {
+  margin-top: 10px; padding-top: 14px; border-top: 1px solid rgba(160, 113, 90, 0.2);
+  font-size: 1.1rem; font-weight: 600; color: var(--color-charcoal);
+}
+.cart-summary__checkout {
+  display: block; margin-top: 18px; padding: 15px; border-radius: 999px; text-align: center;
+  background: linear-gradient(90deg, #b98a6e, #a0715a); color: #fff; border: 0;
+  font-size: 0.84rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  box-shadow: 0 10px 22px rgba(160, 113, 90, 0.35); text-decoration: none;
+}
+.cart-summary__checkout:hover { background: linear-gradient(90deg, #a0715a, #8a5f4a); color: #fff; }
+.cart-page__empty { background: rgba(255, 255, 255, 0.94); border: 1px solid var(--color-line); border-radius: 14px; padding: 48px 24px; text-align: center; }
+.cart-page__empty-link {
+  display: inline-block; margin-top: 14px; padding: 12px 24px; border-radius: 999px;
+  background: linear-gradient(90deg, #b98a6e, #a0715a); color: #fff; text-decoration: none; font-weight: 600; font-size: 0.82rem;
+}
+@media (max-width: 600px) {
+  .cart-page__items { padding: 2px 14px; }
+  .cart-item__image { width: 72px; height: 72px; }
+  .cart-summary { position: static; border-radius: 22px; padding: 22px 18px; }
+}

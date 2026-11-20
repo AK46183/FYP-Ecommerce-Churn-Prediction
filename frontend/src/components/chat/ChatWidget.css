@@ -223,3 +223,6 @@
   .skin-chat { right: 12px; bottom: 12px; }
   .skin-chat__panel { width: calc(100vw - 24px); height: calc(100vh - 96px); }
 }
+
+/* jawab kin knowledge notes se bana (RAG attribution) */
+.skin-chat__sources { display: block; margin-top: 6px; font-size: 0.7rem; line-height: 1.35; color: #8a7d78; }

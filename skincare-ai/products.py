@@ -82,9 +82,23 @@ NAME_ACTIVES = {
 }
 
 
+def _safe(items):
+    """Jis product ke naam/brand/ingredients mein chhupi hidayat ya invisible characters hon, woh RAG mein nahi jata."""
+    import kb_guard, seclog
+    out = []
+    for p in items:
+        text = " ".join(str(p.get(k) or "") for k in ("name", "brand", "key_ingredients"))
+        issues = [k for k, _ in kb_guard.scan_text(text, p["sku"]) if k != "link"]
+        if issues:
+            seclog.event("product_rejected", sku=p["sku"], issues=issues)
+            continue
+        out.append(p)
+    return out
+
+
 class ProductSearch:
     def __init__(self):
-        self.items = load_products()
+        self.items = _safe(load_products())
 
     def still_ok(self, sku, exclude_terms=None, pregnant=False, allergies=None):
         """Pehle bataya hua product ab bhi theek hai? (allergy / pregnancy / exclude ke baad) -> product ya None"""
