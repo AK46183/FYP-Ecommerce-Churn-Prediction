@@ -13,7 +13,9 @@ from assistant import Assistant
 from rag import KnowledgeBaseError, get_retriever
 import seclog
 
-PORT = int(os.environ.get("SKINCARE_PORT", "8001"))
+# Laptop par: 127.0.0.1 (sirf isi computer se). Render par: SKINCARE_HOST=0.0.0.0 aur PORT Render deta hai.
+PORT = int(os.environ.get("PORT") or os.environ.get("SKINCARE_PORT", "8001"))
+HOST = os.environ.get("SKINCARE_HOST", "127.0.0.1")
 SERVICE_KEY = os.environ.get("SKINCARE_SERVICE_KEY") or None
 MAX_BODY = 6 * 1024 * 1024          # base64 tasveer samet
 SESSION_TTL, MAX_SESSIONS, MAX_MESSAGE = 60 * 60, 300, 1000
@@ -130,5 +132,7 @@ if __name__ == "__main__":
         print("Review karke chalayein: python kb_guard.py scan  aur  python kb_guard.py approve --by \"<naam>\"")
     if not SERVICE_KEY:
         print("WARNING: SKINCARE_SERVICE_KEY set nahi. .env mein ek lambi random key rakhein (Backend/.env mein bhi wohi).")
-    print(f"Skincare AI service: http://127.0.0.1:{PORT}  (LLM: {'on' if (config.GEMINI_KEY or config.CLAUDE_KEY) else 'OFFLINE'}, key check: {'on' if SERVICE_KEY else 'off'})")
-    ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()
+    if HOST != "127.0.0.1" and not SERVICE_KEY:
+        raise SystemExit("SKINCARE_HOST public hai lekin SKINCARE_SERVICE_KEY nahi: service band (koi bhi isay call kar sakta).")
+    print(f"Skincare AI service: http://{HOST}:{PORT}  (LLM: {'on' if (config.GEMINI_KEY or config.CLAUDE_KEY) else 'OFFLINE'}, key check: {'on' if SERVICE_KEY else 'off'})")
+    ThreadingHTTPServer((HOST, PORT), Handler).serve_forever()
