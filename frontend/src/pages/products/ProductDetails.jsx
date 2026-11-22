@@ -58,7 +58,7 @@ function getOptions(product) {
 }
 
 // Catalog ke "baad mein complete hoga" jaise developer jumle customer ko na dikhen
-const PLACEHOLDER = /\s*Product information[^.]*(?:will be completed|coming soon)[^.]*\./gi
+const PLACEHOLDER = /\s*(?:Additional\s+)?Product (?:information|details)[^.]*(?:will be (?:completed|added)|coming soon)[^.]*\./gi
 function cleanDescription(product) {
   const text = String(product.description || '').replace(PLACEHOLDER, '').trim()
   const name = String(product.name || '').trim()

@@ -199,6 +199,7 @@
   font-weight: 600;
 }
 .db-pill--up { background: rgba(120, 190, 130, 0.22); color: #2f7a3e; }
+.db-pill--down { background: rgba(214, 98, 98, 0.16); color: #a33a3a; }
 
 /* Revenue dot bars */
 .db-dotbars {

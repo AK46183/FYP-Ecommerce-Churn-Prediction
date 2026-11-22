@@ -124,3 +124,37 @@
     gap: var(--space-2);
   }
 }
+
+/* Show more (pehle 48 products, phir aur) */
+.listing__more {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 36px 0 8px;
+}
+.listing__more-count {
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: #7a6a6f;
+}
+.listing__more-btn {
+  min-width: 200px;
+  padding: 13px 28px;
+  border: 1px solid #2b2124;
+  border-radius: 999px;
+  background: transparent;
+  color: #2b2124;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.listing__more-btn:hover,
+.listing__more-btn:focus-visible {
+  background: #2b2124;
+  color: #fff;
+}

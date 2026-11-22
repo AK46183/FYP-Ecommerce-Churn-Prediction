@@ -6,6 +6,7 @@ import {
   ShoppingBag,
   Users,
   TrendingUp,
+  TrendingDown,
   ArrowUpRight,
   Wallet,
   Activity,
@@ -16,6 +17,7 @@ import {
   Megaphone,
 } from 'lucide-react'
 import { getDashboard } from '../../services/adminApi.js'
+import { getUpcomingEvents } from '../../services/saleApi.js'
 import { useAuth } from '../../context/AuthContext.jsx'
 import './AdminDashboard.css'
 
@@ -26,6 +28,32 @@ const ranges = [
 ]
 
 const pkr = (n) => `PKR ${n.toLocaleString('en-PK')}`
+
+// '2026-12-05' ko apne time zone ki tareekh samjho
+const toDate = (d) => new Date(typeof d === 'string' && d.length === 10 ? `${d}T00:00` : d)
+const endOf = (e) => {
+  const d = toDate(e.end || e.start)
+  if (typeof (e.end || e.start) === 'string' && (e.end || e.start).length === 10) d.setHours(23, 59, 59)
+  return d
+}
+
+/** Sale page wale events se: abhi chal rahi sale, warna agli aane wali */
+function pickNextSale(events, now = new Date()) {
+  const live = events.find((e) => toDate(e.start) <= now && endOf(e) >= now)
+  if (live) return { ...live, live: true }
+  const next = events.find((e) => toDate(e.start) > now)
+  return next ? { ...next, live: false } : null
+}
+
+function countdown(target, now = new Date()) {
+  const ms = Math.max(0, target - now)
+  return {
+    days: Math.floor(ms / 86400000),
+    hrs: Math.floor((ms % 86400000) / 3600000),
+    min: Math.floor((ms % 3600000) / 60000),
+  }
+}
+const two = (n) => String(n).padStart(2, '0')
 
 /* ---------- Chhote SVG charts ---------- */
 
@@ -99,7 +127,9 @@ function Gauge({ value, target }) {
 }
 
 /* ---------- Ring ke cards (graphs aur readings) ---------- */
-function buildWidgets(data) {
+function buildWidgets(data, sale) {
+  const cd = sale ? countdown(sale.live ? endOf(sale) : toDate(sale.start)) : null
+  const change = Number(data.revenue.change) || 0
   return [
     {
       key: 'revenue',
@@ -110,8 +140,8 @@ function buildWidgets(data) {
       body: (
         <>
           <strong className="db-big">{pkr(data.revenue.total)}</strong>
-          <span className="db-pill db-pill--up">
-            <TrendingUp size={12} /> +{data.revenue.change}%
+          <span className={`db-pill ${change < 0 ? 'db-pill--down' : 'db-pill--up'}`}>
+            {change < 0 ? <TrendingDown size={12} /> : <TrendingUp size={12} />} {change > 0 ? '+' : ''}{change}%
           </span>
           <DotBars bars={data.revenue.bars} />
         </>
@@ -232,20 +262,25 @@ function buildWidgets(data) {
     {
       key: 'sale',
       icon: CalendarClock,
-      short: '8 days',
+      short: !sale ? 'None' : sale.live ? 'Live now' : `${cd.days} days`,
       tone: 'dark',
-      label: 'Next Sale',
+      label: sale?.live ? 'Sale Live Now' : 'Next Sale',
       link: '/admin/sale',
-      body: (
+      body: sale ? (
         <>
-          <strong className="db-mid">11.11 Mega Sale</strong>
+          <strong className="db-mid">{sale.name}</strong>
           <div className="db-countdown">
-            <div><b>08</b><small>Days</small></div>
-            <div><b>14</b><small>Hrs</small></div>
-            <div><b>32</b><small>Min</small></div>
+            <div><b>{two(cd.days)}</b><small>Days</small></div>
+            <div><b>{two(cd.hrs)}</b><small>Hrs</small></div>
+            <div><b>{two(cd.min)}</b><small>Min</small></div>
           </div>
-          <small className="db-muted">42 products on sale</small>
+          <small className="db-muted">
+            {sale.live ? 'Ends in' : 'Starts'} {sale.live ? '' : toDate(sale.start).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+            {sale.discount ? ` · up to ${sale.discount}% off` : ''}
+          </small>
         </>
+      ) : (
+        <small className="db-muted">No sale planned. Add one on the Upcoming Sale page.</small>
       ),
     },
   ]
@@ -390,7 +425,19 @@ export default function AdminDashboard() {
     }
   }, [range])
 
-  const widgets = data ? buildWidgets(data) : []
+  // Agli sale: Upcoming Sale page wale events se (hard-coded nahi)
+  const [sale, setSale] = useState(null)
+  useEffect(() => {
+    let alive = true
+    getUpcomingEvents()
+      .then((list) => alive && setSale(pickNextSale(list)))
+      .catch(() => {})
+    return () => {
+      alive = false
+    }
+  }, [])
+
+  const widgets = data ? buildWidgets(data, sale) : []
 
   const today = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
   const initial = (user?.name || 'A').charAt(0).toUpperCase()
@@ -508,9 +555,14 @@ export default function AdminDashboard() {
           <span className="db-label">Explore more</span>
           <div className="db-explore__row">
             {[
-              { to: '/admin/marketing', title: 'Marketing Strategy', sub: '3 campaigns live', icon: Megaphone },
+              { to: '/admin/marketing', title: 'Marketing Strategy', sub: 'Campaigns and strategies', icon: Megaphone },
               { to: '/admin/churn', title: 'Churn Monitoring', sub: `${data.churn.highRisk} at high risk`, icon: Activity },
-              { to: '/admin/sale', title: 'Upcoming Sale', sub: '11.11 in 8 days', icon: CalendarClock },
+              {
+                to: '/admin/sale',
+                title: sale?.live ? 'Sale Live Now' : 'Upcoming Sale',
+                sub: !sale ? 'Nothing planned' : sale.live ? sale.name : `${sale.name} in ${countdown(toDate(sale.start)).days} days`,
+                icon: CalendarClock,
+              },
             ].map((l, i) => {
               const Icon = l.icon
               return (

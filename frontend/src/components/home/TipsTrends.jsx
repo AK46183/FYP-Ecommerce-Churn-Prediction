@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { tipsTrends } from '../../data/tipsTrends.js'
 import './TipsTrends.css'
@@ -32,11 +32,41 @@ function resetTilt(e) {
   card.style.setProperty('--ry', '0deg')
 }
 
+// Video sirf tab download / play ho jab card khula ho aur section screen par ho.
+// Pehle charon videos page khulte hi download hoti thin (~3 MB), ab sirf ek, aur woh bhi scroll karne par.
+function TipVideo({ src, poster, playing }) {
+  const ref = useRef(null)
+  useEffect(() => {
+    const v = ref.current
+    if (!v) return
+    if (playing) {
+      if (!v.getAttribute('src')) v.setAttribute('src', src)
+      v.play().catch(() => {})
+    } else {
+      v.pause()
+    }
+  }, [playing, src])
+  return <video ref={ref} className="tips-x__video" muted loop playsInline preload="none" poster={poster} />
+}
+
 export default function TipsTrends() {
   const [active, setActive] = useState(0)
+  const [inView, setInView] = useState(false)
+  const sectionRef = useRef(null)
+
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el || !('IntersectionObserver' in window)) {
+      setInView(true)
+      return undefined
+    }
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { rootMargin: '200px' })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
 
   return (
-    <section className="tips-trends">
+    <section className="tips-trends" ref={sectionRef}>
       {/* decorative background waves */}
       <span className="tips-trends__wave tips-trends__wave--1" />
       <span className="tips-trends__wave tips-trends__wave--2" />
@@ -67,17 +97,7 @@ export default function TipsTrends() {
                 onMouseLeave={resetTilt}
                 onFocus={() => setActive(i)}
               >
-                <video
-                  className="tips-x__video"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  poster={tip.poster}
-                >
-                  <source src={tip.video} type="video/mp4" />
-                </video>
+                <TipVideo src={tip.video} poster={tip.poster} playing={inView && isOpen} />
                 <span className="tips-x__shade" aria-hidden="true" />
                 <span className="tips-x__glare" aria-hidden="true" />
 
