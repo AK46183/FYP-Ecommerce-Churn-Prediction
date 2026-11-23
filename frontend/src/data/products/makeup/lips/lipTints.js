@@ -116,7 +116,7 @@
     "gallery": [
       "/images/products/makeup/lips/tints/mc-tints-9248757874924.png"
     ],
-    "description": "Experience the next level of lip perfection with this innovative tinted lip gloss. Designed with a smooth, creamy-gel formula, it glides effortlessly onto the lips, delivering brilliant, glass-like shine and rich, vibrant color — all while feeling lightweight and comfortable. This non-sticky gloss enhances your natural lips with a flawless, radiant finish that lasts for hours. Why You’ll Love It • Intense glass-like shine • Rich, vibrant tinted c",
+    "description": "Experience the next level of lip perfection with this innovative tinted lip gloss. Designed with a smooth, creamy-gel formula, it glides effortlessly onto the lips, delivering brilliant, glass-like shine and rich, vibrant color, all while feeling lightweight and comfortable. This non-sticky gloss enhances your natural lips with a flawless, radiant finish that lasts for hours. Why You’ll Love It • Intense glass-like shine • Rich, vibrant tinted c",
     "variants": [],
     "available": true,
     "sourceURL": "https://www.makeupcityshop.com/products/810149047558",
@@ -137,7 +137,7 @@
     "gallery": [
       "/images/products/makeup/lips/tints/mc-tints-9248758431980.png"
     ],
-    "description": "Experience the next level of lip perfection with this innovative tinted lip gloss. Designed with a smooth, creamy-gel formula, it glides effortlessly onto the lips, delivering brilliant, glass-like shine and rich, vibrant color — all while feeling lightweight and comfortable. This non-sticky gloss enhances your natural lips with a flawless, radiant finish that lasts for hours. Why You’ll Love It • Intense glass-like shine • Rich, vibrant tinted c",
+    "description": "Experience the next level of lip perfection with this innovative tinted lip gloss. Designed with a smooth, creamy-gel formula, it glides effortlessly onto the lips, delivering brilliant, glass-like shine and rich, vibrant color, all while feeling lightweight and comfortable. This non-sticky gloss enhances your natural lips with a flawless, radiant finish that lasts for hours. Why You’ll Love It • Intense glass-like shine • Rich, vibrant tinted c",
     "variants": [],
     "available": true,
     "sourceURL": "https://www.makeupcityshop.com/products/810149047596",
@@ -221,7 +221,7 @@
     "gallery": [
       "/images/products/makeup/lips/tints/mc-tints-9248757580012.png"
     ],
-    "description": "Experience the next level of lip perfection with this innovative tinted lip gloss. Designed with a smooth, creamy-gel formula, it glides effortlessly onto the lips, delivering brilliant, glass-like shine and rich, vibrant color — all while feeling lightweight and comfortable. This non-sticky gloss enhances your natural lips with a flawless, radiant finish that lasts for hours. Why You’ll Love It • Intense glass-like shine • Rich, vibrant tinted c",
+    "description": "Experience the next level of lip perfection with this innovative tinted lip gloss. Designed with a smooth, creamy-gel formula, it glides effortlessly onto the lips, delivering brilliant, glass-like shine and rich, vibrant color, all while feeling lightweight and comfortable. This non-sticky gloss enhances your natural lips with a flawless, radiant finish that lasts for hours. Why You’ll Love It • Intense glass-like shine • Rich, vibrant tinted c",
     "variants": [],
     "available": true,
     "sourceURL": "https://www.makeupcityshop.com/products/810149047534",
@@ -452,7 +452,7 @@
     "gallery": [
       "/images/products/makeup/lips/tints/mc-tints-9248758071532.png"
     ],
-    "description": "Experience the next level of lip perfection with this innovative tinted lip gloss. Designed with a smooth, creamy-gel formula, it glides effortlessly onto the lips, delivering brilliant, glass-like shine and rich, vibrant color — all while feeling lightweight and comfortable. This non-sticky gloss enhances your natural lips with a flawless, radiant finish that lasts for hours. Why You’ll Love It • Intense glass-like shine • Rich, vibrant tinted c",
+    "description": "Experience the next level of lip perfection with this innovative tinted lip gloss. Designed with a smooth, creamy-gel formula, it glides effortlessly onto the lips, delivering brilliant, glass-like shine and rich, vibrant color, all while feeling lightweight and comfortable. This non-sticky gloss enhances your natural lips with a flawless, radiant finish that lasts for hours. Why You’ll Love It • Intense glass-like shine • Rich, vibrant tinted c",
     "variants": [],
     "available": true,
     "sourceURL": "https://www.makeupcityshop.com/products/810149047572",

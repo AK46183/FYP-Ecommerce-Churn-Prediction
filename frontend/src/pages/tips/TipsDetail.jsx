@@ -25,7 +25,7 @@ const copy = {
     ],
   },
   lip: {
-    subtitle: 'From bold mattes to your-lips-but-better tints — our favorite lip techniques.',
+    subtitle: 'From bold mattes to your-lips-but-better tints, our favorite lip techniques.',
     tutorials: [
       'How to make matte lipstick last through dinner',
       'Overlining without looking overdone',

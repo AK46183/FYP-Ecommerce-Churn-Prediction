@@ -65,7 +65,7 @@ export default function AdminProducts() {
 
       {error && <p className="admin-error">{error}</p>}
       {products?.length === 0 && (
-        <p className="admin-error">No products in the database yet — run <b>npm run seed:catalog</b> in the Backend folder.</p>
+        <p className="admin-error">No products in the database yet. Run <b>npm run seed:catalog</b> in the Backend folder.</p>
       )}
 
       <div className="admin-table-wrap">
@@ -87,7 +87,7 @@ export default function AdminProducts() {
                   <small className="admin-table__sub">{[p.brand, p.sku].filter(Boolean).join(' · ')}</small>
                 </td>
                 <td>
-                  {p.Category?.name || '—'}
+                  {p.Category?.name || '-'}
                   <small className="admin-table__sub">{p.subCategory}</small>
                 </td>
                 <td>

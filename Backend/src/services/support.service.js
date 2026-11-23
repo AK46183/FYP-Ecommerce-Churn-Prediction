@@ -38,7 +38,7 @@ const submitContact = async ({ name, email, message, topic, orderRef }, userId =
     type: isComplaint ? 'complaint' : 'message',
     title: `${isComplaint ? 'Complaint' : TOPICS[clean.topic]} from ${clean.name}`,
     body: `${clean.name} <${clean.email}>${clean.orderRef ? ` · Order ${clean.orderRef}` : ''}\n\n${clean.message}`
-      + (isComplaint && customer ? '\n\n(Marked as complaint on this customer — churn risk will update on next scoring.)' : ''),
+      + (isComplaint && customer ? '\n\n(Marked as complaint on this customer, churn risk will update on next scoring.)' : ''),
     link: '/admin/messages',
     meta: { messageId: saved.id, userId: customer?.id || userId },
   });

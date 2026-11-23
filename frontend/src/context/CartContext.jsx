@@ -17,6 +17,7 @@ import {
 } from '../services/storeApi.js'
 import { useAuth } from './AuthContext.jsx'
 import { shadeLabel } from '../utils/shadeColor.js'
+import { bundleDeal } from '../utils/bundleDeal.js'
 
 const CartContext = createContext(null)
 
@@ -311,6 +312,9 @@ export function CartProvider({ children }) {
     return () => clearTimeout(timer)
   }, [subtotal]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Bundle deal (display ke liye; server checkout pe dobara hisaab karta hai)
+  const bundle = useMemo(() => bundleDeal(items), [items])
+
   const issueFor = useCallback((item) => issues[lineKey(item)] || null, [issues])
   const hasBlockingIssue = items.some((it) => ['soldout', 'low', 'unknown'].includes(issues[lineKey(it)]?.status))
 
@@ -329,6 +333,7 @@ export function CartProvider({ children }) {
     clearCart,
     subtotal,
     count,
+    bundle,
     isCartOpen,
     openCart,
     closeCart,

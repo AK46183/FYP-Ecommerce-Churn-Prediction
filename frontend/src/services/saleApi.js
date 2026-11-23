@@ -58,7 +58,7 @@ export async function savePoster(eventId, dataUrl) {
   const all = read(POSTERS_KEY, {})
   const poster = { id: `p-${Date.now()}`, dataUrl, createdAt: new Date().toISOString() }
   all[eventId] = [poster, ...(all[eventId] || [])]
-  if (!write(POSTERS_KEY, all)) throw new Error('Storage full — purane posters delete karein.')
+  if (!write(POSTERS_KEY, all)) throw new Error('Storage full. Purane posters delete karein.')
   return poster
 }
 

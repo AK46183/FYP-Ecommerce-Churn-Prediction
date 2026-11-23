@@ -7,13 +7,29 @@ import { formatPKR } from '../../services/format.js'
 import { SHIPPING_STANDARD, SHIPPING_EXPRESS } from '../../config/store.js'
 import PageHeader from '../../components/common/PageHeader.jsx'
 import { placeOrder, getAddresses, addAddress } from '../../services/storeApi.js'
+import { Truck, Zap, Banknote, CreditCard, Lock, ShieldCheck, RotateCcw } from 'lucide-react'
 import './Checkout.css'
 
 // Pakistani mobile: 03xxxxxxxxx or +923xxxxxxxxx (spaces / dashes allowed)
 const PHONE_RE = /^(\+92|0)3\d{9}$/
 
+// ek option card (delivery / payment): poora dabba click hota hai
+function Option({ name, value, current, onPick, icon: Icon, title, sub, price }) {
+  return (
+    <label className={`co-option${current === value ? ' is-active' : ''}`}>
+      <input type="radio" name={name} checked={current === value} onChange={onPick} />
+      <span className="co-option__icon" aria-hidden="true"><Icon size={18} strokeWidth={1.6} /></span>
+      <span className="co-option__text">
+        <strong>{title}</strong>
+        {sub && <small>{sub}</small>}
+      </span>
+      {price && <span className="co-option__price">{price}</span>}
+    </label>
+  )
+}
+
 export default function Checkout() {
-  const { items, subtotal, clearCart, coupon, hasBlockingIssue } = useCart()
+  const { items, subtotal, clearCart, coupon, hasBlockingIssue, bundle } = useCart()
   const { user } = useAuth()
   const navigate = useNavigate()
   const [placing, setPlacing] = useState(false)
@@ -60,7 +76,7 @@ export default function Checkout() {
 
   const shipping = delivery === 'express' ? SHIPPING_EXPRESS : SHIPPING_STANDARD
   const discount = couponDiscount(coupon, subtotal, shipping)
-  const total = items.length > 0 ? Math.max(0, subtotal - discount + shipping) : 0
+  const total = items.length > 0 ? Math.max(0, subtotal - discount - bundle.discount + shipping) : 0
 
   function update(field) {
     return (e) => {
@@ -113,68 +129,88 @@ export default function Checkout() {
     }
   }
 
+  const itemCount = items.reduce((n, it) => n + it.quantity, 0)
+
   return (
     <>
       <PageHeader title="Checkout" />
       <section className="checkout-page">
         <div className="container checkout-page__layout">
-          <form className="checkout-form" onSubmit={handlePlaceOrder}>
-            <div className="checkout-form__section">
-              <h3>Contact Information</h3>
-              <div className="checkout-form__row">
-                <input type="text" placeholder="Full name" value={form.name} onChange={update('name')} required />
-                <input type="email" placeholder="Email address" value={form.email} onChange={update('email')} required />
+          <form id="checkout-form" className="checkout-form" onSubmit={handlePlaceOrder}>
+            <div className="co-card">
+              <h3 className="co-card__title"><span>1</span>Contact information</h3>
+              <div className="co-grid">
+                <label className="co-field">
+                  <span>Full name</span>
+                  <input type="text" value={form.name} onChange={update('name')} autoComplete="name" required />
+                </label>
+                <label className="co-field">
+                  <span>Email</span>
+                  <input type="email" value={form.email} onChange={update('email')} autoComplete="email" required />
+                </label>
               </div>
-              <input
-                type="tel"
-                placeholder="Phone number (03001234567)"
-                value={form.phone}
-                onChange={update('phone')}
-                inputMode="tel"
-                required
-                aria-invalid={Boolean(phoneError)}
-              />
+              <label className="co-field">
+                <span>Phone number</span>
+                <input
+                  type="tel"
+                  placeholder="03001234567"
+                  value={form.phone}
+                  onChange={update('phone')}
+                  inputMode="tel"
+                  autoComplete="tel"
+                  required
+                  aria-invalid={Boolean(phoneError)}
+                />
+              </label>
               {phoneError && <p className="checkout-form__error" role="alert">{phoneError}</p>}
             </div>
 
-            <div className="checkout-form__section">
-              <h3>Delivery Address</h3>
-              <input type="text" placeholder="Street address" value={form.street} onChange={update('street')} required />
-              <div className="checkout-form__row">
-                <input type="text" placeholder="City" value={form.city} onChange={update('city')} required />
-                <input type="text" placeholder="Postal code" value={form.postal} onChange={update('postal')} />
+            <div className="co-card">
+              <h3 className="co-card__title"><span>2</span>Delivery address</h3>
+              <label className="co-field">
+                <span>Street address</span>
+                <input type="text" placeholder="House, street, area" value={form.street} onChange={update('street')} autoComplete="street-address" required />
+              </label>
+              <div className="co-grid co-grid--3">
+                <label className="co-field">
+                  <span>City</span>
+                  <input type="text" value={form.city} onChange={update('city')} autoComplete="address-level2" required />
+                </label>
+                <label className="co-field">
+                  <span>Province</span>
+                  <input type="text" value={form.province} onChange={update('province')} autoComplete="address-level1" required />
+                </label>
+                <label className="co-field">
+                  <span>Postal code <em>(optional)</em></span>
+                  <input type="text" value={form.postal} onChange={update('postal')} autoComplete="postal-code" />
+                </label>
               </div>
-              <input type="text" placeholder="Province" value={form.province} onChange={update('province')} required />
               {!hasSavedAddress && (
-                <label className="checkout-form__radio">
+                <label className="co-check">
                   <input type="checkbox" checked={saveAddress} onChange={(e) => setSaveAddress(e.target.checked)} />
                   Save this address to my account
                 </label>
               )}
             </div>
 
-            <div className="checkout-form__section">
-              <h3>Delivery Method</h3>
-              <label className="checkout-form__radio">
-                <input type="radio" name="delivery" checked={delivery === 'standard'} onChange={() => setDelivery('standard')} />
-                Standard Delivery (3-5 business days) — {formatPKR(SHIPPING_STANDARD)}
-              </label>
-              <label className="checkout-form__radio">
-                <input type="radio" name="delivery" checked={delivery === 'express'} onChange={() => setDelivery('express')} />
-                Express Delivery (1-2 business days) — {formatPKR(SHIPPING_EXPRESS)}
-              </label>
+            <div className="co-card">
+              <h3 className="co-card__title"><span>3</span>Delivery method</h3>
+              <div className="co-options">
+                <Option name="delivery" value="standard" current={delivery} onPick={() => setDelivery('standard')}
+                  icon={Truck} title="Standard delivery" sub="3 to 5 business days" price={formatPKR(SHIPPING_STANDARD)} />
+                <Option name="delivery" value="express" current={delivery} onPick={() => setDelivery('express')}
+                  icon={Zap} title="Express delivery" sub="1 to 2 business days" price={formatPKR(SHIPPING_EXPRESS)} />
+              </div>
             </div>
 
-            <div className="checkout-form__section">
-              <h3>Payment</h3>
-              <label className="checkout-form__radio">
-                <input type="radio" name="payment" checked={payment === 'cod'} onChange={() => setPayment('cod')} />
-                Cash on Delivery
-              </label>
-              <label className="checkout-form__radio">
-                <input type="radio" name="payment" checked={payment === 'card'} onChange={() => setPayment('card')} />
-                Credit / Debit Card
-              </label>
+            <div className="co-card">
+              <h3 className="co-card__title"><span>4</span>Payment</h3>
+              <div className="co-options">
+                <Option name="payment" value="cod" current={payment} onPick={() => setPayment('cod')}
+                  icon={Banknote} title="Cash on delivery" sub="Pay when your order arrives" />
+                <Option name="payment" value="card" current={payment} onPick={() => setPayment('card')}
+                  icon={CreditCard} title="Credit / debit card" sub="Coming soon" />
+              </div>
               {payment === 'card' && (
                 <p className="checkout-form__note">
                   Card payment is coming soon. For now your order will be confirmed by phone.
@@ -182,54 +218,75 @@ export default function Checkout() {
               )}
             </div>
 
-            {orderError && <p className="checkout-form__error" role="alert">{orderError}</p>}
+            {orderError && <p className="checkout-form__error co-alert" role="alert">{orderError}</p>}
 
             {hasBlockingIssue && (
-              <p className="checkout-form__error" role="alert">
-                Some items in your bag are sold out or low in stock — please update your bag first.
+              <p className="checkout-form__error co-alert" role="alert">
+                Some items in your bag are sold out or low in stock. Please update your bag first.
               </p>
             )}
-
-            <button type="submit" className="checkout-form__submit" disabled={placing || items.length === 0 || hasBlockingIssue}>
-              {placing ? 'Placing Order…' : `Place Order · ${formatPKR(total)}`}
-            </button>
           </form>
 
-          <aside className="checkout-summary">
-            <h3>Order Summary</h3>
+          <aside className="checkout-summary co-card">
+            <h3 className="checkout-summary__title">
+              Order summary <small>{itemCount} item{itemCount === 1 ? '' : 's'}</small>
+            </h3>
             <div className="checkout-summary__items">
               {items.map((item) => (
-                <div className="checkout-summary__item" key={`${item.id}-${item.shade}`}>
-                  <img src={item.image} alt={item.name} />
+                <div className="checkout-summary__item" key={`${item.id}-${item.shade}-${item.size}`}>
+                  <span className="checkout-summary__thumb">
+                    <img src={item.image} alt="" />
+                    <b>{item.quantity}</b>
+                  </span>
                   <div>
                     <p>{item.name}</p>
-                    <span>Qty {item.quantity}{item.shade ? ` · ${item.shade}` : ''}</span>
+                    {(item.shade || item.size) && <span>{[item.shade, item.size].filter(Boolean).join(' · ')}</span>}
                   </div>
-                  <span className="checkout-summary__item-price">
-                    {formatPKR(item.price * item.quantity)}
-                  </span>
+                  <span className="checkout-summary__item-price">{formatPKR(item.price * item.quantity)}</span>
                 </div>
               ))}
             </div>
-            <div className="checkout-summary__row">
-              <span>Subtotal</span>
-              <span>{formatPKR(subtotal)}</span>
-            </div>
-            <div className="checkout-summary__row">
-              <span>Shipping ({delivery === 'express' ? 'Express' : 'Standard'})</span>
-              <span>{formatPKR(shipping)}</span>
-            </div>
-            {discount > 0 && (
-              <div className="checkout-summary__row cart-discount-row">
-                <span>Discount ({coupon.code})</span>
-                <span>− {formatPKR(discount)}</span>
-              </div>
-            )}
             <CouponBox shipping={shipping} />
-            <div className="checkout-summary__row checkout-summary__row--total">
-              <span>Total</span>
-              <span>{formatPKR(total)}</span>
+            <div className="checkout-summary__rows">
+              <div className="checkout-summary__row">
+                <span>Subtotal</span>
+                <span>{formatPKR(subtotal)}</span>
+              </div>
+              <div className="checkout-summary__row">
+                <span>Delivery ({delivery === 'express' ? 'Express' : 'Standard'})</span>
+                <span>{formatPKR(shipping)}</span>
+              </div>
+              {discount > 0 && (
+                <div className="checkout-summary__row cart-discount-row">
+                  <span>Discount ({coupon.code})</span>
+                  <span>−{formatPKR(discount)}</span>
+                </div>
+              )}
+              {bundle.discount > 0 && (
+                <div className="checkout-summary__row cart-discount-row">
+                  <span>Bundle deal ({bundle.bundles} × 3 items)</span>
+                  <span>−{formatPKR(bundle.discount)}</span>
+                </div>
+              )}
+              <div className="checkout-summary__row checkout-summary__row--total">
+                <span>Total</span>
+                <span>{formatPKR(total)}</span>
+              </div>
             </div>
+            <button
+              type="submit"
+              form="checkout-form"
+              className="checkout-form__submit"
+              disabled={placing || items.length === 0 || hasBlockingIssue}
+            >
+              <Lock size={15} strokeWidth={2} aria-hidden="true" />
+              {placing ? 'Placing order…' : `Place order · ${formatPKR(total)}`}
+            </button>
+            <ul className="checkout-trust">
+              <li><ShieldCheck size={15} strokeWidth={1.6} aria-hidden="true" />Secure checkout</li>
+              <li><Banknote size={15} strokeWidth={1.6} aria-hidden="true" />Cash on delivery</li>
+              <li><RotateCcw size={15} strokeWidth={1.6} aria-hidden="true" />Easy returns</li>
+            </ul>
           </aside>
         </div>
       </section>

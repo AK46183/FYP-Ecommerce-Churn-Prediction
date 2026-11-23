@@ -202,7 +202,7 @@ export default function AdminStrategyBuilder() {
             <span className="sb-pill__meta">
               <span><Target size={13} /> {form.target}</span>
               <span><Send size={13} /> {form.channel}</span>
-              <span><TrendingUp size={13} /> {form.uplift || '—'} expected</span>
+              <span><TrendingUp size={13} /> {form.uplift || '-'} expected</span>
             </span>
           </div>
           <p className="sb-preview__note">

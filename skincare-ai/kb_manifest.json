@@ -1,0 +1,58 @@
+{
+  "entries": {
+    "version": 1,
+    "embed_model": "gemini-embedding-001",
+    "files": {
+      "knowledge/ingredients.md": {
+        "sha256": "87ecbf9d064996d881538ab6ab25083027c7cb26e7a06d553494173fb551ecfd",
+        "bytes": 1882,
+        "approved_by": "Minahil",
+        "approved_at": "2026-11-20T10:10:33+00:00",
+        "source": "project knowledge base",
+        "note": "first approved baseline"
+      },
+      "knowledge/lifestyle.md": {
+        "sha256": "934f69c7651665ae69baec96f8974bb88d8a7d19cf88a349b28f2773aa9e5e14",
+        "bytes": 2351,
+        "approved_by": "Minahil",
+        "approved_at": "2026-11-20T10:10:33+00:00",
+        "source": "project knowledge base",
+        "note": "first approved baseline"
+      },
+      "knowledge/safety.md": {
+        "sha256": "1573607482cdefe2eb5b54198a47944cfe8318e9a026324da1c30651300bbc20",
+        "bytes": 888,
+        "approved_by": "Minahil",
+        "approved_at": "2026-11-20T10:10:33+00:00",
+        "source": "project knowledge base",
+        "note": "first approved baseline"
+      },
+      "knowledge/skin_concerns.md": {
+        "sha256": "8869491842a091faa529e251b2ffc11f8c65047667951565168f7a8f879c0faa",
+        "bytes": 1772,
+        "approved_by": "Minahil",
+        "approved_at": "2026-11-20T10:10:33+00:00",
+        "source": "project knowledge base",
+        "note": "first approved baseline"
+      },
+      "data/catalog.json": {
+        "sha256": "be1c37d9f1e0c5405965ce336348bce068b5a4d79f3fa05edc547fc847b2e3bb",
+        "bytes": 220324,
+        "approved_by": "Minahil",
+        "approved_at": "2026-11-20T10:10:33+00:00",
+        "source": "store catalog export",
+        "note": "first approved baseline"
+      },
+      "data/skincare_data.json": {
+        "sha256": "8f43e657fcfb949c809ab223122e75d2e3699266fcbd0a36db320b26035cc379",
+        "bytes": 350266,
+        "approved_by": "Minahil",
+        "approved_at": "2026-11-20T10:10:33+00:00",
+        "source": "store catalog export",
+        "note": "first approved baseline"
+      }
+    }
+  },
+  "mac": "4b38ff29b0ee83fd9306c0971a46e788376602a53a2c8ad0ea6b395b5bf1b429",
+  "signed": true
+}

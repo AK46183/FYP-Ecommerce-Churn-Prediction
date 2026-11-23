@@ -19,6 +19,8 @@ import {
 
 import './ProductListing.css'
 
+const PAGE_SIZE = 48
+
 
 // ==========================================
 // MINAYSH - SORT OPTIONS
@@ -470,6 +472,8 @@ export default function ProductListing() {
   const [searchParams] = useSearchParams()
 
   const [sort, setSort] = useState('newest')
+  // Ek dafa mein 48 products (Sale par 600+ hote hain: sab ek saath dikhane se page bhaari ho jata hai)
+  const [shown, setShown] = useState(PAGE_SIZE)
 
   const [selectedBrands, setSelectedBrands] = useState([])
   
@@ -841,6 +845,11 @@ const toggleBrand = (brand) => {
     selectedBrands
   ])
 
+  // Filter, sort ya page badle to phir pehle 48 se shuru
+  useEffect(() => {
+    setShown(PAGE_SIZE)
+  }, [filtered])
+
 
   // ========================================
   // EXISTING FRONTEND DESIGN
@@ -1127,7 +1136,7 @@ const toggleBrand = (brand) => {
 
             ) : (
 
-              filtered.map((product) => (
+              filtered.slice(0, shown).map((product) => (
 
                 <ProductCard
 
@@ -1142,6 +1151,21 @@ const toggleBrand = (brand) => {
             )}
 
           </div>
+
+          {filtered.length > shown && (
+            <div className="listing__more">
+              <p className="listing__more-count">
+                Showing {shown} of {filtered.length} products
+              </p>
+              <button
+                type="button"
+                className="listing__more-btn"
+                onClick={() => setShown((n) => n + PAGE_SIZE)}
+              >
+                Show more
+              </button>
+            </div>
+          )}
 
         </div>
 

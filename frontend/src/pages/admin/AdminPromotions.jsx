@@ -11,7 +11,7 @@ import './AdminPages.css'
 
 const empty = { code: '', type: 'percent', value: '', minOrder: '', maxUses: '', expiresAt: '', description: '' }
 
-const fmtDate = (d) => (d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—')
+const fmtDate = (d) => (d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '-')
 
 const isExpired = (c) => c.expiresAt && new Date(c.expiresAt) < new Date()
 const isUsedUp = (c) => c.maxUses !== null && c.usedCount >= c.maxUses
@@ -153,7 +153,7 @@ export default function AdminPromotions() {
               </label>
               <label className="admin-form__wide">
                 Description (shown to customer)
-                <input value={form.description} onChange={update('description')} placeholder="Eid sale — 25% off" />
+                <input value={form.description} onChange={update('description')} placeholder="Eid sale: 25% off" />
               </label>
               <div className="admin-form__actions">
                 <button type="submit" className="admin-page__action-btn" disabled={busy}>{busy ? 'Saving…' : 'Create code'}</button>
@@ -231,7 +231,7 @@ export default function AdminPromotions() {
             </thead>
             <tbody>
               {carts?.length === 0 && (
-                <tr><td colSpan={5} className="admin-table__empty">No abandoned carts — customers left nothing behind for 24+ hours.</td></tr>
+                <tr><td colSpan={5} className="admin-table__empty">No abandoned carts. Customers left nothing behind for 24+ hours.</td></tr>
               )}
               {carts?.map((c) => (
                 <tr key={c.cartId}>

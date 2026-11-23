@@ -11,7 +11,7 @@ export default function Wishlist() {
     <div className="account-card">
       <h2>Wishlist</h2>
       {items.length === 0 ? (
-        <p className="account-empty">Nothing saved yet — tap the heart on any product to add it here.</p>
+        <p className="account-empty">Nothing saved yet. Tap the heart on any product to add it here.</p>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.5rem' }}>
           {items.map((product) => (

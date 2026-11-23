@@ -57,12 +57,12 @@ const checkItems = async (rawItems) => {
       stock: p.stock,
     };
     if (!p.available || p.stock <= 0 || variant?.available === false) {
-      return { ...base, status: 'soldout', message: 'Sold out — remove it to continue' };
+      return { ...base, status: 'soldout', message: 'Sold out. Remove it to continue' };
     }
     if (totalBySku.get(i.sku) > p.stock) {
-      return { ...base, status: 'low', message: `Only ${p.stock} left — please lower the quantity` };
+      return { ...base, status: 'low', message: `Only ${p.stock} left. Please lower the quantity` };
     }
-    if (p.stock <= 5) return { ...base, status: 'ok', message: `Hurry — only ${p.stock} left` };
+    if (p.stock <= 5) return { ...base, status: 'ok', message: `Hurry, only ${p.stock} left` };
     return { ...base, status: 'ok', message: null };
   });
 };

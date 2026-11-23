@@ -326,7 +326,7 @@ export default function AdminSale() {
           <span>Coming</span>
           <small>soon…</small>
         </h1>
-        <p className="sl-hero__line">Something new is on its way — fresh deals and a brand-new drop for our beauty lovers.</p>
+        <p className="sl-hero__line">Something new is on its way: fresh deals and a brand-new drop for our beauty lovers.</p>
         {next && (
           <>
             <p className="sl-hero__next">
@@ -462,7 +462,7 @@ export default function AdminSale() {
           <p className="sl-detail__desc">{ev.description}</p>
           <ul className="sl-detail__facts">
             <li><CalendarDays size={15} /><span>Dates</span><b>{dateRange(ev)}</b></li>
-            <li><Percent size={15} /><span>Discount</span><b>{ev.discount ? `Up to ${ev.discount}%` : '—'}</b></li>
+            <li><Percent size={15} /><span>Discount</span><b>{ev.discount ? `Up to ${ev.discount}%` : '-'}</b></li>
             <li><Tag size={15} /><span>On sale</span><b>{ev.categories || 'All products'}</b></li>
             <li><ImageIcon size={15} /><span>Posters</span><b>{posters.length} saved</b></li>
           </ul>

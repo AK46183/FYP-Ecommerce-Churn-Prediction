@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom'
 // Gives every page its own browser-tab title, e.g. "Lipstick | MINAYSH".
 // It reads the page's main heading (h1), so new pages get a title by themselves.
 const SITE = 'MINAYSH'
-const HOME_TITLE = 'MINAYSH — Beauty, Confidence, You'
+const HOME_TITLE = 'MINAYSH | Beauty, Confidence, You'
 
 function tidy(text) {
   const t = String(text || '').replace(/\s+/g, ' ').trim()

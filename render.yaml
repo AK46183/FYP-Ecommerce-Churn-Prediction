@@ -1,0 +1,61 @@
+# Render Blueprint: Backend + 2 Python services ek saath. Render dashboard -> New -> Blueprint -> yeh repo.
+# "sync: false" wali values Render poochhe ga (secrets yahan nahi likhe jate).
+services:
+  - type: web
+    name: minaysh-backend
+    runtime: node
+    rootDir: Backend
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: POSTGRES_URI
+        sync: false
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: DATA_ENCRYPTION_KEY
+        sync: false
+      - key: SKINCARE_SERVICE_KEY
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: SKINCARE_AI_URL
+        sync: false
+      - key: CHURN_API_URL
+        sync: false
+      - key: TRUST_PROXY
+        value: "1"
+
+  - type: web
+    name: minaysh-skincare-ai
+    runtime: python
+    rootDir: skincare-ai
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python server.py
+    healthCheckPath: /health
+    envVars:
+      - key: SKINCARE_HOST
+        value: 0.0.0.0
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SKINCARE_SERVICE_KEY
+        sync: false
+      - key: KB_MANIFEST_KEY
+        sync: false
+
+  - type: web
+    name: minaysh-churn
+    runtime: python
+    rootDir: churn-service
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api.app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /

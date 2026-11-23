@@ -138,9 +138,9 @@ export default function AdminMessages() {
       const r = await sendTestEmail(testTo.trim())
       setTestResult(
         r.sent
-          ? `Sent to ${r.to} — check the inbox (and spam).`
+          ? `Sent to ${r.to}. Check the inbox (and spam).`
           : r.logged
-            ? 'SMTP is not set up yet — the email was printed in the backend terminal instead.'
+            ? 'SMTP is not set up yet. The email was printed in the backend terminal instead.'
             : `Failed: ${r.error}`
       )
       getEmailLog(emailFilter).then(setEmails).catch(() => {})
@@ -263,7 +263,7 @@ export default function AdminMessages() {
                   <tr><td colSpan={5} className="admin-table__empty">No emails yet.</td></tr>
                 )}
                 {emails?.emails.map((m) => {
-                  const [label, variant] = EMAIL_STATUS[m.status] || ['—', 'info']
+                  const [label, variant] = EMAIL_STATUS[m.status] || ['-', 'info']
                   return (
                     <tr key={m.id}>
                       <td>{m.to}</td>

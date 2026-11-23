@@ -74,7 +74,7 @@ export default function AdminOrders() {
                 <tr key={order.id}>
                   <td>MN-{order.id}</td>
                   <td>
-                    {order.User?.name || '—'}
+                    {order.User?.name || '-'}
                     <small className="admin-table__sub">{order.User?.email}</small>
                   </td>
                   <td>{fmtDate(order.createdAt)}</td>

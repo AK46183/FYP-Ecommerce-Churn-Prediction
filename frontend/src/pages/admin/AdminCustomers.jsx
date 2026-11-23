@@ -4,7 +4,7 @@ import { setComplaint } from '../../services/churnApi.js'
 import './AdminPages.css'
 
 const pkr = (n) => `PKR ${Math.round(Number(n) || 0).toLocaleString('en-PK')}`
-const fmtDate = (d) => (d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—')
+const fmtDate = (d) => (d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '-')
 
 const riskVariant = { High: 'danger', Medium: 'pending', Low: 'success' }
 
@@ -65,7 +65,7 @@ export default function AdminCustomers() {
               <tr key={c.id}>
                 <td>{c.name}</td>
                 <td>{c.email}</td>
-                <td>{c.city || '—'}</td>
+                <td>{c.city || '-'}</td>
                 <td>{c.orders}</td>
                 <td>{pkr(c.totalSpent)}</td>
                 <td>{fmtDate(c.lastOrderAt)}</td>
@@ -85,7 +85,7 @@ export default function AdminCustomers() {
                     onClick={() => toggleComplaint(c)}
                     disabled={savingId === c.id}
                   >
-                    {c.hasComplaint ? 'Yes — clear' : 'No — mark'}
+                    {c.hasComplaint ? 'Yes (clear)' : 'No (mark)'}
                   </button>
                 </td>
               </tr>
