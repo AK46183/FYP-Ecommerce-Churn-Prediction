@@ -21,15 +21,33 @@ const getOrCreateCart = async (userId) => {
   return cart;
 };
 
-const addToCart = async (userId, productId, quantity) => {
+const MAX_QTY = 20; // ek product ki zyada se zyada quantity (website checkout jaisa)
+
+/** Quantity sirf 1..20 ka poora number (minus, 0, 2.5, "abc" sab rad) */
+const parseQuantity = (quantity) => {
+  const q = Number(quantity);
+  if (!Number.isInteger(q) || q < 1 || q > MAX_QTY) {
+    throw new ApiError(400, `Quantity must be a whole number between 1 and ${MAX_QTY}`);
+  }
+  return q;
+};
+
+const addToCart = async (userId, productId, rawQuantity) => {
+  const quantity = parseQuantity(rawQuantity);
+  if (!Number.isInteger(Number(productId)) || Number(productId) < 1) throw new ApiError(400, 'A valid productId is required');
   const cart = await getOrCreateCart(userId);
   const product = await Product.findByPk(productId);
   if (!product) throw new ApiError(404, 'Product not found');
-  logActivity(userId, 'cart_add', Number(productId), { quantity });
+  if (!product.available) throw new ApiError(400, `${product.name} is not available right now`);
 
   let item = await CartItem.findOne({ where: { cartId: cart.id, productId } });
+  const total = (item ? item.quantity : 0) + quantity;
+  if (total > MAX_QTY) throw new ApiError(400, `You can add at most ${MAX_QTY} of one product`);
+  if (total > product.stock) throw new ApiError(400, `Only ${product.stock} left of ${product.name}`);
+  logActivity(userId, 'cart_add', Number(productId), { quantity });
+
   if (item) {
-    item.quantity += quantity;
+    item.quantity = total;
     await item.save();
   } else {
     item = await CartItem.create({ cartId: cart.id, productId, quantity });
@@ -52,27 +70,57 @@ const removeFromCart = async (userId, itemId) => {
   return true;
 };
 
+// Purana backend-cart checkout (Postman). Website wala createOrder() neeche hai.
+// Ek transaction: products lock, stock check, stock kam, order bane, cart khaali. Kuch bhi fail ho to sab wapas.
 const placeOrder = async (userId) => {
-  const cart = await getOrCreateCart(userId);
-  const items = await CartItem.findAll({ where: { cartId: cart.id }, include: Product });
+  const order = await sequelize.transaction(async (t) => {
+    const cart = await Cart.findOne({ where: { userId }, transaction: t });
+    const items = cart ? await CartItem.findAll({ where: { cartId: cart.id }, transaction: t }) : [];
+    if (!items.length) throw new ApiError(400, 'Cart is empty');
 
-  if (!items.length) throw new ApiError(400, 'Cart is empty');
+    const productIds = [...new Set(items.map((i) => i.productId))];
+    const products = await Product.findAll({ where: { id: productIds }, transaction: t, lock: t.LOCK.UPDATE });
+    const byId = new Map(products.map((p) => [p.id, p]));
 
-  const totalAmount = items.reduce((sum, item) => sum + item.Product.price * item.quantity, 0);
+    const needed = new Map();
+    for (const item of items) {
+      const product = byId.get(item.productId);
+      if (!product) throw new ApiError(400, 'A product in your cart no longer exists');
+      if (!product.available) throw new ApiError(400, `${product.name} is not available right now`);
+      if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > MAX_QTY) {
+        throw new ApiError(400, `Invalid quantity for ${product.name}`);
+      }
+      needed.set(product.id, (needed.get(product.id) || 0) + item.quantity);
+    }
+    for (const [productId, qty] of needed) {
+      const product = byId.get(productId);
+      if (qty > product.stock) throw new ApiError(400, `Only ${product.stock} left of ${product.name}`);
+    }
 
-  const order = await Order.create({ userId, totalAmount, status: 'pending' });
+    const totalAmount = items.reduce((sum, item) => sum + byId.get(item.productId).price * item.quantity, 0);
+    const created = await Order.create({ userId, totalAmount, subtotal: totalAmount, status: 'pending' }, { transaction: t });
 
-  for (const item of items) {
-    await OrderItem.create({
-      orderId: order.id,
-      productId: item.productId,
-      quantity: item.quantity,
-      price: item.Product.price,
-    });
-    await item.destroy();
-  }
+    for (const item of items) {
+      const product = byId.get(item.productId);
+      await OrderItem.create({
+        orderId: created.id,
+        productId: product.id,
+        sku: product.sku,
+        name: product.name,
+        image: product.imageUrl,
+        quantity: item.quantity,
+        price: product.price,
+      }, { transaction: t });
+    }
+    for (const [productId, qty] of needed) {
+      await Product.decrement('stock', { by: qty, where: { id: productId }, transaction: t });
+    }
+    await CartItem.destroy({ where: { cartId: cart.id }, transaction: t });
+    return created;
+  });
+  clearProductCache();
 
-  logActivity(userId, 'checkout', null, { orderId: order.id, totalAmount });
+  logActivity(userId, 'checkout', null, { orderId: order.id, totalAmount: order.totalAmount });
   return order;
 };
 
@@ -399,4 +447,6 @@ module.exports = {
   findVariant,
   validateCheckout,
   toClientOrder,
+  parseQuantity,
+  MAX_QTY,
 };

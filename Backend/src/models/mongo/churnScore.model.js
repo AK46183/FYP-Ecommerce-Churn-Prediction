@@ -27,6 +27,8 @@ const churnScoreSchema = new mongoose.Schema({
     lifetimeValue: Number,
     lastOrderDays: Number,
   },
+  // Chat (Help Bot + Skincare Assistant) se pichle 30 din ke signals
+  chat: { type: mongoose.Schema.Types.Mixed, default: null },
   reason: String,
   action: String,
   channel: String,

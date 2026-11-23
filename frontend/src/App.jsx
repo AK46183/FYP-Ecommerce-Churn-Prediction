@@ -32,6 +32,12 @@ import OurBrandPage from './pages/categories/OurBrandPage.jsx'
 import HelpCenter from './pages/categories/HelpCenter.jsx'
 import ContactUs from './pages/categories/ContactUs.jsx'
 import SimplePage from './pages/categories/SimplePage.jsx'
+import DeliveryOptions from './pages/help/DeliveryOptions.jsx'
+import PaymentMethods from './pages/help/PaymentMethods.jsx'
+import ReturnPolicy from './pages/help/ReturnPolicy.jsx'
+import PrivacyPolicy from './pages/help/PrivacyPolicy.jsx'
+import TermsConditions from './pages/help/TermsConditions.jsx'
+import TrackOrder from './pages/help/TrackOrder.jsx'
 
 // Account
 import AccountLayout from './pages/account/AccountLayout.jsx'
@@ -151,11 +157,11 @@ export default function App() {
           <Route path="/our-brand" element={<OurBrandPage />} />
           <Route path="/help" element={<HelpCenter />} />
           <Route path="/contact" element={<ContactUs />} />
-          <Route path="/help/delivery" element={<SimplePage slug="delivery-options" />} />
-          <Route path="/help/payment" element={<SimplePage slug="payment-methods" />} />
-          <Route path="/help/returns" element={<SimplePage slug="return-policy" />} />
-          <Route path="/help/privacy" element={<SimplePage slug="privacy-policy" />} />
-          <Route path="/help/terms" element={<SimplePage slug="terms-conditions" />} />
+          <Route path="/help/delivery" element={<DeliveryOptions />} />
+          <Route path="/help/payment" element={<PaymentMethods />} />
+          <Route path="/help/returns" element={<ReturnPolicy />} />
+          <Route path="/help/privacy" element={<PrivacyPolicy />} />
+          <Route path="/help/terms" element={<TermsConditions />} />
           <Route path="/careers" element={<SimplePage slug="careers" />} />
           <Route path="/press" element={<SimplePage slug="press" />} />
           <Route path="/stores" element={<SimplePage slug="stores" />} />
@@ -173,7 +179,7 @@ export default function App() {
             <Route path="orders/:orderId" element={<OrderDetails />} />
             <Route path="wishlist" element={<Wishlist />} />
             <Route path="addresses" element={<Addresses />} />
-            <Route path="track-order" element={<SimplePage slug="track-order" />} />
+            <Route path="track-order" element={<TrackOrder />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

@@ -36,7 +36,7 @@ export default function AdminStrategyBuilder() {
   const seasonData = seasons.find((s) => s.key === season) || seasons[0]
   const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
 
-  const useTemplate = (t) => {
+  const applyTemplate = (t) => {
     setForm((f) => ({ ...f, ...t, title: t.label }))
     setError('')
   }
@@ -101,7 +101,7 @@ export default function AdminStrategyBuilder() {
             </span>
             <div className="sb-chips">
               {templates.map((t) => (
-                <button key={t.label} type="button" className="sb-chip" onClick={() => useTemplate(t)}>
+                <button key={t.label} type="button" className="sb-chip" onClick={() => applyTemplate(t)}>
                   {t.label}
                 </button>
               ))}

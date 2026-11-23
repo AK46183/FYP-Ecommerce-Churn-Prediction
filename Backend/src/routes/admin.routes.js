@@ -30,6 +30,7 @@ const {
   markNotification,
   markAllNotifications,
   getEmailLog,
+  clearUnsentEmails,
 } = require('../controllers/admin.controller');
 
 // Neeche ke saare routes sirf logged-in admin ke liye
@@ -63,6 +64,7 @@ router.get('/notifications/count', getUnreadCount);
 router.post('/notifications/read-all', markAllNotifications);
 router.patch('/notifications/:id', markNotification); // { read: true|false }
 router.get('/emails', getEmailLog); // sent emails log ?type=
+router.delete('/emails/unsent', clearUnsentEmails); // purani "Not sent (SMTP off)" entries saaf
 
 router.get('/coupons', getCoupons); // ?all=1 -> personal (engagement) codes bhi
 router.post('/coupons', createCoupon);

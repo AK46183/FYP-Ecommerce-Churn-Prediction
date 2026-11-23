@@ -19,6 +19,11 @@ import {
   CheckCircle2,
   Hourglass,
   Mail,
+  MessageCircle,
+  ShoppingCart,
+  Sparkles,
+  RotateCcw,
+  CircleHelp,
 } from 'lucide-react'
 import {
   getChurn,
@@ -98,6 +103,51 @@ function OrbitNode({ c, angle, onOpen }) {
   )
 }
 
+/* Card ka "Chat & cart" hissa: Help Bot + Skincare Assistant + cart (pichle 30 din). Churn ka closed loop yahin dikhta hai. */
+function ChatSignals({ c }) {
+  const chat = c.chat
+  if (!chat && c.cartAbandoned === null) return null // purana score: chat data nahi
+  const total = (chat?.helpbotMessages || 0) + (chat?.skinChats || 0)
+  const chips = [
+    { icon: MessageCircle, label: 'Chats', value: total, alert: false },
+    { icon: Flag, label: 'Complaints', value: chat?.complaints || 0, alert: (chat?.complaints || 0) > 0 },
+    { icon: RotateCcw, label: 'Refund asks', value: chat?.refundAsks || 0, alert: (chat?.refundAsks || 0) > 0 },
+    { icon: CircleHelp, label: 'No answer', value: chat?.unanswered || 0, alert: (chat?.unanswered || 0) > 0 },
+    c.cartAbandoned !== null && { icon: ShoppingCart, label: 'Cart', value: c.cartAbandoned ? 'Left' : 'OK', alert: c.cartAbandoned },
+  ].filter(Boolean)
+  const picks = chat?.suggested || []
+  const concerns = chat?.skinConcerns || []
+
+  return (
+    <section className="ch-card__block ch-card__block--chat">
+      <h4><MessageCircle size={14} /> Chat &amp; cart signals <small>last 30 days</small></h4>
+      <div className="ch-signals">
+        {chips.map(({ icon: Icon, label, value, alert }) => (
+          <div key={label} className={`ch-signal${alert ? ' is-alert' : ''}`}>
+            <Icon size={13} />
+            <b>{value}</b>
+            <small>{label}</small>
+          </div>
+        ))}
+      </div>
+      {chat?.complaints > 0 && <p className="ch-signal__note"><Flag size={12} /> Chat complaint sent to the churn model (complain = 1)</p>}
+      {picks.length > 0 && (
+        <div className="ch-picks">
+          <span><Sparkles size={12} /> Skin Assistant picks, not bought</span>
+          <div>{picks.map((p) => <em key={p.sku}>{p.name}</em>)}</div>
+        </div>
+      )}
+      {concerns.length > 0 && (
+        <div className="ch-picks ch-picks--concerns">
+          <span>Skin concerns shared</span>
+          <div>{concerns.map((k) => <em key={k}>{k}</em>)}</div>
+        </div>
+      )}
+      {total === 0 && !c.cartAbandoned && <small>No chats in the last 30 days.</small>}
+    </section>
+  )
+}
+
 /* Customer card (photo se nikalta hai, wapas usi mein jata hai) */
 function CustomerCard({ card, onClose, season, hasComplaint, onSend, onToggleComplaint, busy }) {
   const { c, from, phase } = card
@@ -147,6 +197,8 @@ function CustomerCard({ card, onClose, season, hasComplaint, onSend, onToggleCom
             <small>Lifetime value: {pkr(c.lifetimeValue)}</small>
           </section>
 
+          <ChatSignals c={c} />
+
           {isHigh ? (
             <section className="ch-card__block ch-card__block--action">
               <h4><Megaphone size={14} /> How to bring her back</h4>
@@ -177,7 +229,7 @@ function CustomerCard({ card, onClose, season, hasComplaint, onSend, onToggleCom
           <section className="ch-card__complaint">
             <span>
               <Flag size={13} />
-              {hasComplaint ? 'Complaint on record' : 'No complaint on record'}
+              {hasComplaint ? 'Complaint on record' : c.chat?.complaints > 0 ? 'Complaint from chat only (no manual flag)' : 'No complaint on record'}
             </span>
             <button
               type="button"

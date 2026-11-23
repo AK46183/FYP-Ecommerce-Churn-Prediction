@@ -16,6 +16,7 @@ import {
   markNotification,
   markAllNotifications,
   getEmailLog,
+  clearUnsentEmails,
   getMessages,
   setMessageStatus,
   getSubscribers,
@@ -128,6 +129,18 @@ export default function AdminMessages() {
       setMessages((list) => list.map((x) => (x.id === m.id ? { ...x, status: updated.status } : x)))
     } catch (e) {
       setError(e.message)
+    }
+  }
+
+  // SMTP lagne se pehle ki "Not sent" entries saaf (sent / failed rehti hain)
+  const clearUnsent = async () => {
+    const n = emails?.stats?.not_configured || 0
+    if (!n || !window.confirm(`Delete ${n} old "Not sent (SMTP off)" email record${n === 1 ? '' : 's'}? Sent and failed emails are kept.`)) return
+    try {
+      await clearUnsentEmails()
+      getEmailLog(emailFilter).then(setEmails).catch(() => {})
+    } catch (err) {
+      setError(err.message)
     }
   }
 
@@ -245,6 +258,11 @@ export default function AdminMessages() {
               <small className="admin-table__sub">
                 Sent {emails.stats.sent || 0} · Not sent {emails.stats.not_configured || 0} · Failed {emails.stats.failed || 0}
               </small>
+            )}
+            {emails?.stats?.not_configured > 0 && (
+              <button type="button" className="admin-page__action-btn" onClick={clearUnsent}>
+                Clear old unsent ({emails.stats.not_configured})
+              </button>
             )}
           </div>
           <div className="admin-table-wrap">

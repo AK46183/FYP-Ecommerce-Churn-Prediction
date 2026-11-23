@@ -15,8 +15,10 @@ const daysBetween = (from, to = new Date()) =>
 /**
  * Customer + us ke orders se model ke 4 features banata hai.
  * orders: is customer ke Order rows (cancelled orders count nahi hote)
+ * opts.recentComplaint: pichle 30 din mein Help Bot / Contact Us se complaint (Kaggle ka "Complain" bhi
+ *   "last month" ki complaint hai). Admin ka hasComplaint flag bhi pehle ki tarah chalta hai.
  */
-const buildFeatures = (user, orders = [], now = new Date()) => {
+const buildFeatures = (user, orders = [], now = new Date(), opts = {}) => {
   const valid = orders.filter((o) => o.status !== 'cancelled');
   const lastOrderDate = valid.reduce(
     (latest, o) => (!latest || new Date(o.createdAt) > latest ? new Date(o.createdAt) : latest),
@@ -28,7 +30,7 @@ const buildFeatures = (user, orders = [], now = new Date()) => {
     order_count: valid.length,
     // Agar kabhi order nahi kiya to signup se ab tak ke din
     days_since_last_order: daysBetween(lastOrderDate || user.createdAt, now),
-    complain: user.hasComplaint ? 1 : 0,
+    complain: user.hasComplaint || opts.recentComplaint ? 1 : 0,
   };
 };
 

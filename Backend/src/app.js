@@ -11,6 +11,7 @@ const accountRoutes = require('./routes/account.routes');
 const supportRoutes = require('./routes/support.routes');
 const couponRoutes = require('./routes/coupon.routes');
 const chatbotRoutes = require('./routes/chatbot.routes');
+const helpbotRoutes = require('./routes/helpbot.routes');
 const errorMiddleware = require('./middlewares/error.middleware');
 
 // Compression: JSON / HTML gzip karke bhejo (products ki list ~5-8 guna chhoti). Package na ho to server phir bhi chale.
@@ -45,6 +46,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/account', accountRoutes);
 app.use('/api/coupons', couponRoutes);
+app.use('/api/helpbot', helpbotRoutes); // rule-based Help Bot (FAQ, order status, complaint)
 app.use('/api', supportRoutes); // /api/contact, /api/newsletter
 
 app.use(errorMiddleware);

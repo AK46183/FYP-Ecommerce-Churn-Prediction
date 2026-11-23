@@ -67,4 +67,10 @@ const listEmailLog = async ({ type, limit = 150 } = {}) => {
   return { emails, stats: Object.fromEntries(stats.map((s) => [s._id, s.count])) };
 };
 
-module.exports = { notifyAdmin, listNotifications, countUnread, markRead, markAllRead, listEmailLog };
+// Purani "Not sent (SMTP off)" entries mitao (SMTP lagne se pehle ki). Sent / failed waali rehti hain.
+const clearUnsentEmails = async () => {
+  const r = await EmailLog.deleteMany({ status: 'not_configured' });
+  return { deleted: r.deletedCount };
+};
+
+module.exports = { notifyAdmin, listNotifications, countUnread, markRead, markAllRead, listEmailLog, clearUnsentEmails };

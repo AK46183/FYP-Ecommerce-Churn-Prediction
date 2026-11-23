@@ -416,6 +416,11 @@
   align-items: start;
 }
 
+/* phone par tabs ki lambi patti poore page ko chaura na kare (side scroll) */
+.pdp-details__inner > * {
+  min-width: 0;
+}
+
 .pdp-details__heading {
   font-size: clamp(2rem, 3.6vw, 3.2rem);
   font-weight: 400;

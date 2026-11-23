@@ -13,11 +13,8 @@ const cleanReply = (t) => String(t || '')
   .replace(/<[^>]*>/g, '')
   .replace(/\s*[—–]\s*/g, ', ')   // lambi dash website par nahi dikhani
   .slice(0, 4000);
-// Database mein save karne se pehle card / CNIC / OTP jaise number chhupa do
-const maskSensitive = (t) => String(t || '')
-  .replace(/\b(?:\d[ -]?){13,19}\b/g, '[hidden number]')
-  .replace(/\b\d{5}-?\d{7}-?\d\b/g, '[hidden CNIC]')
-  .replace(/\b(otp|cvv|pin)\s*[:#-]?\s*\d{3,8}\b/gi, '$1 [hidden]');
+// Database mein save karne se pehle card / CNIC / OTP jaise number chhupa do (Help Bot bhi yahi use karta hai)
+const { maskSensitive } = require('../utils/maskSensitive');
 const MAX_MESSAGE = 1000;
 const MAX_IMAGE_B64 = 5.5 * 1024 * 1024; // ~4 MB tasveer
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
@@ -247,4 +244,4 @@ const deleteSession = async (req, res, next) => {
   }
 };
 
-module.exports = { sendMessage, resetChat, listSessions, getSession, serviceStatus, deleteSession };
+module.exports = { sendMessage, resetChat, listSessions, getSession, serviceStatus, deleteSession, cleanReply, maskSensitive };
