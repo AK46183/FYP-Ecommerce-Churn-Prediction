@@ -1,0 +1,124 @@
+/* MINAYSH virtual try-on (camera ke upar makeup) */
+.vto {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(30, 24, 22, 0.62);
+  font-family: var(--font-body, 'Inter', sans-serif);
+}
+.vto__box {
+  width: min(560px, 100%);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  background: var(--color-ivory, #fbf7f4);
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(30, 24, 22, 0.35);
+}
+.vto__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px 12px;
+}
+.vto__head div { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.vto__eyebrow { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-rosegold-deep, #b08468); }
+.vto__head strong {
+  font-family: var(--font-display, Georgia, serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-charcoal, #2b2523);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.vto__close {
+  flex: none;
+  width: 36px; height: 36px;
+  border: 0; border-radius: 50%;
+  background: var(--color-blush, #f7e8e4);
+  color: var(--color-charcoal, #2b2523);
+  font-size: 1.4rem; line-height: 1;
+  cursor: pointer;
+}
+
+.vto__stage {
+  position: relative;
+  margin: 0 18px;
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #2b2523;
+}
+.vto__video { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.vto__canvas { display: block; width: 100%; height: 100%; object-fit: cover; }
+.vto__msg {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 24px;
+  text-align: center;
+  color: #fff;
+  font-size: 0.95rem;
+}
+.vto__msg--soft { inset: auto 12px 12px; padding: 8px 12px; border-radius: 999px; background: rgba(0, 0, 0, 0.45); font-size: 0.82rem; }
+.vto__msg--error { background: #2b2523; line-height: 1.5; }
+.vto__hint {
+  position: absolute;
+  left: 12px; right: 12px; top: 12px;
+  margin: 0;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.38);
+  color: #fff;
+  font-size: 0.76rem;
+  text-align: center;
+}
+
+.vto__controls { padding: 14px 18px 18px; display: grid; gap: 12px; }
+.vto__shades { display: flex; flex-wrap: wrap; gap: 10px; }
+.vto__swatch {
+  width: 34px; height: 34px;
+  padding: 0;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--swatch);
+  box-shadow: 0 0 0 1px #e7ddd8;
+  cursor: pointer;
+}
+.vto__swatch.is-selected { box-shadow: 0 0 0 2px var(--color-charcoal, #2b2523); }
+.vto__swatch:focus-visible { outline: 2px solid var(--color-rosegold-deep, #b08468); outline-offset: 2px; }
+.vto__note, .vto__privacy { margin: 0; font-size: 0.74rem; color: #7a6d68; }
+.vto__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.vto__btn {
+  flex: 1 1 auto;
+  min-height: 44px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-charcoal, #2b2523);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-charcoal, #2b2523);
+  font: 600 0.86rem var(--font-body, 'Inter', sans-serif);
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+.vto__btn:disabled { opacity: 0.45; cursor: default; }
+.vto__btn--dark { background: var(--color-charcoal, #2b2523); color: #fff; }
+.vto__btn:focus-visible { outline: 2px solid var(--color-rosegold-deep, #b08468); outline-offset: 2px; }
+
+@media (max-width: 480px) {
+  .vto { padding: 0; align-items: end; }
+  .vto__box { border-radius: 20px 20px 0 0; max-height: 100dvh; }
+  .vto__stage { margin: 0 12px; aspect-ratio: 3 / 4; }
+  .vto__controls { padding: 12px; }
+}

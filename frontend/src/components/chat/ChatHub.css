@@ -1,0 +1,146 @@
+/* Ek chat button (neeche daayen). Options panel aur dono chats isi button ke upar khulte hain. */
+.chat-hub {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 900;
+  font-family: var(--font-body, 'Inter', sans-serif);
+}
+
+.chat-hub__fab {
+  height: 52px;
+  margin-left: auto;
+  padding: 0 20px 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-charcoal, #2b2523);
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(43, 37, 35, 0.28);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.chat-hub__fab.is-open { width: 52px; padding: 0; justify-content: center; font-size: 1.6rem; font-weight: 400; }
+.chat-hub__fab:hover { background: var(--color-rosegold-deep, #b08468); transform: translateY(-2px); }
+.chat-hub button:focus-visible { outline: 2px solid var(--color-rosegold-deep, #b08468); outline-offset: 2px; }
+
+.chat-hub__panel {
+  width: 340px;
+  max-width: calc(100vw - 24px);
+  margin-bottom: 12px;
+  background: var(--color-white, #fff);
+  border-radius: 18px;
+  box-shadow: 0 18px 48px rgba(43, 37, 35, 0.22);
+  overflow: hidden;
+}
+
+.chat-hub__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 16px 14px;
+  background: var(--color-charcoal, #2b2523);
+  color: #fff;
+}
+.chat-hub__head div { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.chat-hub__head strong { font-family: var(--font-display, Georgia, serif); font-size: 1.2rem; font-weight: 600; }
+.chat-hub__head span { font-size: 0.78rem; opacity: 0.75; }
+.chat-hub__close {
+  width: 32px; height: 32px;
+  border: 0; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff; font-size: 1.3rem; line-height: 1;
+  cursor: pointer;
+}
+
+.chat-hub__options { display: flex; flex-direction: column; gap: 10px; padding: 14px; }
+.chat-hub__option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #eee3df;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--color-charcoal, #2b2523);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+.chat-hub__option:hover { border-color: var(--color-rosegold-deep, #b08468); background: var(--color-blush, #f7e8e4); transform: translateY(-1px); }
+.chat-hub__icon {
+  flex: none;
+  display: grid; place-items: center;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: var(--color-blush, #f7e8e4);
+  color: var(--color-rosegold-deep, #b08468);
+}
+.chat-hub__text { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.chat-hub__text strong { font-size: 0.92rem; }
+.chat-hub__text small { font-size: 0.76rem; line-height: 1.35; color: #7a6d68; }
+.chat-hub__badge {
+  flex: none;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--color-charcoal, #2b2523);
+  color: #fff;
+  font-size: 0.66rem; font-style: normal; font-weight: 600;
+}
+.chat-hub__arrow { flex: none; font-size: 1.4rem; color: #b9aaa4; }
+
+/* Hub ke andar: dono chats ka apna button chhupa, panel hub button ke upar (daayen) */
+.skin-chat.skin-chat--hub,
+.help-bot.help-bot--hub {
+  left: auto;
+  right: 20px;
+  bottom: 84px;
+  z-index: 900;
+}
+.skin-chat--hub .skin-chat__panel,
+.help-bot--hub .help-bot__panel { margin-bottom: 0; height: min(560px, calc(100dvh - 190px)); }
+
+/* chat header ka "‹" (wapas options par) */
+.skin-chat__head .skin-chat__back,
+.help-bot__head .help-bot__back {
+  flex: none;
+  display: grid; place-items: center;
+  width: 30px; height: 30px;
+  padding: 0 0 3px;
+  border: 0; border-radius: 50%;
+  font-size: 1.5rem; line-height: 1;
+  cursor: pointer;
+}
+.skin-chat__head .skin-chat__back { background: #fff; color: var(--color-charcoal, #2b2523); }
+.help-bot__head .help-bot__back { background: rgba(255, 255, 255, 0.14); color: #fff; }
+
+/* Chat khuli ho to WhatsApp button chhupa (panel ke peeche na aaye) */
+body:has(.chat-hub__panel) .wa-float,
+body:has(.skin-chat--hub .skin-chat__panel) .wa-float,
+body:has(.help-bot--hub .help-bot__panel) .wa-float { display: none; }
+
+@media (max-width: 600px) {
+  .chat-hub__fab:not(.is-open) { width: 52px; padding: 0; justify-content: center; }
+  .chat-hub__fab:not(.is-open) span { display: none; }
+}
+@media (max-width: 480px) {
+  .chat-hub { right: 12px; bottom: 12px; }
+  .chat-hub__panel { width: calc(100vw - 24px); }
+  .skin-chat.skin-chat--hub,
+  .help-bot.help-bot--hub { right: 12px; left: auto; bottom: 76px; display: block; }
+  .skin-chat--hub .skin-chat__panel,
+  .help-bot--hub .help-bot__panel { width: calc(100vw - 24px); height: calc(100dvh - 160px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-hub__fab, .chat-hub__option { transition: none; }
+}

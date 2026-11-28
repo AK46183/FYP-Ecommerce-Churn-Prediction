@@ -23,6 +23,34 @@ def _post(url, headers, body, timeout=120, tries=5):
             raise RuntimeError(f"Network/timeout error: {e}")
 
 
+_SWITCH_CODES = ("API error 429", "API error 403", "RESOURCE_EXHAUSTED", "API_KEY_INVALID", "PERMISSION_DENIED")
+_key_index = 0          # jo key aakhri dafa chali, agli call wahin se shuru
+
+
+def gemini_post(urls, body, timeout=40, tries=2):
+    """urls: models ke hisaab se URL list. Har model pe pehle chalti hui key, limit/ghalat key ho to agli key."""
+    global _key_index
+    keys = config.GEMINI_KEYS or ([config.GEMINI_KEY] if config.GEMINI_KEY else [])
+    if not keys:
+        raise RuntimeError("GEMINI_API_KEY set nahi hai")
+    last = None
+    for url in urls:
+        for step in range(len(keys)):
+            i = (_key_index + step) % len(keys)
+            try:
+                r = _post(url, {"x-goog-api-key": keys[i]}, body, timeout=timeout,
+                          tries=1 if len(keys) > 1 else tries)
+                if i != _key_index:
+                    print(f"[gemini] key #{i + 1} par shift ho gaye")
+                    _key_index = i
+                return r
+            except RuntimeError as e:
+                last = e
+                if not any(c in str(e) for c in _SWITCH_CODES):
+                    break                      # model ka masla (503/timeout): agla model
+    raise last
+
+
 class ClaudeLLM:
     def __init__(self):
         self.history = []
@@ -52,13 +80,8 @@ class GeminiLLM:
         self.history = []
 
     def _generate(self, body):
-        last = None
-        for m in config.GEMINI_MODELS:          # ek model busy ho to agla try
-            try:
-                return _post(self.URL.format(m=m), {"x-goog-api-key": config.GEMINI_KEY}, body, timeout=40, tries=2)
-            except RuntimeError as e:
-                last = e
-        raise last
+        # ek model busy ho to agla model; key ki limit khatam ho to agli key
+        return gemini_post([self.URL.format(m=m) for m in config.GEMINI_MODELS], body, timeout=40)
 
     def run(self, system, user_text, tools, run_tool):
         self.history.append({"role": "user", "parts": [{"text": user_text}]})

@@ -1,0 +1,62 @@
+/* ============================================================
+   MINAYSH - Home page par transparent header (hero video peeche nazar aaye)
+   Hover / search / scroll par wapas safed header aur pink bar.
+   Hatana ho: Header.jsx mein TRANSPARENT_ON_HOME = false (ya yeh file + import delete)
+   ============================================================ */
+
+/* Home par header video ke upar tairta hai (jagah nahi gherta) */
+.site-header--home {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.site-header--home .top-header,
+.site-header--home .category-nav {
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.site-header--home .top-header__icon-btn,
+.site-header--home .top-header__search-trigger span,
+.site-header--home .category-nav__link {
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ---- transparent halat: sirf jab mouse header par na ho aur search band ho ---- */
+.site-header--clear:not(:hover):not(:focus-within) .top-header,
+.site-header--clear:not(:hover):not(:focus-within) .category-nav {
+  background: transparent;
+  border-color: transparent;
+}
+
+/* halka andhera upar se, taa ke safed icons video par parhe ja sakein */
+.site-header--home::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 -40px;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(20, 14, 16, 0.45) 0%, rgba(20, 14, 16, 0) 100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.site-header--clear:not(:hover):not(:focus-within)::before { opacity: 1; }
+
+.site-header--clear:not(:hover):not(:focus-within) .top-header__icon-btn,
+.site-header--clear:not(:hover):not(:focus-within) .top-header__search-trigger span,
+.site-header--clear:not(:hover):not(:focus-within) .category-nav__link {
+  color: #fff;
+}
+.site-header--clear:not(:hover):not(:focus-within) .top-header__logo img {
+  filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.35)) brightness(1.15);
+}
+
+/* hover par safed header + pink bar (asal rang) */
+.site-header--home:hover .top-header,
+.site-header--home:focus-within .top-header { box-shadow: 0 2px 12px rgba(43, 37, 35, 0.06); }
+
+/* Header ab video ke upar hai: video poori screen bhar de (neeche khaali patti na bache) */
+.site-header--home ~ main .hero {
+  height: 100vh;
+  height: 100svh;
+}

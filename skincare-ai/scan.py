@@ -3,7 +3,7 @@ Gemini vision use hota hai. Tasveer kahin save nahi hoti. Alag test:  python sca
 import base64, json, mimetypes
 from pathlib import Path
 import config
-from llm import _post
+from llm import gemini_post
 
 URL = "https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent"
 MAX_BYTES = 4 * 1024 * 1024
@@ -73,13 +73,7 @@ def analyze_bytes(data, mime="image/jpeg", _call=None):
 
 
 def _generate(body):
-    last = None
-    for m in config.GEMINI_VISION_MODELS:
-        try:
-            return _post(URL.format(m=m), {"x-goog-api-key": config.GEMINI_KEY}, body, timeout=60, tries=2)
-        except RuntimeError as e:
-            last = e
-    raise last
+    return gemini_post([URL.format(m=m) for m in config.GEMINI_VISION_MODELS], body, timeout=60)
 
 
 def analyze_file(path):

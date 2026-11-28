@@ -9,10 +9,20 @@ def load_env():
             line = line.strip()
             if line and not line.startswith("#") and "=" in line:
                 k, v = line.split("=", 1)
+                v = v.strip()
+                if v[:1] not in ("'", '"') and " #" in v:      # "KEY=   # comment" -> khali
+                    v = v.split(" #", 1)[0]
+                if v.startswith("#"):
+                    v = ""
                 os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
 load_env()
 
-GEMINI_KEY = os.environ.get("GEMINI_API_KEY") or None
+# Ek se zyada Gemini keys: pehli ki limit khatam ho to agli khud use hoti hai.
+# .env mein: GEMINI_API_KEY=... aur GEMINI_API_KEY_2=... (chahen to _3, _4)
+GEMINI_KEYS = [k for k in [os.environ.get("GEMINI_API_KEY", "").strip()] +
+               [os.environ.get("GEMINI_API_KEY_%d" % i, "").strip() for i in range(2, 6)] if k]
+GEMINI_KEYS = list(dict.fromkeys(GEMINI_KEYS))          # duplicate hata do
+GEMINI_KEY = GEMINI_KEYS[0] if GEMINI_KEYS else None
 CLAUDE_KEY = os.environ.get("ANTHROPIC_API_KEY") or None
 # LLM_PROVIDER=gemini | claude  (na ho to jis ki key mili wohi)
 PROVIDER = os.environ.get("LLM_PROVIDER") or ("gemini" if GEMINI_KEY else "claude" if CLAUDE_KEY else None)

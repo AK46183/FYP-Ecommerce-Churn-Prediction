@@ -6,6 +6,11 @@ export const placeOrder = (payload) => api('/orders', { method: 'POST', body: pa
 export const getMyOrders = () => api('/orders')
 export const getMyOrder = (id) => api(`/orders/${encodeURIComponent(id)}`)
 
+/* Card payment (Stripe) */
+export const getPaymentStatus = () => api('/payments/status')
+export const startCardPayment = (orderId) => api('/payments/stripe/session', { method: 'POST', body: { orderId } })
+export const confirmCardPayment = (sessionId) => api('/payments/stripe/confirm', { method: 'POST', body: { sessionId } })
+
 /* Profile */
 export const getMe = () => api('/auth/me')
 export const updateMe = (data) => api('/auth/me', { method: 'PATCH', body: data })

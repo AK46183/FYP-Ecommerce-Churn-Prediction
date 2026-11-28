@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext.jsx'
 import { formatPKR } from '../../services/format.js'
 import { SHIPPING_STANDARD, SHIPPING_EXPRESS } from '../../config/store.js'
 import PageHeader from '../../components/common/PageHeader.jsx'
-import { placeOrder, getAddresses, addAddress } from '../../services/storeApi.js'
+import { placeOrder, getAddresses, addAddress, getPaymentStatus, startCardPayment } from '../../services/storeApi.js'
 import { Truck, Zap, Banknote, CreditCard, Lock, ShieldCheck, RotateCcw } from 'lucide-react'
 import './Checkout.css'
 
@@ -35,6 +35,8 @@ export default function Checkout() {
   const [placing, setPlacing] = useState(false)
   const [delivery, setDelivery] = useState('standard')
   const [payment, setPayment] = useState('cod')
+  // card tabhi jab backend par Stripe key lagi ho
+  const [cardInfo, setCardInfo] = useState({ card: false, testMode: false, loaded: false })
   const [phoneError, setPhoneError] = useState('')
   const [orderError, setOrderError] = useState('')
   const [saveAddress, setSaveAddress] = useState(true)
@@ -48,6 +50,12 @@ export default function Checkout() {
     postal: '',
     province: '',
   })
+
+  useEffect(() => {
+    getPaymentStatus()
+      .then((s) => setCardInfo({ card: Boolean(s?.card), testMode: Boolean(s?.testMode), loaded: true }))
+      .catch(() => setCardInfo({ card: false, testMode: false, loaded: true }))
+  }, [])
 
   // Saved default address ho to form khud bhar do
   useEffect(() => {
@@ -96,6 +104,11 @@ export default function Checkout() {
       return
     }
 
+    if (payment === 'card' && !cardInfo.card) {
+      setOrderError('Card payment is not available right now. Please choose cash on delivery.')
+      return
+    }
+
     setPlacing(true)
     try {
       // Backend price, stock aur total khud check karta hai, phir confirmation email bhejta hai
@@ -121,6 +134,17 @@ export default function Checkout() {
       }
 
       clearCart()
+      if (payment === 'card') {
+        // Stripe ke secure page par card (card number hamare paas nahi aata)
+        try {
+          const { url } = await startCardPayment(order.id)
+          window.location.assign(url)
+          return
+        } catch {
+          navigate(`/checkout/payment?order=${encodeURIComponent(order.id)}&error=1`)
+          return
+        }
+      }
       navigate('/account/orders', { state: { justPlaced: true, orderId: order.id } })
     } catch (err) {
       setOrderError(err.message || 'Order could not be placed. Please try again.')
@@ -209,12 +233,19 @@ export default function Checkout() {
                 <Option name="payment" value="cod" current={payment} onPick={() => setPayment('cod')}
                   icon={Banknote} title="Cash on delivery" sub="Pay when your order arrives" />
                 <Option name="payment" value="card" current={payment} onPick={() => setPayment('card')}
-                  icon={CreditCard} title="Credit / debit card" sub="Coming soon" />
+                  icon={CreditCard} title="Credit / debit card"
+                  sub={cardInfo.card || !cardInfo.loaded ? 'Visa, Mastercard · secure Stripe page' : 'Not available right now'} />
               </div>
-              {payment === 'card' && (
+              {payment === 'card' && cardInfo.card && (
                 <p className="checkout-form__note">
-                  Card payment is coming soon. For now your order will be confirmed by phone.
+                  After you place the order you will pay on Stripe's secure page. We never see or store your card number.
+                  {cardInfo.testMode && (
+                    <><br /><strong>Test mode:</strong> use card 4242 4242 4242 4242, any future date, any CVC. No real money is charged.</>
+                  )}
                 </p>
+              )}
+              {payment === 'card' && cardInfo.loaded && !cardInfo.card && (
+                <p className="checkout-form__note">Card payment is not available right now. Please choose cash on delivery.</p>
               )}
             </div>
 
@@ -280,7 +311,9 @@ export default function Checkout() {
               disabled={placing || items.length === 0 || hasBlockingIssue}
             >
               <Lock size={15} strokeWidth={2} aria-hidden="true" />
-              {placing ? 'Placing order…' : `Place order · ${formatPKR(total)}`}
+              {placing
+                ? (payment === 'card' ? 'Opening secure payment…' : 'Placing order…')
+                : `${payment === 'card' ? 'Pay' : 'Place order'} · ${formatPKR(total)}`}
             </button>
             <ul className="checkout-trust">
               <li><ShieldCheck size={15} strokeWidth={1.6} aria-hidden="true" />Secure checkout</li>

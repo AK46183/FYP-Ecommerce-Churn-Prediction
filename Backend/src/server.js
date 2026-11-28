@@ -19,6 +19,7 @@ const { getKey } = require('./utils/fieldCrypto');
 const { mailStatus } = require('./services/mail.service');
 const { ensureDefaultCoupons } = require('./services/coupon.service');
 const { startCartReminderTimer } = require('./services/cartReminder.service');
+const payment = require('./services/payment.service');
 
 const PORT = process.env.PORT || 5000;
 
@@ -44,6 +45,8 @@ const startServer = async () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`Email: ${mailStatus()}`);
     startCartReminderTimer();
+    console.log(`Card payment: ${payment.isEnabled() ? `on (Stripe${payment.status().testMode ? ' test mode' : ''})` : 'off (STRIPE_SECRET_KEY set nahi)'}`);
+    payment.startStalePaymentTimer();
   });
 };
 

@@ -290,6 +290,7 @@ const createOrder = async (userId, payload) => {
       totalAmount: Math.max(0, subtotal - discount + shippingFee),
       delivery,
       payment,
+      paymentStatus: payment === 'card' ? 'unpaid' : 'none',
       customerName: String(customer.name).trim(),
       customerEmail: String(customer.email).trim(),
       phone,
@@ -342,20 +343,8 @@ const createOrder = async (userId, payload) => {
   const emailItems = order.getDataValue('items').map((l) => ({
     name: l.product.name, shade: l.shade || l.size, quantity: l.quantity, price: l.price,
   }));
-  sendOrderConfirmation(order, emailItems); // intezar nahi — email fail ho to bhi order ho chuka
-
-  // Admin inbox: naya order
-  const units = emailItems.reduce((n, i) => n + i.quantity, 0);
-  notifyAdmin({
-    type: 'order',
-    title: `New order MN-${order.id}: PKR ${Math.round(order.totalAmount).toLocaleString('en-PK')}`,
-    body: `${order.customerName} (${order.customerEmail}) ordered ${units} item(s):\n`
-      + emailItems.map((i) => `• ${i.name}${i.shade ? `: ${i.shade}` : ''} × ${i.quantity}`).join('\n')
-      + `\nDeliver to: ${order.shippingAddress?.city || ''} · ${order.payment === 'cod' ? 'Cash on Delivery' : 'Card'}`
-      + (order.couponCode ? `\nCoupon: ${order.couponCode}` : ''),
-    link: '/admin/orders',
-    meta: { orderId: order.id, userId },
-  });
+  // Card: email aur admin alert payment hone ke baad (announcePaidOrder). COD: abhi.
+  if (order.payment !== 'card') announceOrder(order, emailItems, userId);
 
   // Admin inbox: stock kam ho gaya
   const low = LOW_STOCK();
@@ -373,6 +362,34 @@ const createOrder = async (userId, payload) => {
   }
 
   return getUserOrderById(userId, order.id);
+};
+
+/** Naye order ki confirmation email + admin inbox (COD foran, card payment ke baad) */
+const announceOrder = (order, emailItems, userId) => {
+  sendOrderConfirmation(order, emailItems); // intezar nahi — email fail ho to bhi order ho chuka
+
+  // Admin inbox: naya order
+  const units = emailItems.reduce((n, i) => n + i.quantity, 0);
+  notifyAdmin({
+    type: 'order',
+    title: `New order MN-${order.id}: PKR ${Math.round(order.totalAmount).toLocaleString('en-PK')}`,
+    body: `${order.customerName} (${order.customerEmail}) ordered ${units} item(s):\n`
+      + emailItems.map((i) => `• ${i.name}${i.shade ? `: ${i.shade}` : ''} × ${i.quantity}`).join('\n')
+      + `\nDeliver to: ${order.shippingAddress?.city || ''} · ${order.payment === 'cod' ? 'Cash on Delivery' : 'Card (paid)'}`
+      + (order.couponCode ? `\nCoupon: ${order.couponCode}` : ''),
+    link: '/admin/orders',
+    meta: { orderId: order.id, userId },
+  });
+};
+
+/** Card order ka payment ho gaya: ab email + admin alert (order DB se dobara) */
+const announcePaidOrder = async (orderId) => {
+  const order = await Order.findByPk(orderId, { include: [{ model: OrderItem }] });
+  if (!order) return;
+  const emailItems = (order.OrderItems || []).map((i) => ({
+    name: i.name, shade: i.shade || i.size, quantity: i.quantity, price: i.price,
+  }));
+  announceOrder(order, emailItems, order.userId);
 };
 
 /** Frontend wali shape (pehle localStorage mein yahi save hoti thi) */
@@ -401,6 +418,7 @@ const toClientOrder = (o) => {
     total: o.totalAmount,
     delivery: o.delivery,
     payment: o.payment,
+    paymentStatus: o.paymentStatus || 'none',
     customer: {
       name: o.customerName,
       email: o.customerEmail,
@@ -447,6 +465,7 @@ module.exports = {
   findVariant,
   validateCheckout,
   toClientOrder,
+  announcePaidOrder,
   parseQuantity,
   MAX_QTY,
 };

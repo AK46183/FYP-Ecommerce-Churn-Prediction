@@ -219,6 +219,48 @@ test('spam limit', async () => {
   assert.equal(calls.saved.length, 0);
 });
 
+test('pehle message mein kisi aur ka order number: qubool nahi', async () => {
+  const { bot, calls } = makeBot();
+  let r = await bot.reply({ message: 'my order MN-12 arrived broken', userId: 2 });
+  assert.equal(r.state.step, 'order');
+  assert.match(r.reply, /couldn't find order MN-12/);
+  r = await bot.reply({ message: 'my order MN-12 arrived broken', userId: 1 }); // apna order: theek
+  assert.equal(r.state.step, 'details');
+  assert.equal(r.state.orderRef, 'MN-12');
+  assert.equal(calls.saved.length, 0);
+});
+
+test('browser ki state mein kisi aur ka orderRef: save hone se pehle hat jata hai', async () => {
+  const { bot, calls } = makeBot();
+  await bot.reply({ message: 'it was broken', state: { flow: 'complaint', step: 'details', orderRef: 'MN-12' }, userId: 2 });
+  assert.equal(calls.saved.length, 1);
+  assert.equal(calls.saved[0].orderRef, null);
+});
+
+test('complaint mein card / CNIC / OTP number save nahi hota', async () => {
+  const { bot, calls } = makeBot();
+  await bot.reply({
+    message: 'paid with 4111 1111 1111 1111, CNIC 35202-1234567-1, otp 482913',
+    state: { flow: 'complaint', step: 'details', firstMessage: 'charged twice' },
+    userId: 1,
+  });
+  const saved = calls.saved[0].message;
+  assert.doesNotMatch(saved, /4111|35202|482913/);
+  assert.match(saved, /\[hidden number\]/);
+  assert.match(saved, /\[hidden CNIC\]/);
+  assert.doesNotMatch(calls.notified[0].body, /4111|35202|482913/);
+});
+
+test('account delete ho chuka ho to crash nahi, email maangta hai', async () => {
+  const { bot, calls } = makeBot({ getUser: async () => null });
+  let r = await bot.reply({ message: 'lipstick was broken', state: { flow: 'complaint', step: 'details' }, userId: 99 });
+  assert.equal(r.state.step, 'email');
+  assert.equal(calls.saved.length, 0);
+  r = await bot.reply({ message: 'me@example.com', state: r.state });
+  assert.equal(r.state, null);
+  assert.equal(calls.saved[0].email, 'me@example.com');
+});
+
 /* ------------------------ Offer (chatbot-based engagement) ------------------------ */
 
 const OFFER = { code: 'PICKS-AB12', description: '20% off your Skin Assistant picks', expiresAt: new Date('2026-12-01T00:00:00Z') };

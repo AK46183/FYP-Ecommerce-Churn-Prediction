@@ -23,6 +23,7 @@ import ProductDetails from './pages/products/ProductDetails.jsx'
 // Cart / checkout
 import Cart from './pages/cart/Cart.jsx'
 import Checkout from './pages/checkout/Checkout.jsx'
+import CheckoutPayment from './pages/checkout/CheckoutPayment.jsx'
 
 // Tips & Trends
 import TipsDetail from './pages/tips/TipsDetail.jsx'
@@ -149,6 +150,14 @@ export default function App() {
             element={
               <RequireAuth>
                 <Checkout />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/checkout/payment"
+            element={
+              <RequireAuth>
+                <CheckoutPayment />
               </RequireAuth>
             }
           />

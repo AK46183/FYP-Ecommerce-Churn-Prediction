@@ -70,7 +70,9 @@ export default function Orders() {
                     <p className="order-card__id">{order.id}</p>
                     <p className="order-card__date">Placed on {order.date}</p>
                   </div>
-                  <span className={`order-status order-status--${tone}`}>{order.status}</span>
+                  <span className={`order-status order-status--${tone}`}>
+                    {order.payment === 'card' && order.paymentStatus === 'unpaid' && tone !== 'stop' ? 'Payment pending' : order.status}
+                  </span>
                 </div>
                 <div className="order-card__bottom">
                   <div className="order-card__thumbs" aria-hidden="true">

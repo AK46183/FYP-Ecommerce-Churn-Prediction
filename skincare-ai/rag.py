@@ -46,13 +46,13 @@ def load_chunks():
 
 
 def _gemini_embed(texts, task):
-    from llm import _post
+    from llm import gemini_post
     base = "https://generativelanguage.googleapis.com/v1beta/models/%s" % config.GEMINI_EMBED_MODEL
     out = []
     for i in range(0, len(texts), 50):                      # batch mein bhejo
         reqs = [{"model": "models/" + config.GEMINI_EMBED_MODEL, "content": {"parts": [{"text": t}]}, "taskType": task}
                 for t in texts[i:i + 50]]
-        r = _post(base + ":batchEmbedContents", {"x-goog-api-key": config.GEMINI_KEY}, {"requests": reqs})
+        r = gemini_post([base + ":batchEmbedContents"], {"requests": reqs}, timeout=120, tries=5)
         out += [e["values"] for e in r["embeddings"]]
     return np.array(out, dtype="float32")
 

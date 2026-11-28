@@ -83,8 +83,17 @@ function Links({ links, onNavigate }) {
   )
 }
 
-export default function HelpBot() {
-  const [open, setOpen] = useState(false)
+export default function HelpBot({ open: openProp, onClose, onBack, hideFab = false } = {}) {
+  // ChatHub se chalta hai (open / onClose / onBack); akela chale to apna button aur apni state
+  const controlled = openProp !== undefined
+  const [openState, setOpenState] = useState(false)
+  const open = controlled ? openProp : openState
+  const setOpen = (v) => {
+    const next = typeof v === 'function' ? v(open) : v
+    if (controlled) {
+      if (!next) onClose?.()
+    } else setOpenState(next)
+  }
   const [{ messages, botState, personal }, setChat] = useState(loadSaved)
   const [text, setText] = useState('')
   const [busy, setBusy] = useState(false)
@@ -187,10 +196,13 @@ export default function HelpBot() {
   const lastIndex = messages.length - 1
 
   return (
-    <div className="help-bot">
+    <div className={`help-bot${hideFab ? ' help-bot--hub' : ''}`}>
       {open && (
         <section className="help-bot__panel" role="dialog" aria-label="MINAYSH Help Bot">
           <header className="help-bot__head">
+            {onBack && (
+              <button type="button" className="help-bot__back" onClick={onBack} aria-label="Back to chat options">‹</button>
+            )}
             <div>
               <strong>Help &amp; Orders</strong>
               <span>Order tracking, delivery, returns, complaints</span>
@@ -242,7 +254,7 @@ export default function HelpBot() {
         </section>
       )}
 
-      <button
+      {!hideFab && <button
         type="button"
         className={`help-bot__fab${open ? ' is-open' : ''}`}
         onClick={() => setOpen((o) => !o)}
@@ -261,7 +273,7 @@ export default function HelpBot() {
             <span>Help &amp; Orders</span>
           </>
         )}
-      </button>
+      </button>}
     </div>
   )
 }

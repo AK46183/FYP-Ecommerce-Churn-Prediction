@@ -147,8 +147,17 @@ function ProductCards({ products, onView }) {
   )
 }
 
-export default function ChatWidget() {
-  const [open, setOpen] = useState(false)
+export default function ChatWidget({ open: openProp, onClose, onBack, hideFab = false } = {}) {
+  // ChatHub se chalta hai (open / onClose / onBack); akela chale to apna button aur apni state
+  const controlled = openProp !== undefined
+  const [openState, setOpenState] = useState(false)
+  const open = controlled ? openProp : openState
+  const setOpen = (v) => {
+    const next = typeof v === 'function' ? v(open) : v
+    if (controlled) {
+      if (!next) onClose?.()
+    } else setOpenState(next)
+  }
   const [{ sessionId, messages }, setChat] = useState(loadSaved)
   const [text, setText] = useState('')
   const [busy, setBusy] = useState(false)
@@ -264,10 +273,13 @@ export default function ChatWidget() {
   }
 
   return (
-    <div className="skin-chat">
+    <div className={`skin-chat${hideFab ? ' skin-chat--hub' : ''}`}>
       {open && (
         <section className="skin-chat__panel" role="dialog" aria-label="MINAYSH Skin Assistant">
           <header className="skin-chat__head">
+            {onBack && (
+              <button type="button" className="skin-chat__back" onClick={onBack} aria-label="Back to chat options">‹</button>
+            )}
             <div>
               <strong>Skin Assistant</strong>
               <span>Skincare tips and product picks</span>
@@ -365,7 +377,7 @@ export default function ChatWidget() {
         />
       )}
 
-      <button
+      {!hideFab && <button
         type="button"
         className={`skin-chat__fab${open ? ' is-open' : ''}`}
         onClick={() => setOpen((o) => !o)}
@@ -382,7 +394,7 @@ export default function ChatWidget() {
             <span>Skincare Assistant</span>
           </>
         )}
-      </button>
+      </button>}
     </div>
   )
 }

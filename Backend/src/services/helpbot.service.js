@@ -7,6 +7,7 @@
 // Bot ka "state" (maslan complaint ka kaunsa step chal raha hai) client har message ke saath
 // wapas bhejta hai, is liye server par koi session store nahi. Server state ko dobara check karta hai.
 const { INTENTS, FALLBACK, MAIN_MENU } = require('../chatbot/intents');
+const { maskSensitive } = require('../utils/maskSensitive');
 
 const MAX_MESSAGE = 500;
 const MIN_SCORE = 2; // is se kam score = bot ko samajh nahi aaya
@@ -185,6 +186,17 @@ const createHelpbot = (deps) => {
   };
 
   /* ------------------------------ Complaint ------------------------------- */
+  /** Kya yeh order isi customer ka hai? (404 = nahi; database ki asli galti upar jaye) */
+  const ownsOrder = async (userId, id) => {
+    try {
+      await deps.getUserOrderById(userId, id);
+      return true;
+    } catch (error) {
+      if (error.statusCode !== 404) throw error;
+      return false;
+    }
+  };
+
   // Steps: order -> details -> (guest ho to) email -> save
   const askDetails = (state) => ({
     intent: 'complaint',
@@ -197,7 +209,18 @@ const createHelpbot = (deps) => {
     const base = { flow: 'complaint', firstMessage: String(message || '').slice(0, MAX_MESSAGE) };
     const id = extractOrderId(message);
 
-    if (id) return askDetails({ ...base, orderRef: `MN-${id}` });
+    if (id) {
+      // Login ho to order isi customer ka hona chahiye (pehle message mein bhi)
+      if (userId && !(await ownsOrder(userId, id))) {
+        return {
+          intent: 'complaint',
+          reply: `I couldn't find order MN-${id} in your account. Please type the right order number, or tap "Not about an order".`,
+          quickReplies: [{ label: 'Not about an order', message: NOT_ORDER }, { label: 'Cancel', message: 'cancel' }],
+          state: { ...base, step: 'order' },
+        };
+      }
+      return askDetails({ ...base, orderRef: `MN-${id}` });
+    }
 
     if (userId) {
       const orders = await deps.getUserOrders(userId);
@@ -225,6 +248,19 @@ const createHelpbot = (deps) => {
   const finishComplaint = async ({ state, userId, ip, email }) => {
     const user = userId ? await deps.getUser(userId) : null;
     const contactEmail = user?.email || email;
+    // Account mil nahi raha (maslan delete ho gaya): guest ki tarah email maango, crash nahi
+    if (!contactEmail) {
+      return {
+        intent: 'complaint',
+        reply: 'Thanks. What email address can our team reach you at?',
+        quickReplies: [{ label: 'Cancel', message: 'cancel' }],
+        state: { ...state, step: 'email' },
+      };
+    }
+    // State browser se aati hai: login customer ka orderRef save se pehle dobara check
+    let orderRef = state.orderRef || null;
+    const refId = orderRef ? Number(orderRef.slice(3)) : null;
+    if (user && refId && !(await ownsOrder(user.id, refId))) orderRef = null;
     if (!deps.allowComplaint(ip)) {
       return {
         intent: 'complaint',
@@ -234,12 +270,13 @@ const createHelpbot = (deps) => {
       };
     }
 
-    const text = [state.firstMessage, state.details].filter(Boolean).join('\n');
+    // Card / CNIC / OTP jaise number database mein na jayein
+    const text = maskSensitive([state.firstMessage, state.details].filter(Boolean).join('\n'));
     const saved = await deps.saveComplaint({
       name: user?.name || contactEmail.split('@')[0],
       email: contactEmail,
       message: text,
-      orderRef: state.orderRef || null,
+      orderRef,
       userId: user?.id || null,
     });
     const ticket = `C-${String(saved.id).slice(-6).toUpperCase()}`;
@@ -247,14 +284,14 @@ const createHelpbot = (deps) => {
     deps.notifyAdmin({
       type: 'complaint',
       title: `Complaint (Help Bot) from ${user?.name || contactEmail}`,
-      body: `${user?.name || 'Guest'} <${contactEmail}>${state.orderRef ? ` · Order ${state.orderRef}` : ''} · Ticket ${ticket}\n\n${text}`,
+      body: `${user?.name || 'Guest'} <${contactEmail}>${orderRef ? ` · Order ${orderRef}` : ''} · Ticket ${ticket}\n\n${text}`,
       link: '/admin/messages',
       meta: { messageId: saved.id, userId: user?.id || null, source: 'helpbot' },
     });
 
     return {
       intent: 'complaint',
-      reply: `Thank you. Your complaint has been registered (ticket ${ticket})${state.orderRef ? ` for order ${state.orderRef}` : ''}. Our team will contact you at ${contactEmail} within 1–2 business days.`,
+      reply: `Thank you. Your complaint has been registered (ticket ${ticket})${orderRef ? ` for order ${orderRef}` : ''}. Our team will contact you at ${contactEmail} within 1–2 business days.`,
       ticket,
       quickReplies: [{ label: 'Track my order', intent: 'order_status' }, { label: 'Talk to a person', intent: 'human_support' }],
       state: null,
@@ -285,19 +322,14 @@ const createHelpbot = (deps) => {
           state: { ...clean, step: 'order' },
         };
       }
-      if (userId) {
+      if (userId && !(await ownsOrder(userId, id))) {
         // Login ho to order isi customer ka hona chahiye
-        try {
-          await deps.getUserOrderById(userId, id);
-        } catch (error) {
-          if (error.statusCode !== 404) throw error;
-          return {
-            intent: 'complaint',
-            reply: `I couldn't find order MN-${id} in your account. Please check the number, or tap "Not about an order".`,
-            quickReplies: [{ label: 'Not about an order', message: NOT_ORDER }, { label: 'Cancel', message: 'cancel' }],
-            state: { ...clean, step: 'order' },
-          };
-        }
+        return {
+          intent: 'complaint',
+          reply: `I couldn't find order MN-${id} in your account. Please check the number, or tap "Not about an order".`,
+          quickReplies: [{ label: 'Not about an order', message: NOT_ORDER }, { label: 'Cancel', message: 'cancel' }],
+          state: { ...clean, step: 'order' },
+        };
       }
       return askDetails({ ...clean, orderRef: `MN-${id}` });
     }

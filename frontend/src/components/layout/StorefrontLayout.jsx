@@ -1,5 +1,4 @@
-import ChatWidget from '../chat/ChatWidget.jsx'
-import HelpBot from '../chat/HelpBot.jsx'
+import ChatHub from '../chat/ChatHub.jsx'
 import WhatsAppButton from '../chat/WhatsAppButton.jsx'
 import { Outlet } from 'react-router-dom'
 import Header from '../header/Header.jsx'
@@ -24,9 +23,8 @@ export default function StorefrontLayout() {
       <FlyToCart />
       {/* WhatsApp (Skincare Assistant ke upar) */}
       <WhatsAppButton />
-      <ChatWidget />
-      {/* Rule-based Help Bot (FAQ, order status, complaint): baayen kone mein */}
-      <HelpBot />
+      {/* Ek chat button: pehle option (Skin Assistant / Help & Orders), phir wohi chat */}
+      <ChatHub />
     </>
   )
 }
