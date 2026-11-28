@@ -389,6 +389,7 @@
 .db-status--delivered  { background: rgba(143, 199, 154, 0.3); color: #2f6b3a; }
 .db-status--processing { background: rgba(120, 160, 220, 0.25); color: #2c4f86; }
 .db-status--pending    { background: rgba(240, 201, 106, 0.35); color: #7a5a10; }
+.db-status--payment    { background: rgba(240, 201, 106, 0.35); color: #7a5a10; }
 .db-status--cancelled  { background: rgba(234, 138, 90, 0.25); color: #8a3a17; }
 
 /* Explore more: aakhir mein 3 chhote floating cards */

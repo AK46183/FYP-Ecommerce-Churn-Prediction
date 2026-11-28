@@ -71,6 +71,11 @@
   border: 1px solid rgba(124, 201, 184, 0.45);
   box-shadow: 0 0 24px rgba(124, 201, 184, 0.12), inset 0 0 24px rgba(124, 201, 184, 0.06);
 }
+/* Rings poore orbit jitne bade gol div hain aur ek doosre ke upar hain: inner ring bahar waale (high-risk)
+   customers ke clicks rok leta tha. Ring khud click nahi leta, sirf customer ke button lete hain. */
+.ch-ring { pointer-events: none; }
+.ch-node__pill { pointer-events: auto; }
+
 .ch-ring--outer { --r: calc(var(--size) * 0.46); }
 .ch-ring--outer::before { inset: 4%; border-color: rgba(255, 138, 122, 0.4); }
 .ch-ring--mid { --r: calc(var(--size) * 0.37); animation-duration: 120s; }
@@ -337,6 +342,42 @@
 .ch-card__block--action { border-color: rgba(255, 138, 122, 0.4); background: rgba(255, 138, 122, 0.08); }
 .ch-card__block--action h4 { color: #ffc2b8; }
 .ch-card__block--safe { border-color: rgba(124, 201, 184, 0.4); }
+/* Chat & cart signals (Help Bot + Skincare Assistant + cart) */
+.ch-card__block--chat { border-color: rgba(124, 201, 184, 0.35); background: rgba(124, 201, 184, 0.06); }
+.ch-card__block--chat h4 small { display: inline; margin: 0 0 0 auto; font-size: 0.64rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255, 255, 255, 0.5); }
+.ch-signals { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; margin-top: 8px; }
+@media (max-width: 420px) { .ch-signals { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.ch-signal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+  padding: 8px 7px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid transparent;
+  color: var(--sea-300);
+}
+.ch-signal b { color: #fff; font-size: 0.9rem; }
+.ch-signal small { margin: 0; font-size: 0.64rem; letter-spacing: 0; line-height: 1.25; white-space: nowrap; color: rgba(255, 255, 255, 0.6); }
+.ch-signal.is-alert { background: rgba(255, 138, 122, 0.12); border-color: rgba(255, 138, 122, 0.45); color: #ffc2b8; }
+.ch-signal.is-alert b { color: #ffd2cb; }
+.ch-signal__note { display: flex; align-items: center; gap: 6px; margin: 10px 0 0 !important; font-size: 0.74rem !important; color: #ffc2b8; }
+.ch-picks { margin-top: 10px; }
+.ch-picks > span { display: inline-flex; align-items: center; gap: 5px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--sea-300); }
+.ch-picks > div { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.ch-picks em {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-style: normal;
+  font-size: 0.74rem;
+  color: #fff;
+  background: rgba(124, 201, 184, 0.16);
+  border: 1px solid rgba(124, 201, 184, 0.4);
+}
+.ch-picks--concerns em { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.2); text-transform: capitalize; }
+
 .ch-card__channel { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; font-size: 0.72rem; color: rgba(255, 255, 255, 0.75); }
 .ch-card__btn {
   display: flex;

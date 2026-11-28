@@ -128,7 +128,6 @@ export default function Hero() {
           {HERO.eyebrow.map((line) => (
             <span key={line}>{line}</span>
           ))}
-          <span className="hero__eyebrow-line" aria-hidden="true" />
         </motion.p>
       </div>
     </section>

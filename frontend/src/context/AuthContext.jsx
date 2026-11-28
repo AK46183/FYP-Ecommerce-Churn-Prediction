@@ -81,7 +81,8 @@ export function AuthProvider({ children }) {
   const updateUser = useCallback((changes) => {
     setUser((prev) => {
       if (!prev) return prev
-      const next = { ...prev, ...changes, token: prev.token, role: prev.role }
+      // token sirf tab badle jab backend ne naya diya ho (password change)
+      const next = { ...prev, ...changes, token: changes.token || prev.token, role: prev.role }
       saveUser(next)
       return next
     })
@@ -93,6 +94,7 @@ export function AuthProvider({ children }) {
     try {
       window.localStorage.removeItem(STORAGE_KEY)
       window.sessionStorage.removeItem('minaysh_show_welcome')
+      window.sessionStorage.removeItem('minaysh_help_bot') // Help Bot chat (orders) bhi saaf
     } catch {
       // Ignore browser storage errors.
     }

@@ -29,7 +29,7 @@ const publicUser = (u) => ({
 });
 
 const issueToken = (user) =>
-  jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  jwt.sign({ id: user.id, role: user.role, tv: user.tokenVersion || 0 }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
 const normalizeEmail = (email = '') => String(email).trim().toLowerCase();
 
@@ -90,8 +90,10 @@ const changePassword = async (userId, { currentPassword, newPassword }) => {
   const ok = await bcrypt.compare(String(currentPassword || ''), user.password);
   if (!ok) throw new ApiError(400, 'Current password is incorrect');
   user.password = await bcrypt.hash(newPassword, 10);
+  user.tokenVersion = (user.tokenVersion || 0) + 1; // baqi devices ke purane tokens band
   await user.save();
-  return true;
+  // is device ko naya token, taake yahan login bana rahe
+  return { token: issueToken(user) };
 };
 
 /* -------------------------- Forgot / reset --------------------------- */
@@ -123,6 +125,7 @@ const resetPassword = async ({ token, password }) => {
   user.password = await bcrypt.hash(password, 10);
   user.resetTokenHash = null;
   user.resetTokenExpires = null;
+  user.tokenVersion = (user.tokenVersion || 0) + 1; // reset ke baad har jagah dobara login
   await user.save();
   return true;
 };

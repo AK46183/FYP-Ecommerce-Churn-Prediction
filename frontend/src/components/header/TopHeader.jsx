@@ -212,10 +212,6 @@ export default function TopHeader({ onMenuToggle }) {
     <div className="top-header">
       <div className="container top-header__inner">
         <div className="top-header__side top-header__side--left">
-          {/* MINAYSH_LOGO_SPLIT: logo mark in the left corner */}
-          <Link to="/" className="top-header__mark" aria-label="MINAYSH home">
-            <img src="/images/brand/minaysh-mark-rose.png" alt="" />
-          </Link>
           <button
             className="top-header__icon-btn top-header__hamburger"
             onClick={onMenuToggle}
@@ -347,8 +343,10 @@ export default function TopHeader({ onMenuToggle }) {
           )}
         </div>
 
-        <Link to="/" className="top-header__logo" aria-label="MINAYSH home">
-          <img src="/images/brand/minaysh-wordmark-rose.png" alt="MINAYSH" />
+        {/* Logo beech mein: upar M ka nishaan, neeche MINAYSH */}
+        <Link to="/" className="top-header__logo top-header__logo--stacked" aria-label="MINAYSH home">
+          <img className="top-header__logo-mark" src="/images/brand/minaysh-mark-rosegold.png" alt="" />
+          <img className="top-header__logo-word" src="/images/brand/minaysh-wordmark-rosegold.png" alt="MINAYSH" />
         </Link>
 
         <div className="top-header__side top-header__side--right">

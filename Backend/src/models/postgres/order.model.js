@@ -12,6 +12,10 @@ const Order = sequelize.define('Order', {
   couponCode: { type: DataTypes.STRING, allowNull: true },
   delivery: { type: DataTypes.STRING, defaultValue: 'standard' }, // standard | express
   payment: { type: DataTypes.STRING, defaultValue: 'cod' }, // cod | card
+  // card: unpaid -> paid (Stripe). COD par 'none'
+  paymentStatus: { type: DataTypes.STRING, defaultValue: 'none' },
+  stripeSessionId: { type: DataTypes.STRING, allowNull: true },
+  paidAt: { type: DataTypes.DATE, allowNull: true },
   customerName: { type: DataTypes.STRING },
   customerEmail: { type: DataTypes.STRING },
   phone: encryptedText('phone'), // AES-256-GCM encrypted

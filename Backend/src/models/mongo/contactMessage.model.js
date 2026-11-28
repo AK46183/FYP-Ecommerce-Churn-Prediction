@@ -8,6 +8,8 @@ const contactMessageSchema = new mongoose.Schema({
   orderRef: { type: String, default: null }, // maslan MN-12
   userId: { type: Number, default: null },
   status: { type: String, enum: ['new', 'read', 'replied'], default: 'new' },
+  // kahan se aaya: Contact Us form ya Help Bot (chat)
+  source: { type: String, enum: ['contact_form', 'helpbot'], default: 'contact_form' },
 }, {
   timestamps: true,
   versionKey: false,

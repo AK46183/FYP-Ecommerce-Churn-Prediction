@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { allProducts } from "../../data/products.js";
 import { isPurchasable } from "../../services/product.js";
 import { formatPKR } from "../../services/format.js";
+import { canTryOn } from "../../utils/tryOnLooks.js";
+import VirtualTryOn from "../tryon/VirtualTryOn.jsx";
 import "./BeautyQuiz.css";
 
 /* ------------------------------------------------------------------
@@ -212,6 +214,7 @@ export default function BeautyQuiz({ category = "eye" }) {
   const flow = FLOWS[category] || FLOWS.eye;
   const [answers, setAnswers] = useState({});
   const [history, setHistory] = useState([]);
+  const [tryOn, setTryOn] = useState(null); // product jo camera par lag kar dikh raha hai
 
   // questions that apply to the answers given so far
   const steps = flow.filter((q) => !(q.skip && q.skip(answers)));
@@ -295,7 +298,7 @@ export default function BeautyQuiz({ category = "eye" }) {
           {picks.length > 0 && (
             <ul className="bq-picks">
               {picks.map((p) => (
-                <li key={p.id}>
+                <li key={p.id} className="bq-pick-row">
                   <Link to={`/product/${p.id}`} className="bq-pick">
                     {p.image && <img src={p.image} alt="" />}
                     <span className="bq-pick__text">
@@ -304,6 +307,15 @@ export default function BeautyQuiz({ category = "eye" }) {
                     </span>
                     <span className="bq-pick__price">{formatPKR(p.price)}</span>
                   </Link>
+                  {canTryOn(p) && (
+                    <button type="button" className="bq-tryon" onClick={() => setTryOn(p)} aria-label={`Try on ${p.name}`}>
+                      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                        <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.6l1.3-2h5.2l1.3 2h1.6A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5v-8Z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+                        <circle cx="12" cy="12.5" r="3.4" fill="none" stroke="currentColor" strokeWidth="1.6" />
+                      </svg>
+                      <span>Try on</span>
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
@@ -317,6 +329,7 @@ export default function BeautyQuiz({ category = "eye" }) {
           </button>
         </div>
       )}
+      {tryOn && <VirtualTryOn product={tryOn} onClose={() => setTryOn(null)} />}
     </div>
   );
 }

@@ -75,3 +75,6 @@
     display: none;
   }
 }
+
+/* nav bar patla (header ke qareeb) */
+.category-nav__link { padding: 0.6rem 0 0.55rem; }

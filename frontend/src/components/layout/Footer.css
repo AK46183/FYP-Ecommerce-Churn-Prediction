@@ -31,8 +31,14 @@
   max-width: 420px;
 }
 
+/* phone par input + button screen se bahar na niklein (page side mein scroll na ho) */
+.site-footer__top > * {
+  min-width: 0;
+}
+
 .site-footer__form input {
   flex: 1;
+  min-width: 0;
   border: 1px solid var(--color-line);
   padding: 0.85rem 1rem;
   font-size: 0.85rem;
@@ -40,6 +46,7 @@
 }
 
 .site-footer__form button {
+  flex: none;
   background: var(--color-charcoal);
   color: var(--color-white);
   padding: 0.85rem 1.5rem;

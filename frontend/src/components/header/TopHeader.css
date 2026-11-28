@@ -461,3 +461,34 @@
   .top-header__mark img { height: 30px; }
   .top-header__logo img { height: 19px; max-width: 104px; }
 }
+
+/* ===== Logo beech mein, upar neeche (M nishaan + MINAYSH naam) ===== */
+.top-header__inner { height: 54px; }
+.top-header__logo--stacked {
+  flex-direction: column;
+  gap: 2px;
+  line-height: 0;
+}
+.top-header__logo--stacked .top-header__logo-mark { height: 26px; width: auto; max-width: none; }
+.top-header__logo--stacked .top-header__logo-word { height: 11px; width: auto; max-width: 90px; }
+@media (max-width: 900px) {
+  .top-header__inner { height: 64px; }
+  .top-header__search { top: 64px; }
+  .top-header__logo--stacked .top-header__logo-mark { height: 28px; }
+  .top-header__logo--stacked .top-header__logo-word { height: 12px; max-width: 90px; }
+}
+@media (max-width: 520px) {
+  .top-header__inner { height: 60px; }
+  .top-header__search { top: 60px; }
+  .top-header__logo--stacked { gap: 2px; }
+  .top-header__logo--stacked .top-header__logo-mark { height: 26px; }
+  .top-header__logo--stacked .top-header__logo-word { height: 11px; max-width: 80px; }
+}
+
+/* ===== Laptop / desktop: logo baayen kone mein, us ke saath search ===== */
+@media (min-width: 901px) {
+  .top-header__inner { grid-template-columns: auto 1fr auto; column-gap: 28px; }
+  .top-header__logo { grid-column: 1; grid-row: 1; justify-self: start; }
+  .top-header__side--left { grid-column: 2; grid-row: 1; }
+  .top-header__side--right { grid-column: 3; grid-row: 1; }
+}

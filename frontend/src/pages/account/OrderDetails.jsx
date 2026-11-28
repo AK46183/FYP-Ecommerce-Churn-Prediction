@@ -112,7 +112,16 @@ export default function OrderDetails() {
                     <div>
                       <h4>Payment and delivery</h4>
                       <p>
-                        {order.payment === 'cod' ? 'Cash on delivery' : 'Card (confirmed by phone)'}<br />
+                        {order.payment === 'cod'
+                          ? 'Cash on delivery'
+                          : order.paymentStatus === 'paid'
+                            ? 'Card · Paid'
+                            : order.paymentStatus === 'unpaid'
+                              ? 'Card · Payment pending'
+                              : 'Card'}
+                        {order.payment === 'card' && order.paymentStatus === 'unpaid' && String(order.status).toLowerCase() !== 'cancelled' && (
+                          <> · <Link to={`/checkout/payment?order=${encodeURIComponent(order.id)}`}>Pay now</Link></>
+                        )}<br />
                         {order.delivery === 'express' ? 'Express delivery (1 to 2 days)' : 'Standard delivery (3 to 5 days)'}
                       </p>
                     </div>

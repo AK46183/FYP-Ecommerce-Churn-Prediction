@@ -21,15 +21,33 @@ const getOrCreateCart = async (userId) => {
   return cart;
 };
 
-const addToCart = async (userId, productId, quantity) => {
+const MAX_QTY = 20; // ek product ki zyada se zyada quantity (website checkout jaisa)
+
+/** Quantity sirf 1..20 ka poora number (minus, 0, 2.5, "abc" sab rad) */
+const parseQuantity = (quantity) => {
+  const q = Number(quantity);
+  if (!Number.isInteger(q) || q < 1 || q > MAX_QTY) {
+    throw new ApiError(400, `Quantity must be a whole number between 1 and ${MAX_QTY}`);
+  }
+  return q;
+};
+
+const addToCart = async (userId, productId, rawQuantity) => {
+  const quantity = parseQuantity(rawQuantity);
+  if (!Number.isInteger(Number(productId)) || Number(productId) < 1) throw new ApiError(400, 'A valid productId is required');
   const cart = await getOrCreateCart(userId);
   const product = await Product.findByPk(productId);
   if (!product) throw new ApiError(404, 'Product not found');
-  logActivity(userId, 'cart_add', Number(productId), { quantity });
+  if (!product.available) throw new ApiError(400, `${product.name} is not available right now`);
 
   let item = await CartItem.findOne({ where: { cartId: cart.id, productId } });
+  const total = (item ? item.quantity : 0) + quantity;
+  if (total > MAX_QTY) throw new ApiError(400, `You can add at most ${MAX_QTY} of one product`);
+  if (total > product.stock) throw new ApiError(400, `Only ${product.stock} left of ${product.name}`);
+  logActivity(userId, 'cart_add', Number(productId), { quantity });
+
   if (item) {
-    item.quantity += quantity;
+    item.quantity = total;
     await item.save();
   } else {
     item = await CartItem.create({ cartId: cart.id, productId, quantity });
@@ -52,27 +70,57 @@ const removeFromCart = async (userId, itemId) => {
   return true;
 };
 
+// Purana backend-cart checkout (Postman). Website wala createOrder() neeche hai.
+// Ek transaction: products lock, stock check, stock kam, order bane, cart khaali. Kuch bhi fail ho to sab wapas.
 const placeOrder = async (userId) => {
-  const cart = await getOrCreateCart(userId);
-  const items = await CartItem.findAll({ where: { cartId: cart.id }, include: Product });
+  const order = await sequelize.transaction(async (t) => {
+    const cart = await Cart.findOne({ where: { userId }, transaction: t });
+    const items = cart ? await CartItem.findAll({ where: { cartId: cart.id }, transaction: t }) : [];
+    if (!items.length) throw new ApiError(400, 'Cart is empty');
 
-  if (!items.length) throw new ApiError(400, 'Cart is empty');
+    const productIds = [...new Set(items.map((i) => i.productId))];
+    const products = await Product.findAll({ where: { id: productIds }, transaction: t, lock: t.LOCK.UPDATE });
+    const byId = new Map(products.map((p) => [p.id, p]));
 
-  const totalAmount = items.reduce((sum, item) => sum + item.Product.price * item.quantity, 0);
+    const needed = new Map();
+    for (const item of items) {
+      const product = byId.get(item.productId);
+      if (!product) throw new ApiError(400, 'A product in your cart no longer exists');
+      if (!product.available) throw new ApiError(400, `${product.name} is not available right now`);
+      if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > MAX_QTY) {
+        throw new ApiError(400, `Invalid quantity for ${product.name}`);
+      }
+      needed.set(product.id, (needed.get(product.id) || 0) + item.quantity);
+    }
+    for (const [productId, qty] of needed) {
+      const product = byId.get(productId);
+      if (qty > product.stock) throw new ApiError(400, `Only ${product.stock} left of ${product.name}`);
+    }
 
-  const order = await Order.create({ userId, totalAmount, status: 'pending' });
+    const totalAmount = items.reduce((sum, item) => sum + byId.get(item.productId).price * item.quantity, 0);
+    const created = await Order.create({ userId, totalAmount, subtotal: totalAmount, status: 'pending' }, { transaction: t });
 
-  for (const item of items) {
-    await OrderItem.create({
-      orderId: order.id,
-      productId: item.productId,
-      quantity: item.quantity,
-      price: item.Product.price,
-    });
-    await item.destroy();
-  }
+    for (const item of items) {
+      const product = byId.get(item.productId);
+      await OrderItem.create({
+        orderId: created.id,
+        productId: product.id,
+        sku: product.sku,
+        name: product.name,
+        image: product.imageUrl,
+        quantity: item.quantity,
+        price: product.price,
+      }, { transaction: t });
+    }
+    for (const [productId, qty] of needed) {
+      await Product.decrement('stock', { by: qty, where: { id: productId }, transaction: t });
+    }
+    await CartItem.destroy({ where: { cartId: cart.id }, transaction: t });
+    return created;
+  });
+  clearProductCache();
 
-  logActivity(userId, 'checkout', null, { orderId: order.id, totalAmount });
+  logActivity(userId, 'checkout', null, { orderId: order.id, totalAmount: order.totalAmount });
   return order;
 };
 
@@ -86,7 +134,7 @@ const getAllOrders = async () => {
   });
 };
 
-const updateOrderStatus = async (orderId, status) => {
+const updateOrderStatus = async (orderId, status, { reason } = {}) => {
   const order = await Order.findByPk(orderId, {
     include: [{ model: User, attributes: ['name', 'email'] }, { model: OrderItem }],
   });
@@ -95,6 +143,10 @@ const updateOrderStatus = async (orderId, status) => {
   const next = String(status).toLowerCase();
   if (prev === next) return order;
   if (prev === 'cancelled') throw new ApiError(400, 'A cancelled order cannot be reopened');
+  // Card order: payment se pehle sirf cancel ho sakta hai (aage bhejna mana)
+  if (order.payment === 'card' && order.paymentStatus === 'unpaid' && next !== 'cancelled') {
+    throw new ApiError(400, 'This card order is not paid yet. It can only be cancelled.');
+  }
 
   order.status = next;
   await order.save();
@@ -117,7 +169,7 @@ const updateOrderStatus = async (orderId, status) => {
   }
 
   // Customer ko status email + admin inbox
-  sendOrderStatus(order, email, name);
+  sendOrderStatus(order, email, name, reason);
   if (next === 'delivered') {
     notifyAdmin({
       type: 'delivered',
@@ -130,7 +182,7 @@ const updateOrderStatus = async (orderId, status) => {
     notifyAdmin({
       type: 'cancelled',
       title: `Order MN-${order.id} cancelled`,
-      body: `Order MN-${order.id} for ${name} was cancelled. Stock has been returned.`,
+      body: `Order MN-${order.id} for ${name} was cancelled${reason === 'unpaid' ? ' (card payment not completed in 45 minutes)' : ''}. Stock has been returned.`,
       link: '/admin/orders',
       meta: { orderId: order.id },
     });
@@ -188,6 +240,10 @@ const createOrder = async (userId, payload) => {
   const { items, customer } = payload;
   const delivery = payload.delivery || 'standard';
   const payment = payload.payment || 'cod';
+  // Card sirf tab jab Stripe key lagi ho (warna order hamesha unpaid reh jata)
+  if (payment === 'card' && !require('./payment.service').isEnabled()) {
+    throw new ApiError(400, 'Card payment is not available right now. Please choose cash on delivery.');
+  }
 
   const order = await sequelize.transaction(async (t) => {
     const skus = [...new Set(items.map((i) => String(i.sku)))];
@@ -242,6 +298,7 @@ const createOrder = async (userId, payload) => {
       totalAmount: Math.max(0, subtotal - discount + shippingFee),
       delivery,
       payment,
+      paymentStatus: payment === 'card' ? 'unpaid' : 'none',
       customerName: String(customer.name).trim(),
       customerEmail: String(customer.email).trim(),
       phone,
@@ -294,20 +351,10 @@ const createOrder = async (userId, payload) => {
   const emailItems = order.getDataValue('items').map((l) => ({
     name: l.product.name, shade: l.shade || l.size, quantity: l.quantity, price: l.price,
   }));
-  sendOrderConfirmation(order, emailItems); // intezar nahi — email fail ho to bhi order ho chuka
-
-  // Admin inbox: naya order
-  const units = emailItems.reduce((n, i) => n + i.quantity, 0);
-  notifyAdmin({
-    type: 'order',
-    title: `New order MN-${order.id}: PKR ${Math.round(order.totalAmount).toLocaleString('en-PK')}`,
-    body: `${order.customerName} (${order.customerEmail}) ordered ${units} item(s):\n`
-      + emailItems.map((i) => `• ${i.name}${i.shade ? `: ${i.shade}` : ''} × ${i.quantity}`).join('\n')
-      + `\nDeliver to: ${order.shippingAddress?.city || ''} · ${order.payment === 'cod' ? 'Cash on Delivery' : 'Card'}`
-      + (order.couponCode ? `\nCoupon: ${order.couponCode}` : ''),
-    link: '/admin/orders',
-    meta: { orderId: order.id, userId },
-  });
+  // Customer ko email hamesha foran (card: "payment pending" + pay link).
+  // Admin alert: COD abhi, card payment hone ke baad (announcePaidOrder).
+  sendOrderConfirmation(order, emailItems);
+  if (order.payment !== 'card') announceOrder(order, emailItems, userId);
 
   // Admin inbox: stock kam ho gaya
   const low = LOW_STOCK();
@@ -325,6 +372,32 @@ const createOrder = async (userId, payload) => {
   }
 
   return getUserOrderById(userId, order.id);
+};
+
+/** Admin inbox: naya order (COD foran, card payment ke baad) */
+const announceOrder = (order, emailItems, userId) => {
+  const units = emailItems.reduce((n, i) => n + i.quantity, 0);
+  notifyAdmin({
+    type: 'order',
+    title: `New order MN-${order.id}: PKR ${Math.round(order.totalAmount).toLocaleString('en-PK')}`,
+    body: `${order.customerName} (${order.customerEmail}) ordered ${units} item(s):\n`
+      + emailItems.map((i) => `• ${i.name}${i.shade ? `: ${i.shade}` : ''} × ${i.quantity}`).join('\n')
+      + `\nDeliver to: ${order.shippingAddress?.city || ''} · ${order.payment === 'cod' ? 'Cash on Delivery' : 'Card (paid)'}`
+      + (order.couponCode ? `\nCoupon: ${order.couponCode}` : ''),
+    link: '/admin/orders',
+    meta: { orderId: order.id, userId },
+  });
+};
+
+/** Card order ka payment ho gaya: "payment received" email + admin alert (order DB se dobara) */
+const announcePaidOrder = async (orderId) => {
+  const order = await Order.findByPk(orderId, { include: [{ model: OrderItem }] });
+  if (!order) return;
+  const emailItems = (order.OrderItems || []).map((i) => ({
+    name: i.name, shade: i.shade || i.size, quantity: i.quantity, price: i.price,
+  }));
+  sendOrderConfirmation(order, emailItems); // ab paymentStatus 'paid' -> "payment received" email
+  announceOrder(order, emailItems, order.userId);
 };
 
 /** Frontend wali shape (pehle localStorage mein yahi save hoti thi) */
@@ -353,6 +426,7 @@ const toClientOrder = (o) => {
     total: o.totalAmount,
     delivery: o.delivery,
     payment: o.payment,
+    paymentStatus: o.paymentStatus || 'none',
     customer: {
       name: o.customerName,
       email: o.customerEmail,
@@ -399,4 +473,7 @@ module.exports = {
   findVariant,
   validateCheckout,
   toClientOrder,
+  announcePaidOrder,
+  parseQuantity,
+  MAX_QTY,
 };

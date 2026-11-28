@@ -88,6 +88,7 @@ const getUnreadCount = handle(() => notificationService.countUnread());
 const markNotification = handle((req) => notificationService.markRead(req.params.id, req.body?.read !== false));
 const markAllNotifications = handle(() => notificationService.markAllRead());
 const getEmailLog = handle((req) => notificationService.listEmailLog(req.query));
+const clearUnsentEmails = handle(() => notificationService.clearUnsentEmails(), 200, 'Old unsent emails cleared');
 
 module.exports = {
   getNotifications,
@@ -95,6 +96,7 @@ module.exports = {
   markNotification,
   markAllNotifications,
   getEmailLog,
+  clearUnsentEmails,
   getCoupons,
   createCoupon,
   updateCoupon,

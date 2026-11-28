@@ -11,6 +11,9 @@ const accountRoutes = require('./routes/account.routes');
 const supportRoutes = require('./routes/support.routes');
 const couponRoutes = require('./routes/coupon.routes');
 const chatbotRoutes = require('./routes/chatbot.routes');
+const helpbotRoutes = require('./routes/helpbot.routes');
+const paymentRoutes = require('./routes/payment.routes');
+const { webhook: stripeWebhook } = require('./controllers/payment.controller');
 const errorMiddleware = require('./middlewares/error.middleware');
 
 // Compression: JSON / HTML gzip karke bhejo (products ki list ~5-8 guna chhoti). Package na ho to server phir bhi chale.
@@ -32,6 +35,8 @@ app.use(cors(corsOptions));
 app.use('/api', limits.api);
 // chatbot: tasveer (selfie) ke liye bara body, is liye aam express.json se pehle
 app.use('/api/chatbot', express.json({ limit: '6mb' }), chatbotRoutes);
+// Stripe webhook: signature check ke liye raw body (express.json se pehle)
+app.post('/api/payments/stripe/webhook', express.raw({ type: 'application/json', limit: '200kb' }), stripeWebhook);
 app.use(express.json({ limit: '200kb' }));
 
 app.get('/', (req, res) => {
@@ -45,6 +50,8 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/account', accountRoutes);
 app.use('/api/coupons', couponRoutes);
+app.use('/api/payments', paymentRoutes); // card payment (Stripe)
+app.use('/api/helpbot', helpbotRoutes); // rule-based Help Bot (FAQ, order status, complaint)
 app.use('/api', supportRoutes); // /api/contact, /api/newsletter
 
 app.use(errorMiddleware);

@@ -502,3 +502,18 @@
 @media (max-width: 600px) {
   .checkout-summary.co-card { border-radius: 22px; padding: 22px 18px; }
 }
+
+/* ===== Card payment ka nateeja (/checkout/payment) ===== */
+.co-pay { padding-block: 32px 64px; display: grid; place-items: center; }
+.co-pay__card { width: min(560px, 100%); text-align: center; display: grid; justify-items: center; gap: 12px; }
+.co-pay__card h2 { margin: 4px 0 0; font-family: var(--font-display, Georgia, serif); font-size: 1.6rem; font-weight: 600; }
+.co-pay__card p { margin: 0; color: var(--color-charcoal-soft, #554c48); line-height: 1.6; }
+.co-pay__icon { color: var(--color-rosegold-deep, #b08468); }
+.co-pay__icon--ok { color: #2f7d5b; }
+.co-pay__icon--warn { color: #b4534b; }
+.co-pay__spin { animation: co-spin 1s linear infinite; }
+@keyframes co-spin { to { transform: rotate(360deg); } }
+.co-pay__actions { display: grid; gap: 10px; justify-items: center; margin-top: 10px; width: 100%; }
+.co-pay__actions .checkout-form__submit { width: min(320px, 100%); text-decoration: none; justify-content: center; display: inline-flex; align-items: center; gap: 8px; }
+.co-pay__link { color: var(--color-charcoal, #2b2523); font-size: 0.9rem; text-decoration: underline; text-underline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .co-pay__spin { animation: none; } }

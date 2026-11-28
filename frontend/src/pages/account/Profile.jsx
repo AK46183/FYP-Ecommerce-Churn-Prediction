@@ -44,7 +44,9 @@ export default function Profile() {
     if (pw.next !== pw.confirm) return setPwStatus({ type: 'error', text: 'New passwords do not match.' })
     setPwSaving(true)
     try {
-      await changePassword(pw.current, pw.next)
+      // backend purane tokens band kar deta hai aur is device ke liye naya token deta hai
+      const result = await changePassword(pw.current, pw.next)
+      if (result?.token) updateUser({ token: result.token })
       setPw({ current: '', next: '', confirm: '' })
       setPwStatus({ type: 'ok', text: 'Password changed ✓' })
     } catch (err) {

@@ -17,6 +17,14 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const sum = (orders) => orders.reduce((s, o) => s + Number(o.totalAmount || 0), 0);
 const change = (now, before) => (before ? +(((now - before) / before) * 100).toFixed(1) : now ? 100 : 0);
 const capital = (s = '') => s.charAt(0).toUpperCase() + s.slice(1);
+/** Sale mein ginti: cancelled nahi, aur card order ki payment baqi na ho
+ *  (purane card orders, Stripe se pehle wale, 'none' hain: woh ginay jaate hain) */
+const isSale = (o) => o.status !== 'cancelled' && !(o.payment === 'card' && o.paymentStatus === 'unpaid');
+/** Wahi shart SQL mein (topProducts) */
+const SALE_WHERE = {
+  status: { [Op.ne]: 'cancelled' },
+  [Op.or]: [{ payment: { [Op.ne]: 'card' } }, { paymentStatus: { [Op.ne]: 'unpaid' } }, { paymentStatus: null }],
+};
 
 /* ------------------------------ Dashboard ------------------------------ */
 
@@ -41,7 +49,7 @@ const revenueBars = (orders, from, days) => {
 const topProducts = async (from, to) => {
   const items = await OrderItem.findAll({
     include: [
-      { model: Order, attributes: [], where: { createdAt: { [Op.gte]: from, [Op.lt]: to }, status: { [Op.ne]: 'cancelled' } } },
+      { model: Order, attributes: [], where: { createdAt: { [Op.gte]: from, [Op.lt]: to }, ...SALE_WHERE } },
       { model: Product, attributes: ['name'] },
     ],
     attributes: ['productId', 'quantity', 'price'],
@@ -99,8 +107,8 @@ const getDashboard = async (range = '30d') => {
       }),
     ]);
 
-  const valid = orders.filter((o) => o.status !== 'cancelled');
-  const prevValid = prevOrders.filter((o) => o.status !== 'cancelled');
+  const valid = orders.filter(isSale);
+  const prevValid = prevOrders.filter(isSale);
   const revenue = sum(valid);
   const delivered = valid.filter((o) => o.status === 'delivered').length;
 
@@ -139,7 +147,9 @@ const getDashboard = async (range = '30d') => {
       customer: o.User?.name || 'Guest',
       items: (o.OrderItems || []).reduce((s, i) => s + i.quantity, 0),
       total: Math.round(o.totalAmount),
-      status: capital(o.status),
+      status: o.payment === 'card' && o.paymentStatus === 'unpaid' && o.status !== 'cancelled'
+        ? 'Payment pending'
+        : capital(o.status),
       date: o.createdAt,
     })),
   };
@@ -152,7 +162,7 @@ const getCustomers = async () => {
     User.findAll({
       where: { role: 'customer' },
       attributes: ['id', 'name', 'email', 'city', 'phone', 'hasComplaint', 'createdAt'],
-      include: [{ model: Order, attributes: ['totalAmount', 'status', 'createdAt'] }],
+      include: [{ model: Order, attributes: ['totalAmount', 'status', 'payment', 'paymentStatus', 'createdAt'] }],
       order: [['createdAt', 'DESC']],
     }),
     latestPerUser(),
@@ -160,7 +170,7 @@ const getCustomers = async () => {
   const scoreMap = new Map(scores.map((s) => [s.userId, s]));
 
   return users.map((u) => {
-    const valid = u.Orders.filter((o) => o.status !== 'cancelled');
+    const valid = u.Orders.filter(isSale);
     const last = valid.reduce((d, o) => (!d || o.createdAt > d ? o.createdAt : d), null);
     const s = scoreMap.get(u.id);
     return {

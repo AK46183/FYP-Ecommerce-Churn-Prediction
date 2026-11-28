@@ -16,6 +16,8 @@ const User = sequelize.define('User', {
   // Forgot password: token ka hash (asli token sirf email mein jata hai)
   resetTokenHash: { type: DataTypes.STRING, allowNull: true },
   resetTokenExpires: { type: DataTypes.DATE, allowNull: true },
+  // Password badalne / reset par +1: is se purane saare login tokens foran band ho jate hain
+  tokenVersion: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
 }, {
   tableName: 'users',
   timestamps: true,

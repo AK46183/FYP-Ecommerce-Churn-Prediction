@@ -101,3 +101,8 @@ export function markAllNotifications() {
 export function getEmailLog(type = '') {
   return api(`/admin/emails${type ? `?type=${type}` : ''}`)
 }
+
+// Purani "Not sent (SMTP off)" entries mitao
+export function clearUnsentEmails() {
+  return api('/admin/emails/unsent', { method: 'DELETE' })
+}

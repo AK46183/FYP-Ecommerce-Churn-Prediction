@@ -37,7 +37,7 @@ const TOPICS = [
     faqs: [
       ['How does the bundle offer work?', <>Pick any 3 different products on the <Link to="/bundle-offer">Bundle Offer</Link> page. If the bundle total is PKR 3,000 or more, you get PKR 1,000 off. Every 3 products is a new bundle, so 6 products can save PKR 2,000. The discount appears automatically in your bag and at checkout.</>],
       ['How do I use a discount code?', 'Type the code in the "Discount code" box in your bag or at checkout and press Apply. Each code can be used once per customer and some codes need a minimum order amount.'],
-      ['How do I hear about new launches?', <>See the countdown on the <Link to="/new">New</Link> page and press "Notify me", or subscribe to our newsletter at the bottom of any page.</>],
+      ['How do I hear about new launches?', <>See the countdown on the <Link to="/new">New</Link> page and press &ldquo;Notify me&rdquo;, or subscribe to our newsletter at the bottom of any page.</>],
     ],
   },
   {
@@ -52,7 +52,7 @@ const TOPICS = [
     id: 'account', title: 'My account', icon: User,
     faqs: [
       ['I forgot my password', <>Use <Link to="/forgot-password">Forgot password</Link> on the sign-in page. We email you a reset link that works for 30 minutes.</>],
-      ['How do I save my address?', <>Tick "Save this address to my account" at checkout, or add it under <Link to="/account/addresses">My Account, then Addresses</Link>.</>],
+      ['How do I save my address?', <>Tick &ldquo;Save this address to my account&rdquo; at checkout, or add it under <Link to="/account/addresses">My Account, then Addresses</Link>.</>],
       ['Where is my wishlist?', <>Tap the heart on any product. Everything you save is in <Link to="/account/wishlist">My Account, then Wishlist</Link>.</>],
     ],
   },
