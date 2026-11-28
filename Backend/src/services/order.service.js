@@ -134,7 +134,7 @@ const getAllOrders = async () => {
   });
 };
 
-const updateOrderStatus = async (orderId, status) => {
+const updateOrderStatus = async (orderId, status, { reason } = {}) => {
   const order = await Order.findByPk(orderId, {
     include: [{ model: User, attributes: ['name', 'email'] }, { model: OrderItem }],
   });
@@ -143,6 +143,10 @@ const updateOrderStatus = async (orderId, status) => {
   const next = String(status).toLowerCase();
   if (prev === next) return order;
   if (prev === 'cancelled') throw new ApiError(400, 'A cancelled order cannot be reopened');
+  // Card order: payment se pehle sirf cancel ho sakta hai (aage bhejna mana)
+  if (order.payment === 'card' && order.paymentStatus === 'unpaid' && next !== 'cancelled') {
+    throw new ApiError(400, 'This card order is not paid yet. It can only be cancelled.');
+  }
 
   order.status = next;
   await order.save();
@@ -165,7 +169,7 @@ const updateOrderStatus = async (orderId, status) => {
   }
 
   // Customer ko status email + admin inbox
-  sendOrderStatus(order, email, name);
+  sendOrderStatus(order, email, name, reason);
   if (next === 'delivered') {
     notifyAdmin({
       type: 'delivered',
@@ -178,7 +182,7 @@ const updateOrderStatus = async (orderId, status) => {
     notifyAdmin({
       type: 'cancelled',
       title: `Order MN-${order.id} cancelled`,
-      body: `Order MN-${order.id} for ${name} was cancelled. Stock has been returned.`,
+      body: `Order MN-${order.id} for ${name} was cancelled${reason === 'unpaid' ? ' (card payment not completed in 45 minutes)' : ''}. Stock has been returned.`,
       link: '/admin/orders',
       meta: { orderId: order.id },
     });
@@ -236,6 +240,10 @@ const createOrder = async (userId, payload) => {
   const { items, customer } = payload;
   const delivery = payload.delivery || 'standard';
   const payment = payload.payment || 'cod';
+  // Card sirf tab jab Stripe key lagi ho (warna order hamesha unpaid reh jata)
+  if (payment === 'card' && !require('./payment.service').isEnabled()) {
+    throw new ApiError(400, 'Card payment is not available right now. Please choose cash on delivery.');
+  }
 
   const order = await sequelize.transaction(async (t) => {
     const skus = [...new Set(items.map((i) => String(i.sku)))];
@@ -343,7 +351,9 @@ const createOrder = async (userId, payload) => {
   const emailItems = order.getDataValue('items').map((l) => ({
     name: l.product.name, shade: l.shade || l.size, quantity: l.quantity, price: l.price,
   }));
-  // Card: email aur admin alert payment hone ke baad (announcePaidOrder). COD: abhi.
+  // Customer ko email hamesha foran (card: "payment pending" + pay link).
+  // Admin alert: COD abhi, card payment hone ke baad (announcePaidOrder).
+  sendOrderConfirmation(order, emailItems);
   if (order.payment !== 'card') announceOrder(order, emailItems, userId);
 
   // Admin inbox: stock kam ho gaya
@@ -364,11 +374,8 @@ const createOrder = async (userId, payload) => {
   return getUserOrderById(userId, order.id);
 };
 
-/** Naye order ki confirmation email + admin inbox (COD foran, card payment ke baad) */
+/** Admin inbox: naya order (COD foran, card payment ke baad) */
 const announceOrder = (order, emailItems, userId) => {
-  sendOrderConfirmation(order, emailItems); // intezar nahi — email fail ho to bhi order ho chuka
-
-  // Admin inbox: naya order
   const units = emailItems.reduce((n, i) => n + i.quantity, 0);
   notifyAdmin({
     type: 'order',
@@ -382,13 +389,14 @@ const announceOrder = (order, emailItems, userId) => {
   });
 };
 
-/** Card order ka payment ho gaya: ab email + admin alert (order DB se dobara) */
+/** Card order ka payment ho gaya: "payment received" email + admin alert (order DB se dobara) */
 const announcePaidOrder = async (orderId) => {
   const order = await Order.findByPk(orderId, { include: [{ model: OrderItem }] });
   if (!order) return;
   const emailItems = (order.OrderItems || []).map((i) => ({
     name: i.name, shade: i.shade || i.size, quantity: i.quantity, price: i.price,
   }));
+  sendOrderConfirmation(order, emailItems); // ab paymentStatus 'paid' -> "payment received" email
   announceOrder(order, emailItems, order.userId);
 };
 

@@ -238,7 +238,7 @@ export default function Checkout() {
               </div>
               {payment === 'card' && cardInfo.card && (
                 <p className="checkout-form__note">
-                  After you place the order you will pay on Stripe's secure page. We never see or store your card number.
+                  After you place the order you will pay on Stripe&apos;s secure page. We never see or store your card number.
                   {cardInfo.testMode && (
                     <><br /><strong>Test mode:</strong> use card 4242 4242 4242 4242, any future date, any CVC. No real money is charged.</>
                   )}

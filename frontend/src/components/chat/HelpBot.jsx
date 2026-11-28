@@ -94,6 +94,9 @@ export default function HelpBot({ open: openProp, onClose, onBack, hideFab = fal
       if (!next) onClose?.()
     } else setOpenState(next)
   }
+  // Escape wale effect ke liye hamesha taaza setOpen (har render naya banta hai)
+  const setOpenRef = useRef(setOpen)
+  setOpenRef.current = setOpen
   const [{ messages, botState, personal }, setChat] = useState(loadSaved)
   const [text, setText] = useState('')
   const [busy, setBusy] = useState(false)
@@ -133,7 +136,7 @@ export default function HelpBot({ open: openProp, onClose, onBack, hideFab = fal
 
   useEffect(() => {
     if (!open) return undefined
-    const onKey = (e) => e.key === 'Escape' && setOpen(false)
+    const onKey = (e) => e.key === 'Escape' && setOpenRef.current(false)
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [open])

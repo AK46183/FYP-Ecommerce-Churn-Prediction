@@ -158,6 +158,9 @@ export default function ChatWidget({ open: openProp, onClose, onBack, hideFab = 
       if (!next) onClose?.()
     } else setOpenState(next)
   }
+  // Escape wale effect ke liye hamesha taaza setOpen (har render naya banta hai)
+  const setOpenRef = useRef(setOpen)
+  setOpenRef.current = setOpen
   const [{ sessionId, messages }, setChat] = useState(loadSaved)
   const [text, setText] = useState('')
   const [busy, setBusy] = useState(false)
@@ -189,7 +192,7 @@ export default function ChatWidget({ open: openProp, onClose, onBack, hideFab = 
 
   useEffect(() => {
     if (!open) return undefined
-    const onKey = (e) => e.key === 'Escape' && setOpen(false)
+    const onKey = (e) => e.key === 'Escape' && setOpenRef.current(false)
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [open])

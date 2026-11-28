@@ -7,6 +7,7 @@
 //   4) 45 minute tak payment na ho to order cancel, stock wapas
 // Koi npm package nahi: Stripe ki REST API seedha fetch se.
 const crypto = require('crypto');
+const { Op } = require('sequelize');
 const Order = require('../models/postgres/order.model');
 const ApiError = require('../utils/ApiError');
 const { logActivity } = require('./activityLogger.service');
@@ -130,7 +131,15 @@ const applySession = async (session, expectUserId = null) => {
     return { paid: false, order: ref, cancelled: true };
   }
 
-  await order.update({ paymentStatus: 'paid', paidAt: new Date(), stripeSessionId: session.id });
+  // Sirf ek baar paid (confirm aur webhook saath aayein to email do baar na jaye)
+  const [changed] = await Order.update(
+    { paymentStatus: 'paid', paidAt: new Date(), stripeSessionId: session.id },
+    { where: { id: order.id, paymentStatus: 'unpaid', status: { [Op.ne]: 'cancelled' } } },
+  );
+  if (!changed) {
+    await order.reload();
+    return { paid: order.paymentStatus === 'paid', order: ref };
+  }
   logActivity(order.userId, 'checkout', null, { orderId: order.id, payment: 'card_paid' });
   // late require: order.service is file ko require nahi karta, phir bhi circular se bachao
   require('./order.service').announcePaidOrder(order.id);
@@ -167,7 +176,6 @@ const handleWebhook = async (rawBody, signature) => {
 
 /** 45 minute se unpaid card orders cancel (stock wapas) */
 const cancelStaleCardOrders = async () => {
-  const { Op } = require('sequelize');
   const { updateOrderStatus } = require('./order.service');
   const before = new Date(Date.now() - STALE_MINUTES * 60 * 1000);
   const stale = await Order.findAll({
@@ -177,7 +185,7 @@ const cancelStaleCardOrders = async () => {
   });
   for (const o of stale) {
     try {
-      await updateOrderStatus(o.id, 'cancelled');
+      await updateOrderStatus(o.id, 'cancelled', { reason: 'unpaid' });
     } catch (e) {
       console.warn('[stripe] could not cancel stale order', o.id, e.message);
     }

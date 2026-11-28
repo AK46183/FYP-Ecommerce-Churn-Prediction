@@ -130,15 +130,31 @@ const itemsTable = (items) => `
       </tr>`).join('')}
   </table>`;
 
+/**
+ * Order email. COD: "confirmed". Card: pehle "payment pending" (pay link ke saath),
+ * payment ke baad dobara "payment received".
+ */
 const sendOrderConfirmation = (order, items) => {
   const a = order.shippingAddress || {};
+  const isCard = order.payment === 'card';
+  const paid = order.paymentStatus === 'paid';
+  const ref = `MN-${order.id}`;
+  const payLink = `${FRONTEND_URL()}/checkout/payment?order=${ref}`;
+  const subject = !isCard ? `Order ${ref} confirmed`
+    : paid ? `Payment received, order ${ref} confirmed` : `Order ${ref} received, payment pending`;
+  const title = !isCard ? 'Thank you for your order!'
+    : paid ? 'Payment received, thank you!' : 'Your order is saved';
+  const intro = !isCard ? `we have received your order <b>${ref}</b>.`
+    : paid ? `we have received your card payment for order <b>${ref}</b>. Your order is confirmed.`
+      : `we have saved your order <b>${ref}</b>. Please complete the card payment within <b>45 minutes</b>, otherwise the order will be cancelled.`;
+  const payText = !isCard ? 'Cash on Delivery' : paid ? 'Card (paid)' : 'Card (payment pending)';
   return sendMail({
     to: order.customerEmail,
     type: 'order',
-    subject: `Order MN-${order.id} confirmed | ${STORE}`,
-    text: `Thank you ${order.customerName}! Order MN-${order.id} placed. Total ${pkr(order.totalAmount)}.`,
-    html: layout(`Thank you for your order!`, `
-      <p>Hi ${escapeHtml(order.customerName || '')}, we have received your order <b>MN-${order.id}</b>.</p>
+    subject: `${subject} | ${STORE}`,
+    text: `Hi ${order.customerName}! ${subject}. Total ${pkr(order.totalAmount)}.${isCard && !paid ? ` Pay here: ${payLink}` : ''}`,
+    html: layout(title, `
+      <p>Hi ${escapeHtml(order.customerName || '')}, ${intro}</p>
       ${itemsTable(items)}
       <table width="100%" style="font-size:13px;margin-top:10px">
         <tr><td>Subtotal</td><td align="right">${pkr(order.subtotal)}</td></tr>
@@ -148,9 +164,9 @@ const sendOrderConfirmation = (order, items) => {
       </table>
       <p style="font-size:13px;color:#5a4a50;margin-top:16px">
         <b>Deliver to:</b> ${escapeHtml([a.street, a.city, a.province, a.postal].filter(Boolean).join(', '))}<br>
-        <b>Payment:</b> ${order.payment === 'cod' ? 'Cash on Delivery' : 'Card (we will confirm by phone)'}
+        <b>Payment:</b> ${payText}
       </p>
-      ${button(`${FRONTEND_URL()}/account/orders/MN-${order.id}`, 'View your order')}`),
+      ${isCard && !paid ? button(payLink, 'Complete payment') : button(`${FRONTEND_URL()}/account/orders/${ref}`, 'View your order')}`),
   });
 };
 
@@ -168,7 +184,9 @@ const STATUS_EXTRA = {
   cancelled: '<p>If you did not ask for this cancellation, please contact us and we will sort it out.</p>',
 };
 
-const sendOrderStatus = (order, email, name) =>
+const UNPAID_CANCEL = '<p>The card payment was not completed within 45 minutes, so this order was cancelled and no money was taken. You are welcome to place the order again any time.</p>';
+
+const sendOrderStatus = (order, email, name, reason) =>
   sendMail({
     to: email,
     type: 'status',
@@ -177,7 +195,7 @@ const sendOrderStatus = (order, email, name) =>
     html: layout(`Your order ${STATUS_TEXT[order.status] || order.status}`, `
       <p>Hi ${escapeHtml(name || '')}, an update on order <b>MN-${order.id}</b>:
       it ${STATUS_TEXT[order.status] || `is now ${escapeHtml(order.status)}`}.</p>
-      ${STATUS_EXTRA[order.status] || ''}
+      ${reason === 'unpaid' && order.status === 'cancelled' ? UNPAID_CANCEL : (STATUS_EXTRA[order.status] || '')}
       ${button(`${FRONTEND_URL()}/account/orders/MN-${order.id}`, 'Track order')}`),
   });
 
